@@ -7,6 +7,37 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Environment Variables
+
+This project uses environment variables to configure the API base URL. The following variables are available:
+
+- `VITE_API_BASE_URL`: The base URL for API requests.
+
+You can configure these variables in the following files:
+
+- `.env`: Default environment variables (development)
+- `.env.production`: Production environment variables
+
+### API Generation with Orval
+
+The project uses Orval to generate API clients from OpenAPI specifications. The base URL for the API calls is dynamically fetched from the environment variables.
+
+To generate the API client:
+
+```bash
+npm run api-generate
+```
+
+This will generate type-safe API client code in `src/api/generated/` that will automatically use the correct base URL from your environment.
+
+## Development
+
+To start the development server with the configured environment:
+
+```bash
+npm run dev
+```
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:

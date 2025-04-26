@@ -24,6 +24,7 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
+import { customFetch } from '../custom-fetch';
 export interface ApiApplicationModel {
   /** Gets or sets the id associated with the application. */
   id: string;
@@ -352,62 +353,41 @@ export type DeleteApiUsersIdguidParams = {
 id?: string;
 };
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
 /**
  * @summary Show the main application page with a list of all applications.
  */
-export type getApiApplicationsResponse200 = {
-  data: ApiApplicationModel[]
-  status: 200
-}
+export const getApiApplications = (
     
-export type getApiApplicationsResponseComposite = getApiApplicationsResponse200;
-    
-export type getApiApplicationsResponse = getApiApplicationsResponseComposite & {
-  headers: Headers;
-}
-
-export const getGetApiApplicationsUrl = () => {
-
-
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<ApiApplicationModel[]>(
+      {url: `/api/applications`, method: 'GET', signal
+    },
+      options);
+    }
   
-
-  return `/api/applications`
-}
-
-export const getApiApplications = async ( options?: RequestInit): Promise<getApiApplicationsResponse> => {
-  
-  const res = await fetch(getGetApiApplicationsUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: getApiApplicationsResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as getApiApplicationsResponse
-}
-
-
 
 export const getGetApiApplicationsQueryKey = () => {
     return [`/api/applications`] as const;
     }
 
     
-export const getGetApiApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiApplicationsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplications>>> = ({ signal }) => getApiApplications({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplications>>> = ({ signal }) => getApiApplications(requestOptions, signal);
 
       
 
@@ -427,7 +407,7 @@ export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiAp
           TError,
           Awaited<ReturnType<typeof getApiApplications>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
@@ -437,11 +417,11 @@ export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiAp
           TError,
           Awaited<ReturnType<typeof getApiApplications>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -449,7 +429,7 @@ export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiAp
  */
 
 export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -468,67 +448,31 @@ export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiAp
 /**
  * @summary Create new application
  */
-export type postApiApplicationsResponse200 = {
-  data: OpenIdApplicationCreated
-  status: 200
-}
-
-export type postApiApplicationsResponse400 = {
-  data: Error
-  status: 400
-}
-    
-export type postApiApplicationsResponseComposite = postApiApplicationsResponse200 | postApiApplicationsResponse400;
-    
-export type postApiApplicationsResponse = postApiApplicationsResponseComposite & {
-  headers: Headers;
-}
-
-export const getPostApiApplicationsUrl = (params?: PostApiApplicationsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+export const postApiApplications = (
+    params?: PostApiApplicationsParams,
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<OpenIdApplicationCreated>(
+      {url: `/api/applications`, method: 'POST',
+        params, signal
+    },
+      options);
     }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/applications?${stringifiedParams}` : `/api/applications`
-}
-
-export const postApiApplications = async (params?: PostApiApplicationsParams, options?: RequestInit): Promise<postApiApplicationsResponse> => {
   
-  const res = await fetch(getPostApiApplicationsUrl(params),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: postApiApplicationsResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as postApiApplicationsResponse
-}
-
-
 
 
 export const getPostApiApplicationsMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{params?: PostApiApplicationsParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{params?: PostApiApplicationsParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{params?: PostApiApplicationsParams}, TContext> => {
     
 const mutationKey = ['postApiApplications'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -536,7 +480,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiApplications>>, {params?: PostApiApplicationsParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  postApiApplications(params,fetchOptions)
+          return  postApiApplications(params,requestOptions)
         }
 
         
@@ -552,7 +496,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create new application
  */
 export const usePostApiApplications = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{params?: PostApiApplicationsParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{params?: PostApiApplicationsParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiApplications>>,
         TError,
@@ -568,64 +512,34 @@ export const usePostApiApplications = <TError = Error,
 /**
  * @summary Get the application with the given id.
  */
-export type getApiApplicationsIdResponse200 = {
-  data: OpenIdApplication
-  status: 200
-}
-
-export type getApiApplicationsIdResponse404 = {
-  data: Error
-  status: 404
-}
-    
-export type getApiApplicationsIdResponseComposite = getApiApplicationsIdResponse200 | getApiApplicationsIdResponse404;
-    
-export type getApiApplicationsIdResponse = getApiApplicationsIdResponseComposite & {
-  headers: Headers;
-}
-
-export const getGetApiApplicationsIdUrl = (id: string,) => {
-
-
+export const getApiApplicationsId = (
+    id: string,
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<OpenIdApplication>(
+      {url: `/api/applications/${id}`, method: 'GET', signal
+    },
+      options);
+    }
   
-
-  return `/api/applications/${id}`
-}
-
-export const getApiApplicationsId = async (id: string, options?: RequestInit): Promise<getApiApplicationsIdResponse> => {
-  
-  const res = await fetch(getGetApiApplicationsIdUrl(id),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: getApiApplicationsIdResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as getApiApplicationsIdResponse
-}
-
-
 
 export const getGetApiApplicationsIdQueryKey = (id: string,) => {
     return [`/api/applications/${id}`] as const;
     }
 
     
-export const getGetApiApplicationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiApplicationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiApplicationsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplicationsId>>> = ({ signal }) => getApiApplicationsId(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplicationsId>>> = ({ signal }) => getApiApplicationsId(id, requestOptions, signal);
 
       
 
@@ -645,7 +559,7 @@ export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApi
           TError,
           Awaited<ReturnType<typeof getApiApplicationsId>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
@@ -655,11 +569,11 @@ export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApi
           TError,
           Awaited<ReturnType<typeof getApiApplicationsId>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -667,7 +581,7 @@ export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApi
  */
 
 export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -686,62 +600,32 @@ export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApi
 /**
  * @summary Update the application with the given id.
  */
-export type putApiApplicationsIdResponse200 = {
-  data: OpenIdApplicationUpdated
-  status: 200
-}
-
-export type putApiApplicationsIdResponse404 = {
-  data: Error
-  status: 404
-}
-    
-export type putApiApplicationsIdResponseComposite = putApiApplicationsIdResponse200 | putApiApplicationsIdResponse404;
-    
-export type putApiApplicationsIdResponse = putApiApplicationsIdResponseComposite & {
-  headers: Headers;
-}
-
-export const getPutApiApplicationsIdUrl = (id: string,) => {
-
-
+export const putApiApplicationsId = (
+    id: string,
+    updateApplicationRequest: UpdateApplicationRequest,
+ options?: SecondParameter<typeof customFetch>,) => {
+      
+      
+      return customFetch<OpenIdApplicationUpdated>(
+      {url: `/api/applications/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateApplicationRequest
+    },
+      options);
+    }
   
-
-  return `/api/applications/${id}`
-}
-
-export const putApiApplicationsId = async (id: string,
-    updateApplicationRequest: UpdateApplicationRequest, options?: RequestInit): Promise<putApiApplicationsIdResponse> => {
-  
-  const res = await fetch(getPutApiApplicationsIdUrl(id),
-  {      
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateApplicationRequest,)
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: putApiApplicationsIdResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as putApiApplicationsIdResponse
-}
-
-
 
 
 export const getPutApiApplicationsIdMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext> => {
     
 const mutationKey = ['putApiApplicationsId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -749,7 +633,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiApplicationsId>>, {id: string;data: UpdateApplicationRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putApiApplicationsId(id,data,fetchOptions)
+          return  putApiApplicationsId(id,data,requestOptions)
         }
 
         
@@ -765,7 +649,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update the application with the given id.
  */
 export const usePutApiApplicationsId = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiApplicationsId>>,
         TError,
@@ -781,60 +665,29 @@ export const usePutApiApplicationsId = <TError = Error,
 /**
  * @summary Update the application with the given id.
  */
-export type deleteApiApplicationsIdResponse200 = {
-  data: OpenIdApplicationDeleted
-  status: 200
-}
-
-export type deleteApiApplicationsIdResponse404 = {
-  data: Error
-  status: 404
-}
-    
-export type deleteApiApplicationsIdResponseComposite = deleteApiApplicationsIdResponse200 | deleteApiApplicationsIdResponse404;
-    
-export type deleteApiApplicationsIdResponse = deleteApiApplicationsIdResponseComposite & {
-  headers: Headers;
-}
-
-export const getDeleteApiApplicationsIdUrl = (id: string,) => {
-
-
+export const deleteApiApplicationsId = (
+    id: string,
+ options?: SecondParameter<typeof customFetch>,) => {
+      
+      
+      return customFetch<OpenIdApplicationDeleted>(
+      {url: `/api/applications/${id}`, method: 'DELETE'
+    },
+      options);
+    }
   
-
-  return `/api/applications/${id}`
-}
-
-export const deleteApiApplicationsId = async (id: string, options?: RequestInit): Promise<deleteApiApplicationsIdResponse> => {
-  
-  const res = await fetch(getDeleteApiApplicationsIdUrl(id),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: deleteApiApplicationsIdResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as deleteApiApplicationsIdResponse
-}
-
-
 
 
 export const getDeleteApiApplicationsIdMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext> => {
     
 const mutationKey = ['deleteApiApplicationsId'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -842,7 +695,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiApplicationsId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteApiApplicationsId(id,fetchOptions)
+          return  deleteApiApplicationsId(id,requestOptions)
         }
 
         
@@ -858,7 +711,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update the application with the given id.
  */
 export const useDeleteApiApplicationsId = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiApplicationsId>>,
         TError,
@@ -874,59 +727,34 @@ export const useDeleteApiApplicationsId = <TError = Error,
 /**
  * @summary Test endpoint to check if the API is up and running.
  */
-export type getTestResponse200 = {
-  data: string
-  status: 200
-}
+export const getTest = (
     
-export type getTestResponseComposite = getTestResponse200;
-    
-export type getTestResponse = getTestResponseComposite & {
-  headers: Headers;
-}
-
-export const getGetTestUrl = () => {
-
-
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<string>(
+      {url: `/test`, method: 'GET', signal
+    },
+      options);
+    }
   
-
-  return `/test`
-}
-
-export const getTest = async ( options?: RequestInit): Promise<getTestResponse> => {
-  
-  const res = await fetch(getGetTestUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: getTestResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as getTestResponse
-}
-
-
 
 export const getGetTestQueryKey = () => {
     return [`/test`] as const;
     }
 
     
-export const getGetTestQueryOptions = <TData = Awaited<ReturnType<typeof getTest>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, fetch?: RequestInit}
+export const getGetTestQueryOptions = <TData = Awaited<ReturnType<typeof getTest>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetTestQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTest>>> = ({ signal }) => getTest({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTest>>> = ({ signal }) => getTest(requestOptions, signal);
 
       
 
@@ -946,7 +774,7 @@ export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError =
           TError,
           Awaited<ReturnType<typeof getTest>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError = unknown>(
@@ -956,11 +784,11 @@ export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError =
           TError,
           Awaited<ReturnType<typeof getTest>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -968,7 +796,7 @@ export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError =
  */
 
 export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTest>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -987,64 +815,34 @@ export function useGetTest<TData = Awaited<ReturnType<typeof getTest>>, TError =
 /**
  * @summary Get all users
  */
-export type getApiUsersResponse200 = {
-  data: ApiUserModel[]
-  status: 200
-}
-
-export type getApiUsersResponse500 = {
-  data: Error
-  status: 500
-}
+export const getApiUsers = (
     
-export type getApiUsersResponseComposite = getApiUsersResponse200 | getApiUsersResponse500;
-    
-export type getApiUsersResponse = getApiUsersResponseComposite & {
-  headers: Headers;
-}
-
-export const getGetApiUsersUrl = () => {
-
-
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<ApiUserModel[]>(
+      {url: `/api/users`, method: 'GET', signal
+    },
+      options);
+    }
   
-
-  return `/api/users`
-}
-
-export const getApiUsers = async ( options?: RequestInit): Promise<getApiUsersResponse> => {
-  
-  const res = await fetch(getGetApiUsersUrl(),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: getApiUsersResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as getApiUsersResponse
-}
-
-
 
 export const getGetApiUsersQueryKey = () => {
     return [`/api/users`] as const;
     }
 
     
-export const getGetApiUsersQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiUsersQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiUsersQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) => getApiUsers({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) => getApiUsers(requestOptions, signal);
 
       
 
@@ -1064,7 +862,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
           TError,
           Awaited<ReturnType<typeof getApiUsers>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
@@ -1074,11 +872,11 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
           TError,
           Awaited<ReturnType<typeof getApiUsers>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1086,7 +884,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
  */
 
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1105,67 +903,31 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
 /**
  * @summary Create new user
  */
-export type postApiUsersResponse200 = {
-  data: UserCreated
-  status: 200
-}
-
-export type postApiUsersResponse400 = {
-  data: Error
-  status: 400
-}
-    
-export type postApiUsersResponseComposite = postApiUsersResponse200 | postApiUsersResponse400;
-    
-export type postApiUsersResponse = postApiUsersResponseComposite & {
-  headers: Headers;
-}
-
-export const getPostApiUsersUrl = (params: PostApiUsersParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+export const postApiUsers = (
+    params: PostApiUsersParams,
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<UserCreated>(
+      {url: `/api/users`, method: 'POST',
+        params, signal
+    },
+      options);
     }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/users?${stringifiedParams}` : `/api/users`
-}
-
-export const postApiUsers = async (params: PostApiUsersParams, options?: RequestInit): Promise<postApiUsersResponse> => {
   
-  const res = await fetch(getPostApiUsersUrl(params),
-  {      
-    ...options,
-    method: 'POST'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: postApiUsersResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as postApiUsersResponse
-}
-
-
 
 
 export const getPostApiUsersMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,{params: PostApiUsersParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,{params: PostApiUsersParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,{params: PostApiUsersParams}, TContext> => {
     
 const mutationKey = ['postApiUsers'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -1173,7 +935,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiUsers>>, {params: PostApiUsersParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  postApiUsers(params,fetchOptions)
+          return  postApiUsers(params,requestOptions)
         }
 
         
@@ -1189,7 +951,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create new user
  */
 export const usePostApiUsers = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,{params: PostApiUsersParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiUsers>>, TError,{params: PostApiUsersParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiUsers>>,
         TError,
@@ -1205,71 +967,35 @@ export const usePostApiUsers = <TError = Error,
 /**
  * @summary Get specific user by its id
  */
-export type getApiUsersIdguidResponse200 = {
-  data: ApiUserModel
-  status: 200
-}
-
-export type getApiUsersIdguidResponse404 = {
-  data: Error
-  status: 404
-}
-    
-export type getApiUsersIdguidResponseComposite = getApiUsersIdguidResponse200 | getApiUsersIdguidResponse404;
-    
-export type getApiUsersIdguidResponse = getApiUsersIdguidResponseComposite & {
-  headers: Headers;
-}
-
-export const getGetApiUsersIdguidUrl = (params?: GetApiUsersIdguidParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+export const getApiUsersIdguid = (
+    params?: GetApiUsersIdguidParams,
+ options?: SecondParameter<typeof customFetch>,signal?: AbortSignal
+) => {
+      
+      
+      return customFetch<ApiUserModel>(
+      {url: `/api/users/id:guid`, method: 'GET',
+        params, signal
+    },
+      options);
     }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/users/id:guid?${stringifiedParams}` : `/api/users/id:guid`
-}
-
-export const getApiUsersIdguid = async (params?: GetApiUsersIdguidParams, options?: RequestInit): Promise<getApiUsersIdguidResponse> => {
   
-  const res = await fetch(getGetApiUsersIdguidUrl(params),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: getApiUsersIdguidResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as getApiUsersIdguidResponse
-}
-
-
 
 export const getGetApiUsersIdguidQueryKey = (params?: GetApiUsersIdguidParams,) => {
     return [`/api/users/id:guid`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetApiUsersIdguidQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsersIdguid>>, TError = Error>(params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiUsersIdguidQueryOptions = <TData = Awaited<ReturnType<typeof getApiUsersIdguid>>, TError = Error>(params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetApiUsersIdguidQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersIdguid>>> = ({ signal }) => getApiUsersIdguid(params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersIdguid>>> = ({ signal }) => getApiUsersIdguid(params, requestOptions, signal);
 
       
 
@@ -1289,7 +1015,7 @@ export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUse
           TError,
           Awaited<ReturnType<typeof getApiUsersIdguid>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUsersIdguid>>, TError = Error>(
@@ -1299,11 +1025,11 @@ export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUse
           TError,
           Awaited<ReturnType<typeof getApiUsersIdguid>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUsersIdguid>>, TError = Error>(
- params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1311,7 +1037,7 @@ export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUse
  */
 
 export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUsersIdguid>>, TError = Error>(
- params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetApiUsersIdguidParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersIdguid>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1330,67 +1056,30 @@ export function useGetApiUsersIdguid<TData = Awaited<ReturnType<typeof getApiUse
 /**
  * @summary Update user
  */
-export type putApiUsersIdguidResponse200 = {
-  data: UserUpdated
-  status: 200
-}
-
-export type putApiUsersIdguidResponse400 = {
-  data: Error
-  status: 400
-}
-    
-export type putApiUsersIdguidResponseComposite = putApiUsersIdguidResponse200 | putApiUsersIdguidResponse400;
-    
-export type putApiUsersIdguidResponse = putApiUsersIdguidResponseComposite & {
-  headers: Headers;
-}
-
-export const getPutApiUsersIdguidUrl = (params: PutApiUsersIdguidParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+export const putApiUsersIdguid = (
+    params: PutApiUsersIdguidParams,
+ options?: SecondParameter<typeof customFetch>,) => {
+      
+      
+      return customFetch<UserUpdated>(
+      {url: `/api/users/id:guid`, method: 'PUT',
+        params
+    },
+      options);
     }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/users/id:guid?${stringifiedParams}` : `/api/users/id:guid`
-}
-
-export const putApiUsersIdguid = async (params: PutApiUsersIdguidParams, options?: RequestInit): Promise<putApiUsersIdguidResponse> => {
   
-  const res = await fetch(getPutApiUsersIdguidUrl(params),
-  {      
-    ...options,
-    method: 'PUT'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: putApiUsersIdguidResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as putApiUsersIdguidResponse
-}
-
-
 
 
 export const getPutApiUsersIdguidMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsersIdguid>>, TError,{params: PutApiUsersIdguidParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsersIdguid>>, TError,{params: PutApiUsersIdguidParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putApiUsersIdguid>>, TError,{params: PutApiUsersIdguidParams}, TContext> => {
     
 const mutationKey = ['putApiUsersIdguid'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -1398,7 +1087,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiUsersIdguid>>, {params: PutApiUsersIdguidParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  putApiUsersIdguid(params,fetchOptions)
+          return  putApiUsersIdguid(params,requestOptions)
         }
 
         
@@ -1414,7 +1103,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update user
  */
 export const usePutApiUsersIdguid = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsersIdguid>>, TError,{params: PutApiUsersIdguidParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiUsersIdguid>>, TError,{params: PutApiUsersIdguidParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putApiUsersIdguid>>,
         TError,
@@ -1430,67 +1119,30 @@ export const usePutApiUsersIdguid = <TError = Error,
 /**
  * @summary Delete user
  */
-export type deleteApiUsersIdguidResponse200 = {
-  data: UserDeleted
-  status: 200
-}
-
-export type deleteApiUsersIdguidResponse404 = {
-  data: Error
-  status: 404
-}
-    
-export type deleteApiUsersIdguidResponseComposite = deleteApiUsersIdguidResponse200 | deleteApiUsersIdguidResponse404;
-    
-export type deleteApiUsersIdguidResponse = deleteApiUsersIdguidResponseComposite & {
-  headers: Headers;
-}
-
-export const getDeleteApiUsersIdguidUrl = (params?: DeleteApiUsersIdguidParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+export const deleteApiUsersIdguid = (
+    params?: DeleteApiUsersIdguidParams,
+ options?: SecondParameter<typeof customFetch>,) => {
+      
+      
+      return customFetch<UserDeleted>(
+      {url: `/api/users/id:guid`, method: 'DELETE',
+        params
+    },
+      options);
     }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/api/users/id:guid?${stringifiedParams}` : `/api/users/id:guid`
-}
-
-export const deleteApiUsersIdguid = async (params?: DeleteApiUsersIdguidParams, options?: RequestInit): Promise<deleteApiUsersIdguidResponse> => {
   
-  const res = await fetch(getDeleteApiUsersIdguidUrl(params),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
-  const data: deleteApiUsersIdguidResponse['data'] = body ? JSON.parse(body) : {}
-
-  return { data, status: res.status, headers: res.headers } as deleteApiUsersIdguidResponse
-}
-
-
 
 
 export const getDeleteApiUsersIdguidMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, TError,{params?: DeleteApiUsersIdguidParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, TError,{params?: DeleteApiUsersIdguidParams}, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, TError,{params?: DeleteApiUsersIdguidParams}, TContext> => {
     
 const mutationKey = ['deleteApiUsersIdguid'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -1498,7 +1150,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, {params?: DeleteApiUsersIdguidParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  deleteApiUsersIdguid(params,fetchOptions)
+          return  deleteApiUsersIdguid(params,requestOptions)
         }
 
         
@@ -1514,7 +1166,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete user
  */
 export const useDeleteApiUsersIdguid = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, TError,{params?: DeleteApiUsersIdguidParams}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiUsersIdguid>>, TError,{params?: DeleteApiUsersIdguidParams}, TContext>, request?: SecondParameter<typeof customFetch>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteApiUsersIdguid>>,
         TError,
