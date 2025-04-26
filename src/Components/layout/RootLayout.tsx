@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function RootLayout() {
+export const RootLayout = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const toggleMobileMenu = () => {
@@ -25,13 +25,12 @@ export default function RootLayout() {
 							{/* Desktop navigation */}
 							<nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
 								<NavLink
-									to="/"
+									to="/home"
 									className={({ isActive }) =>
 										`${isActive ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium`
 									}
-									end
 								>
-									Home
+									Dashboard
 								</NavLink>
 
 								<NavLink
@@ -125,14 +124,13 @@ export default function RootLayout() {
 				<div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
 					<div className="space-y-1 pb-3 pt-2">
 						<NavLink
-							to="/"
+							to="/home"
 							className={({ isActive }) =>
 								`${isActive ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800'} block border-l-4 py-2 pl-3 pr-4 text-base font-medium`
 							}
-							end
 							onClick={() => setIsMobileMenuOpen(false)}
 						>
-							Home
+							Dashboard
 						</NavLink>
 
 						<NavLink
@@ -177,4 +175,4 @@ export default function RootLayout() {
 			<footer className="border-t border-gray-200 bg-white py-6"></footer>
 		</div>
 	);
-}
+};

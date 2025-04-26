@@ -1,53 +1,53 @@
 import { Link } from 'react-router-dom';
 
-export default function HomePage() {
-  return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold text-blue-800 mb-6">Welcome to CleanIAM</h1>
-      
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <p className="text-gray-700 mb-4">
-          This is the dashboard for managing your IAM applications and users.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-100">
-            <h2 className="text-xl font-semibold text-blue-800 mb-3">Applications</h2>
-            <p className="text-gray-600 mb-4">
-              Manage your OpenID Connect applications, clients, and configurations.
-            </p>
-            <Link
-              to="/applications"
-              className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors"
-            >
-              View Applications
-            </Link>
-          </div>
-          
-          <div className="bg-purple-50 p-6 rounded-lg border border-purple-100">
-            <h2 className="text-xl font-semibold text-purple-800 mb-3">User Management</h2>
-            <p className="text-gray-600 mb-4">
-              Manage user accounts, permissions, and authentication settings.
-            </p>
-            <Link
-              to="/profile"
-              className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded transition-colors"
-            >
-              View Profile
-            </Link>
-          </div>
-        </div>
-      </div>
-      
-      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800 mb-3">API Status</h2>
-        <Link
-          to="/test"
-          className="inline-block bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors"
-        >
-          Check API Status
-        </Link>
-      </div>
-    </div>
-  );
-}
+export const HomePage = () => {
+	return (
+		<div className="mx-auto max-w-4xl px-4 py-8">
+			<h1 className="mb-6 text-3xl font-bold text-blue-800">Welcome to CleanIAM</h1>
+
+			<div className="mb-8 rounded-lg bg-white p-6 shadow-md">
+				<p className="mb-4 text-gray-700">
+					This is the dashboard for managing your IAM applications and users.
+				</p>
+
+				<div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+					<div className="rounded-lg border border-blue-100 bg-blue-50 p-6">
+						<h2 className="mb-3 text-xl font-semibold text-blue-800">Applications</h2>
+						<p className="mb-4 text-gray-600">
+							Manage your OpenID Connect applications, clients, and configurations.
+						</p>
+						<Link
+							to="/applications"
+							className="inline-block rounded bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+						>
+							View Applications
+						</Link>
+					</div>
+
+					<div className="rounded-lg border border-purple-100 bg-purple-50 p-6">
+						<h2 className="mb-3 text-xl font-semibold text-purple-800">User Management</h2>
+						<p className="mb-4 text-gray-600">
+							Manage user accounts, permissions, and authentication settings.
+						</p>
+						<Link
+							to="/profile"
+							className="inline-block rounded bg-purple-600 px-4 py-2 font-medium text-white transition-colors hover:bg-purple-700"
+						>
+							View Profile
+						</Link>
+					</div>
+				</div>
+			</div>
+
+			<div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+				<h2 className="mb-3 text-xl font-semibold text-gray-800">API Status</h2>
+				<Link
+					to="/test"
+					className="inline-block rounded bg-gray-600 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700"
+				>
+					Check API Status
+				</Link>
+			</div>
+		</div>
+	);
+};

@@ -1,6 +1,6 @@
-import { Test } from '../Components/test';
+import { Test } from '../components/test';
 
-export default function TestPage() {
+export const TestPage = () => {
 	return (
 		<div className="mx-auto max-w-4xl px-4 py-8">
 			<div className="mb-8">
@@ -23,4 +23,4 @@ export default function TestPage() {
 			</div>
 		</div>
 	);
-}
+};

@@ -18,7 +18,7 @@ export const signin = async () => {
 	if (await isAuthenticated()) {
 		console.log('User is already authenticated', await getUser());
 
-		window.location.href = '/';
+		window.location.href = '/home';
 		return;
 	}
 
@@ -47,7 +47,7 @@ export const handleSigninCallback = async () => {
 		if (redirectUrl) {
 			window.location.href = redirectUrl;
 		} else {
-			window.location.href = '/';
+			window.location.href = '/home';
 		}
 	} catch (e) {
 		console.error(e);
