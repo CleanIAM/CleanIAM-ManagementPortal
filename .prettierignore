@@ -23,6 +23,7 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-src/api
+src/api/generated
+src/api/open-api
 
 README.md

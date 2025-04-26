@@ -8,7 +8,6 @@ export default defineConfig({
 	plugins: [react(), tailwindcss(), mkcert()],
 	server: {
 		port: 3000,
-		https: true,
 		proxy: {}
 	}
 });
