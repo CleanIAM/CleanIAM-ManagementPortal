@@ -1,4 +1,4 @@
-import { useGetTest } from '../api/generated/applications-api/applications-api';
+import { useGetTest } from '../lib/api/generated/applications-api/applications-api';
 
 export const Test = () => {
 	const { data, isLoading } = useGetTest();
