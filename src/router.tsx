@@ -8,7 +8,7 @@ import ProfilePage from './pages/profile';
 import TestPage from './pages/test';
 import AuthLayout from './Components/layout/AuthLayout';
 import { Signin } from './pages/auth/signin';
-import { SigninCallback } from './pages/auth/singin-callback';
+import { SigninCallback } from './pages/auth/signin-callback';
 
 // Create router with Framework mode API
 export const router = createBrowserRouter([

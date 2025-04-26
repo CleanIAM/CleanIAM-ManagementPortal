@@ -1,6 +1,5 @@
 import { oidcClientSettings } from '@/utils/oidc-config';
 import { User, UserManager } from 'oidc-client-ts';
-import { redirect } from 'react-router-dom';
 
 export const userManager = new UserManager(oidcClientSettings);
 
@@ -17,9 +16,13 @@ export const isAuthenticated = async (): Promise<boolean> => {
 
 export const signin = async () => {
 	if (await isAuthenticated()) {
-		await redirect('/');
+		console.log('User is already authenticated', await getUser());
+
+		window.location.href = '/';
 		return;
 	}
+
+	console.log('User is not authenticated, redirecting to sign-in page');
 
 	return await userManager.signinRedirect({});
 };
@@ -32,16 +35,19 @@ export const handleSigninCallback = async () => {
 		console.log('signin callback: ', user);
 
 		if (!user) {
-			redirect('/signin');
+			console.log('User not found');
+			window.location.href = '/auth/signin';
 			throw new Error('User not found');
 		}
+
+		console.log('User found: ', user);
 
 		const redirectUrl = getRedirectUrl();
 
 		if (redirectUrl) {
-			redirect(redirectUrl);
+			window.location.href = redirectUrl;
 		} else {
-			redirect('/');
+			window.location.href = '/';
 		}
 	} catch (e) {
 		console.error(e);
