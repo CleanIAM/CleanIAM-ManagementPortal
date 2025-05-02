@@ -67,6 +67,8 @@ export const getAccessToken = async () => {
 };
 
 export const logout = async () => {
+	console.log('Logging out');
+
 	await userManager.clearStaleState();
 	await userManager.signoutRedirect();
 };

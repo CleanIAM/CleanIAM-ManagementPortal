@@ -6,10 +6,10 @@ import { LandingPage } from './pages/landing';
 import { ApplicationsPage } from './pages/applications';
 import { ProfilePage } from './pages/profile';
 import { TestPage } from './pages/test';
-import { DashboardLayout } from './components/layout/dashboard/DashboardLayout';
 import { AuthGuard } from './components/layout/AuthGuard';
 import { Signin } from './pages/auth/signin';
 import { SigninCallback } from './pages/auth/signin-callback';
+import { RootLayout } from './components/layout/RootLayout';
 
 export const router = createBrowserRouter([
 	// Public routes
@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
 		element: <AuthGuard />,
 		children: [
 			{
-				element: <DashboardLayout />,
+				element: <RootLayout />,
 				children: [
 					{ path: '/home', element: <HomePage /> },
 					{ path: '/applications', element: <ApplicationsPage /> },
