@@ -1,12 +1,13 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import {
 	ApiApplicationModel,
 	ApplicationType,
 	ClientType,
-	ConsentType
+	ConsentType,
+	OpenIdApplicationCreated
 } from '../../lib/api/generated/cleanIAM.schemas';
 import {
 	usePostApiApplications,
@@ -15,6 +16,15 @@ import {
 import { TextField, SelectField, ArrayField, MultiSelectField, FormButton } from '../form';
 import { useGetApiScopes } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
 import { toast } from 'react-toastify';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogFooter
+} from '../ui/dialog';
+import { Copy01Icon } from 'hugeicons-react';
 
 // Define the validation schema with Zod
 const applicationSchema = z.object({
@@ -46,6 +56,11 @@ export const ApplicationForm = ({
 	isEdit,
 	initialData
 }: ApplicationFormProps) => {
+	// Client secret state for showing in dialog
+	const [clientSecret, setClientSecret] = useState<string | null>(null);
+	const [showSecretDialog, setShowSecretDialog] = useState(false);
+	const [newAppName, setNewAppName] = useState<string>('');
+
 	// Initialize the form with react-hook-form and zod resolver
 	const {
 		control,
@@ -81,6 +96,27 @@ export const ApplicationForm = ({
 		}
 	};
 
+	// Handle copying client secret to clipboard
+	const handleCopySecret = () => {
+		if (clientSecret) {
+			navigator.clipboard
+				.writeText(clientSecret)
+				.then(() => {
+					toast.success('Client secret copied to clipboard');
+				})
+				.catch(() => {
+					toast.error('Failed to copy secret to clipboard');
+				});
+		}
+	};
+
+	// Close secret dialog and notify parent
+	const handleCloseSecretDialog = () => {
+		setShowSecretDialog(false);
+		setClientSecret(null);
+		if (onSuccess) onSuccess();
+	};
+
 	// Create application mutation
 	const createApplicationMutation = usePostApiApplications({
 		mutation: {
@@ -89,14 +125,23 @@ export const ApplicationForm = ({
 					toast.error(data.data.message);
 					return;
 				}
-				toast.success('Application created successfully');
-				reset();
-				if (onSuccess) onSuccess();
+
+				// Save client secret and app name for dialog
+				const createdApp = data.data as OpenIdApplicationCreated;
+				if (createdApp.clientSecret) {
+					setClientSecret(createdApp.clientSecret);
+					setNewAppName(createdApp.displayName || 'your application');
+					setShowSecretDialog(true);
+				} else {
+					toast.success('Application created successfully');
+					reset();
+					if (onSuccess) onSuccess();
+				}
 			}
 		}
 	});
 
-	// Create application mutation
+	// Update application mutation
 	const updateApplicationMutation = usePutApiApplicationsId({
 		mutation: {
 			onSuccess: data => {
@@ -120,8 +165,6 @@ export const ApplicationForm = ({
 				data: { id: initialData.id, ...data }
 			});
 		} else {
-			console.log('Creating new application:', data);
-
 			createApplicationMutation.mutate({ data: data });
 		}
 	};
@@ -173,98 +216,135 @@ export const ApplicationForm = ({
 	}, [isLoadingScopes, scopesResponse]);
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-			<TextField
-				name="clientId"
-				label="Client ID"
-				control={control}
-				error={errors.clientId}
-				disabled={isEdit}
-				className="opacity-70"
-				placeholder="Client ID"
-			/>
-
-			<TextField
-				name="displayName"
-				label="Application Display Name"
-				control={control}
-				error={errors.displayName}
-				placeholder="My Application"
-			/>
-
-			<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-				<SelectField
-					name="applicationType"
-					label="Application Type"
+		<>
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+				{/* Client ID Field - only visible create mode */}
+				<TextField
+					name="clientId"
+					label="Client ID"
 					control={control}
-					options={applicationTypeOptions}
-					error={errors.applicationType}
-				/>
-
-				<SelectField
-					name="clientType"
-					label="Client Type"
+					error={errors.clientId}
 					disabled={isEdit}
-					control={control}
-					options={clientTypeOptions}
-					error={errors.clientType}
+					className="opacity-70"
+					placeholder="Client ID"
 				/>
 
-				<SelectField
-					name="consentType"
-					label="Consent Type"
+				<TextField
+					name="displayName"
+					label="Application Display Name"
 					control={control}
-					options={consentTypeOptions}
-					error={errors.consentType}
+					error={errors.displayName}
+					placeholder="My Application"
 				/>
-			</div>
 
-			<ArrayField
-				name="redirectUris"
-				label="Redirect URIs"
-				setValue={setValue}
-				isInputValid={isValidUrl}
-				validatorMessage="Invalid URL format"
-				watch={watch}
-				error={errors.redirectUris}
-				placeholder="https://example.com/callback"
-			/>
+				<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+					<SelectField
+						name="applicationType"
+						label="Application Type"
+						control={control}
+						options={applicationTypeOptions}
+						error={errors.applicationType}
+					/>
 
-			<ArrayField
-				name="postLogoutRedirectUris"
-				label="Post-Logout Redirect URIs"
-				setValue={setValue}
-				isInputValid={isValidUrl}
-				validatorMessage="Invalid URL format"
-				watch={watch}
-				error={errors.postLogoutRedirectUris}
-				placeholder="https://example.com"
-			/>
+					<SelectField
+						name="clientType"
+						label="Client Type"
+						disabled={isEdit}
+						control={control}
+						options={clientTypeOptions}
+						error={errors.clientType}
+					/>
 
-			<MultiSelectField
-				name="scopes"
-				label="Scopes"
-				options={scopeOptions}
-				setValue={setValue}
-				watch={watch}
-				error={errors.scopes}
-				isLoading={isLoadingScopes}
-			/>
+					<SelectField
+						name="consentType"
+						label="Consent Type"
+						control={control}
+						options={consentTypeOptions}
+						error={errors.consentType}
+					/>
+				</div>
 
-			<div className="flex justify-end space-x-3">
-				{onCancel && (
-					<FormButton onClick={onCancel} variant="secondary">
-						Cancel
+				<ArrayField
+					name="redirectUris"
+					label="Redirect URIs"
+					setValue={setValue}
+					isInputValid={isValidUrl}
+					validatorMessage="Invalid URL format"
+					watch={watch}
+					error={errors.redirectUris}
+					placeholder="https://example.com/callback"
+				/>
+
+				<ArrayField
+					name="postLogoutRedirectUris"
+					label="Post-Logout Redirect URIs"
+					setValue={setValue}
+					isInputValid={isValidUrl}
+					validatorMessage="Invalid URL format"
+					watch={watch}
+					error={errors.postLogoutRedirectUris}
+					placeholder="https://example.com"
+				/>
+
+				<MultiSelectField
+					name="scopes"
+					label="Scopes"
+					options={scopeOptions}
+					setValue={setValue}
+					watch={watch}
+					error={errors.scopes}
+					isLoading={isLoadingScopes}
+				/>
+
+				<div className="flex justify-end space-x-3">
+					{onCancel && (
+						<FormButton onClick={onCancel} variant="secondary">
+							Cancel
+						</FormButton>
+					)}
+					<FormButton
+						type="submit"
+						disabled={createApplicationMutation.isPending || updateApplicationMutation.isPending}
+						isLoading={createApplicationMutation.isPending || updateApplicationMutation.isPending}
+					>
+						{isEdit ? 'Update Application' : 'Create Application'}
 					</FormButton>
-				)}
-				<FormButton
-					type="submit"
-					disabled={createApplicationMutation.isPending || updateApplicationMutation.isPending}
-					isLoading={createApplicationMutation.isPending || updateApplicationMutation.isPending}
-				>
-					{isEdit ? 'Update Application' : 'Create Application'}
-				</FormButton>
-			</div>
-		</form>
+				</div>
+			</form>
+
+			{/* Client Secret Dialog */}
+			<Dialog open={showSecretDialog} onOpenChange={setShowSecretDialog}>
+				<DialogContent className="sm:max-w-md">
+					<DialogHeader>
+						<DialogTitle>Save Your Client Secret</DialogTitle>
+						<DialogDescription>
+							The client secret for {newAppName} has been generated. This is the only time you'll be
+							able to view it. Please copy and store it in a secure location.
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="my-6">
+						<div className="flex items-center justify-between rounded-md bg-gray-100 p-3">
+							<code className="break-all font-mono text-sm">{clientSecret}</code>
+							<button
+								onClick={handleCopySecret}
+								className="ml-2 rounded-md bg-gray-200 p-2 text-sm hover:bg-gray-300"
+								title="Copy to clipboard"
+							>
+								<Copy01Icon size={20} />
+							</button>
+						</div>
+						<p className="mt-2 text-sm text-red-600">
+							Warning: You will not be able to retrieve this secret again. If you lose it, you'll
+							need to generate a new one.
+						</p>
+					</div>
+
+					<DialogFooter>
+						<FormButton onClick={handleCloseSecretDialog}>I've Saved My Secret</FormButton>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		</>
 	);
 };
