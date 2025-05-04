@@ -4,7 +4,7 @@ export default defineConfig({
 	api: {
 		output: {
 			mode: 'tags-split', // or 'single'
-			target: 'src/api/generated/',
+			target: 'src/lib/api/generated/',
 			client: 'react-query', // THIS is for TanStack Query v4/v5
 			httpClient: 'fetch',
 			prettier: true,
