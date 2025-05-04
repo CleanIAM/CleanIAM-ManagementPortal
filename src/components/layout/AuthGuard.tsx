@@ -1,10 +1,18 @@
-import { useSignin } from '@/lib/auth/useSignin';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { Navigate } from 'react-router-dom';
+import { useSignin } from '@/lib/auth/useSignin';
+import { useEffect } from 'react';
 
-export const SigninCallback = () => {
+export const AuthGuard = () => {
 	const auth = useAuth();
-	const { getRedirectUrl } = useSignin();
+	const { signin } = useSignin();
+
+	//TODO: test this
+	useEffect(() => {
+		if (!auth.isAuthenticated && !auth.isLoading && !auth.error) {
+			signin();
+		}
+	}, [auth, signin]);
 
 	switch (auth.activeNavigator) {
 		case 'signinSilent':
@@ -33,13 +41,8 @@ export const SigninCallback = () => {
 	}
 
 	if (auth.isAuthenticated) {
-		const url = getRedirectUrl();
-		if (url) {
-			return <Navigate to={url} state={{ from: window.location.pathname }} replace />;
-		}
-		// if no redirect url is set, just go to the home page
-		return <Navigate to="/home" state={{ from: window.location.pathname }} replace />;
+		return <Outlet />;
 	}
 
-	return <Navigate to="/auth/signin" state={{ from: window.location.pathname }} replace />;
+	return <div>Signing in</div>;
 };

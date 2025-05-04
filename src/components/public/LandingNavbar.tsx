@@ -1,16 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/ui/container';
-import { signin } from '@/lib/auth/authService';
+import { useSignin } from '@/lib/auth/useSignin';
 
 interface NavbarProps {
 	showSignIn?: boolean;
 }
 
 export const LandingNavbar = ({ showSignIn = true }: NavbarProps) => {
+	const { signin } = useSignin();
+
 	const handleSignIn = async () => {
 		try {
-			await signin();
+			signin();
 		} catch (error) {
 			console.error('Sign-in error:', error);
 		}

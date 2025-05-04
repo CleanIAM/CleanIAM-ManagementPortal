@@ -6,9 +6,9 @@ import { LandingPage } from './pages/landing';
 import { ApplicationsPage } from './pages/applications';
 import { ProfilePage } from './pages/profile';
 import { TestPage } from './pages/test';
-import { AuthGuard } from './components/layout/AuthGuard';
 import { Signin } from './pages/auth/signin';
 import { SigninCallback } from './pages/auth/signin-callback';
+import { AuthGuard } from './components/layout/AuthGuard';
 import { RootLayout } from './components/layout/RootLayout';
 
 export const router = createBrowserRouter([
@@ -20,7 +20,6 @@ export const router = createBrowserRouter([
 	},
 
 	// Auth routes
-	{ path: '/auth/signin', element: <Signin /> },
 	{ path: '/auth/signin-callback', element: <SigninCallback /> },
 
 	// Protected dashboard routes
