@@ -1,5 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useMemo } from 'react';
 import {
 	ApiApplicationModel,
 	ApplicationType,
@@ -8,8 +10,27 @@ import {
 	PostApiApplicationsParams
 } from '../../lib/api/generated/cleanIAM.schemas';
 import { usePostApiApplications } from '../../lib/api/generated/applications-api/applications-api';
-import { TextField, SelectField, ArrayField, TagsField, FormButton } from '../form';
-import { ApplicationFormValues, applicationSchema } from '@/lib/schemas/ApplicationSchema';
+import { TextField, SelectField, ArrayField, MultiSelectField, FormButton } from '../form';
+import { useGetApiScopes } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+
+// Define the validation schema with Zod
+const applicationSchema = z.object({
+	displayName: z.string().min(1, 'Application name is required'),
+	applicationType: z.nativeEnum(ApplicationType),
+	clientType: z.nativeEnum(ClientType),
+	consentType: z.nativeEnum(ConsentType),
+	redirectUris: z.array(z.string()).min(1, 'At least one redirect URI is required'),
+	postLogoutRedirectUris: z
+		.array(z.string())
+		.min(1, 'At least one post-logout redirect URI is required'),
+	scopes: z.array(z.string()).min(1, 'At least one scope is required'),
+	grantTypes: z.array(z.string()).optional(),
+	responseTypes: z.array(z.string()).optional(),
+	endpoints: z.array(z.string()).optional(),
+	requirements: z.array(z.string()).optional()
+});
+
+type ApplicationFormValues = z.infer<typeof applicationSchema>;
 
 interface ApplicationFormProps {
 	onSuccess?: () => void;
@@ -43,6 +64,9 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 		}
 	});
 
+	// Fetch available scopes
+	const { data: scopesResponse, isLoading: isLoadingScopes } = useGetApiScopes();
+
 	// Create application mutation
 	const createApplicationMutation = usePostApiApplications({
 		mutation: {
@@ -72,7 +96,7 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 		createApplicationMutation.mutate({ params: applicationParams });
 	};
 
-	// Application type options
+	// Application type options - defined as constants to prevent re-creation
 	const applicationTypeOptions = [
 		{ label: 'Web', value: ApplicationType.web },
 		{ label: 'Native', value: ApplicationType.native }
@@ -83,7 +107,6 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 		{ label: 'Confidential', value: ClientType.confidential },
 		{ label: 'Public', value: ClientType.public }
 	];
-
 	// Consent type options
 	const consentTypeOptions = [
 		{ label: 'Explicit', value: ConsentType.explicit },
@@ -91,6 +114,35 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 		{ label: 'External', value: ConsentType.external },
 		{ label: 'Systematic', value: ConsentType.systematic }
 	];
+
+	// Process scope options safely
+	const scopeOptions = useMemo(() => {
+		try {
+			if (isLoadingScopes) {
+				return 'Loading scopes...';
+			}
+
+			// If there's no response data, return defaults
+			if (!scopesResponse || scopesResponse.status !== 200) {
+				return 'No scopes available';
+			}
+
+			// Check if data is an array before mapping
+			if (scopesResponse.data) {
+				return scopesResponse.data.map(scope => ({
+					value: scope.value,
+					label: scope.value,
+					tooltip: scope.tooltip
+				}));
+			}
+
+			// If not an array, return default options
+			return 'No scopes available';
+		} catch (error) {
+			console.error('Error processing scopes:', error);
+			return 'No scopes available';
+		}
+	}, [isLoadingScopes, scopesResponse]);
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -146,13 +198,14 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 				placeholder="https://example.com"
 			/>
 
-			<TagsField
+			<MultiSelectField
 				name="scopes"
 				label="Scopes"
+				options={scopeOptions}
 				setValue={setValue}
 				watch={watch}
 				error={errors.scopes}
-				placeholder="openid"
+				isLoading={isLoadingScopes}
 			/>
 
 			<div className="flex justify-end space-x-3">

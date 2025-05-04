@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { FieldValues, Path, FieldError, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 interface ArrayFieldProps<T extends FieldValues> {
 	name: Path<T>;
 	label: string;
 	setValue: UseFormSetValue<T>;
+	isInputValid?: (value: string) => boolean;
+	validatorMessage?: string;
 	watch: UseFormWatch<T>;
 	error?: FieldError;
 	placeholder?: string;
@@ -19,6 +22,8 @@ export const ArrayField = <T extends FieldValues>({
 	label,
 	setValue,
 	watch,
+	isInputValid,
+	validatorMessage,
 	error,
 	placeholder,
 	inputClassName = '',
@@ -30,6 +35,10 @@ export const ArrayField = <T extends FieldValues>({
 	const values = watch(name) as string[];
 
 	const addItem = () => {
+		if (isInputValid && !isInputValid(inputValue)) {
+			toast.error(validatorMessage ?? 'Invalid input value');
+			return;
+		}
 		if (inputValue && !values.includes(inputValue)) {
 			setValue(name, [...values, inputValue] as any);
 			setInputValue('');
