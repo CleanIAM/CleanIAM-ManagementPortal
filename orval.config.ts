@@ -16,7 +16,7 @@ export default defineConfig({
 			}
 		},
 		input: {
-			target: 'https://localhost:5000/swagger/v1/swagger.json' // your OpenAPI file
+			target: 'src/lib/api/open-api/swagger.json' // your OpenAPI file
 		}
 	}
 });
