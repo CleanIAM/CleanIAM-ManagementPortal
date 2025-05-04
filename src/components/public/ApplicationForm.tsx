@@ -67,6 +67,16 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 	// Fetch available scopes
 	const { data: scopesResponse, isLoading: isLoadingScopes } = useGetApiScopes();
 
+	// Url string validation function
+	const isValidUrl = (url: string) => {
+		try {
+			z.string().url().parse(url);
+			return true;
+		} catch {
+			return false;
+		}
+	};
+
 	// Create application mutation
 	const createApplicationMutation = usePostApiApplications({
 		mutation: {
@@ -184,6 +194,8 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 				name="redirectUris"
 				label="Redirect URIs"
 				setValue={setValue}
+				isInputValid={isValidUrl}
+				validatorMessage="Invalid URL format"
 				watch={watch}
 				error={errors.redirectUris}
 				placeholder="https://example.com/callback"
@@ -193,6 +205,8 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 				name="postLogoutRedirectUris"
 				label="Post-Logout Redirect URIs"
 				setValue={setValue}
+				isInputValid={isValidUrl}
+				validatorMessage="Invalid URL format"
 				watch={watch}
 				error={errors.postLogoutRedirectUris}
 				placeholder="https://example.com"
