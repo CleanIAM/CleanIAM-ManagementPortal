@@ -18,7 +18,7 @@ interface Option {
 interface MultiSelectFieldProps<T extends FieldValues> {
 	name: Path<T>;
 	label: string;
-	options: Option[];
+	options: Option[] | string;
 	setValue: UseFormSetValue<T>;
 	watch: UseFormWatch<T>;
 	error?: FieldError;
@@ -100,6 +100,8 @@ export const MultiSelectField = <T extends FieldValues>({
 							<div className="flex justify-center py-4">
 								<div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-600"></div>
 							</div>
+						) : typeof options === 'string' ? (
+							<div className="py-4 text-center text-gray-500">{options}</div>
 						) : options.length === 0 ? (
 							<div className="py-4 text-center text-gray-500">No scopes available</div>
 						) : (

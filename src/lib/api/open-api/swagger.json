@@ -49,143 +49,26 @@
           "ApplicationsApi"
         ],
         "summary": "Create a new application",
-        "parameters": [
-          {
-            "name": "Id",
-            "in": "query",
-            "description": "Gets or sets the id associated with the application.",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "ApplicationType",
-            "in": "query",
-            "description": "Gets or sets the application type associated with the application.",
-            "schema": {
-              "$ref": "#/components/schemas/ApplicationType"
-            }
-          },
-          {
-            "name": "ClientId",
-            "in": "query",
-            "description": "Gets or sets the client identifier associated with the application.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "ClientType",
-            "in": "query",
-            "description": "Gets or sets the client type associated with the application.",
-            "schema": {
-              "$ref": "#/components/schemas/ClientType"
-            }
-          },
-          {
-            "name": "ConsentType",
-            "in": "query",
-            "description": "Gets or sets the consent type associated with the application.",
-            "schema": {
-              "$ref": "#/components/schemas/ConsentType"
-            }
-          },
-          {
-            "name": "DisplayName",
-            "in": "query",
-            "description": "Gets or sets the display name associated with the application.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Scopes",
-            "in": "query",
-            "description": "Allowed scopes for the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
+        "requestBody": {
+          "description": "New application data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewApplicationRequest"
               }
-            }
-          },
-          {
-            "name": "Endpoints",
-            "in": "query",
-            "description": "Allowed endpoints for the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewApplicationRequest"
               }
-            }
-          },
-          {
-            "name": "GrantTypes",
-            "in": "query",
-            "description": "Allowed grant types for the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "ResponseTypes",
-            "in": "query",
-            "description": "Allowed response types for the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          {
-            "name": "PostLogoutRedirectUris",
-            "in": "query",
-            "description": "Gets the post-logout redirect URIs associated with the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uri"
-              }
-            }
-          },
-          {
-            "name": "RedirectUris",
-            "in": "query",
-            "description": "Gets the redirect URIs associated with the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string",
-                "format": "uri"
-              }
-            }
-          },
-          {
-            "name": "Requirements",
-            "in": "query",
-            "description": "Gets the requirements associated with the application.",
-            "schema": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewApplicationRequest"
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -2128,12 +2011,8 @@
           "consentType",
           "displayName",
           "scopes",
-          "endpoints",
-          "grantTypes",
-          "responseTypes",
           "postLogoutRedirectUris",
-          "redirectUris",
-          "requirements"
+          "redirectUris"
         ],
         "type": "object",
         "properties": {
@@ -2168,30 +2047,6 @@
             },
             "description": "Allowed scopes for the application."
           },
-          "endpoints": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed endpoints for the application."
-          },
-          "grantTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed grant types for the application."
-          },
-          "responseTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed response types for the application."
-          },
           "postLogoutRedirectUris": {
             "uniqueItems": true,
             "type": "array",
@@ -2209,14 +2064,6 @@
               "format": "uri"
             },
             "description": "Gets the redirect URIs associated with the application."
-          },
-          "requirements": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Gets the requirements associated with the application."
           }
         },
         "additionalProperties": false
@@ -2282,6 +2129,72 @@
         ],
         "type": "string"
       },
+      "CreateNewApplicationRequest": {
+        "required": [
+          "id",
+          "applicationType",
+          "clientId",
+          "clientType",
+          "consentType",
+          "displayName",
+          "scopes",
+          "postLogoutRedirectUris",
+          "redirectUris"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the id associated with the application.",
+            "format": "uuid"
+          },
+          "applicationType": {
+            "$ref": "#/components/schemas/ApplicationType"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Gets or sets the client identifier associated with the application."
+          },
+          "clientType": {
+            "$ref": "#/components/schemas/ClientType"
+          },
+          "consentType": {
+            "$ref": "#/components/schemas/ConsentType"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Gets or sets the display name associated with the application.",
+            "nullable": true
+          },
+          "scopes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Allowed scopes for the application."
+          },
+          "postLogoutRedirectUris": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Gets the post-logout redirect URIs associated with the application."
+          },
+          "redirectUris": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Gets the redirect URIs associated with the application."
+          }
+        },
+        "additionalProperties": false
+      },
       "Error": {
         "required": [
           "message",
@@ -2337,9 +2250,6 @@
           "consentType",
           "displayName",
           "scopes",
-          "endpoints",
-          "grantTypes",
-          "responseTypes",
           "postLogoutRedirectUris",
           "properties",
           "redirectUris"
@@ -2377,30 +2287,6 @@
             },
             "description": "Allowed scopes for the application."
           },
-          "endpoints": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed endpoints for the application."
-          },
-          "grantTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed grant types for the application."
-          },
-          "responseTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed response types for the application."
-          },
           "postLogoutRedirectUris": {
             "uniqueItems": true,
             "type": "array",
@@ -2436,11 +2322,9 @@
           "clientType",
           "consentType",
           "displayName",
-          "permissions",
+          "scopes",
           "postLogoutRedirectUris",
-          "redirectUris",
-          "requirements",
-          "settings"
+          "redirectUris"
         ],
         "type": "object",
         "properties": {
@@ -2468,7 +2352,7 @@
             "type": "string",
             "nullable": true
           },
-          "permissions": {
+          "scopes": {
             "uniqueItems": true,
             "type": "array",
             "items": {
@@ -2489,19 +2373,6 @@
             "items": {
               "type": "string",
               "format": "uri"
-            }
-          },
-          "requirements": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "settings": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
             }
           }
         },
@@ -2532,11 +2403,9 @@
           "clientType",
           "consentType",
           "displayName",
-          "permissions",
+          "scopes",
           "postLogoutRedirectUris",
-          "redirectUris",
-          "requirements",
-          "settings"
+          "redirectUris"
         ],
         "type": "object",
         "properties": {
@@ -2560,7 +2429,7 @@
             "type": "string",
             "nullable": true
           },
-          "permissions": {
+          "scopes": {
             "uniqueItems": true,
             "type": "array",
             "items": {
@@ -2581,19 +2450,6 @@
             "items": {
               "type": "string",
               "format": "uri"
-            }
-          },
-          "requirements": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "settings": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
             }
           }
         },
@@ -2627,12 +2483,8 @@
           "consentType",
           "displayName",
           "scopes",
-          "endpoints",
-          "grantTypes",
-          "responseTypes",
           "postLogoutRedirectUris",
-          "redirectUris",
-          "requirements"
+          "redirectUris"
         ],
         "type": "object",
         "properties": {
@@ -2667,30 +2519,6 @@
             },
             "description": "Allowed scopes for the application."
           },
-          "endpoints": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed endpoints for the application."
-          },
-          "grantTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed grant types for the application."
-          },
-          "responseTypes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Allowed response types for the application."
-          },
           "postLogoutRedirectUris": {
             "uniqueItems": true,
             "type": "array",
@@ -2708,14 +2536,6 @@
               "format": "uri"
             },
             "description": "Gets the redirect URIs associated with the application."
-          },
-          "requirements": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Gets the requirements associated with the application."
           }
         },
         "additionalProperties": false

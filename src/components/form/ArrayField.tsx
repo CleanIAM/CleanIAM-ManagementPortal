@@ -1,3 +1,4 @@
+import { Cancel01Icon } from 'hugeicons-react';
 import React, { useState } from 'react';
 import { FieldValues, Path, FieldError, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -96,7 +97,7 @@ export const ArrayField = <T extends FieldValues>({
 									onClick={() => removeItem(item)}
 									className="text-red-600 hover:text-red-800"
 								>
-									Remove
+									<Cancel01Icon color="red" />
 								</button>
 							</>
 						)}

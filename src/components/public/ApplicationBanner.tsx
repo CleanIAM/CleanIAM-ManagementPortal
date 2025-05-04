@@ -1,19 +1,25 @@
 import { ApiApplicationModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { cn } from '@/lib/utils';
-import { LaptopProgrammingIcon } from 'hugeicons-react';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../ui/dialog';
+import { Delete02Icon, LaptopProgrammingIcon, PencilEdit01Icon } from 'hugeicons-react';
+import { DialogHeader } from '../ui/dialog';
+import { ApplicationForm } from './ApplicationForm';
+import { useState } from 'react';
+import { useGetApiApplications } from '@/lib/api/generated/applications-api/applications-api';
 type ApplicationBannerProps = {
 	app: ApiApplicationModel;
 	onDelete: (id: string) => void;
-	onView: (id: string) => void;
 } & React.HTMLProps<HTMLDivElement>;
 
 export const ApplicationBanner = ({
 	app,
 	onDelete,
-	onView,
 	className,
 	...props
 }: ApplicationBannerProps) => {
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+	const { refetch } = useGetApiApplications();
 	return (
 		<div
 			{...props}
@@ -21,7 +27,6 @@ export const ApplicationBanner = ({
 				className,
 				'flex items-center gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4 transition-shadow hover:bg-blue-100 hover:shadow-lg'
 			)}
-			onClick={() => onView(app.id)}
 		>
 			<LaptopProgrammingIcon size={30} className="m-2" />
 			<div className="w-full">
@@ -29,31 +34,52 @@ export const ApplicationBanner = ({
 					<h3 className="mb-2 text-lg font-semibold text-blue-800">
 						{app.displayName || app.clientId}
 					</h3>
-					<button
-						onClick={() => onDelete(app.id)}
-						className="text-red-600 hover:text-red-800"
-						title="Delete Application"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
-							viewBox="0 0 16 16"
+					<div className="flex gap-2">
+						<button
+							onClick={() => setIsEditModalOpen(true)}
+							className="text-blue-600 hover:text-blue-800"
+							title="Edit Application"
 						>
-							<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-							<path
-								fillRule="evenodd"
-								d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-							/>
-						</svg>
-					</button>
+							<PencilEdit01Icon size={20}></PencilEdit01Icon>
+						</button>
+						<button
+							onClick={() => onDelete(app.id)}
+							className="text-red-600 hover:text-red-800"
+							title="Delete Application"
+						>
+							<Delete02Icon size={20}></Delete02Icon>
+						</button>
+					</div>
 				</div>
 				<p className="text-sm text-gray-600">Client ID: {app.clientId}</p>
 				<p className="text-sm text-gray-600">
 					Type: {app.applicationType} / {app.clientType}
 				</p>
 			</div>
+
+			{/* Create New Application Form Dialog */}
+			<Dialog open={isEditModalOpen} onOpenChange={() => setIsEditModalOpen(false)}>
+				<DialogContent className="max-w-3xl">
+					<DialogHeader>
+						<DialogTitle>{app.displayName || app.clientId}</DialogTitle>
+						<DialogDescription>
+							Edit the details of your existing OpenID Connect application
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className="max-h-[80vh] overflow-y-auto py-4 pr-2">
+						<ApplicationForm
+							isEdit={true}
+							initialData={app}
+							onSuccess={() => {
+								setIsEditModalOpen(false);
+								refetch();
+							}}
+							onCancel={() => setIsEditModalOpen(false)}
+						/>
+					</div>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 };

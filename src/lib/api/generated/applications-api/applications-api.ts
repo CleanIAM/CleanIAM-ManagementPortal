@@ -23,12 +23,12 @@ import type {
 
 import type {
 	ApiApplicationModel,
+	CreateNewApplicationRequest,
 	Error,
 	OpenIdApplication,
 	OpenIdApplicationCreated,
 	OpenIdApplicationDeleted,
 	OpenIdApplicationUpdated,
-	PostApiApplicationsParams,
 	UpdateApplicationRequest
 } from '../cleanIAM.schemas';
 
@@ -187,29 +187,19 @@ export type postApiApplicationsResponse = postApiApplicationsResponseComposite &
 	headers: Headers;
 };
 
-export const getPostApiApplicationsUrl = (params?: PostApiApplicationsParams) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0
-		? `/api/applications?${stringifiedParams}`
-		: `/api/applications`;
+export const getPostApiApplicationsUrl = () => {
+	return `/api/applications`;
 };
 
 export const postApiApplications = async (
-	params?: PostApiApplicationsParams,
+	createNewApplicationRequest: CreateNewApplicationRequest,
 	options?: RequestInit
 ): Promise<postApiApplicationsResponse> => {
-	return customFetch<postApiApplicationsResponse>(getPostApiApplicationsUrl(params), {
+	return customFetch<postApiApplicationsResponse>(getPostApiApplicationsUrl(), {
 		...options,
-		method: 'POST'
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', ...options?.headers },
+		body: JSON.stringify(createNewApplicationRequest)
 	});
 };
 
@@ -220,14 +210,14 @@ export const getPostApiApplicationsMutationOptions = <
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof postApiApplications>>,
 		TError,
-		{ params?: PostApiApplicationsParams },
+		{ data: CreateNewApplicationRequest },
 		TContext
 	>;
 	request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof postApiApplications>>,
 	TError,
-	{ params?: PostApiApplicationsParams },
+	{ data: CreateNewApplicationRequest },
 	TContext
 > => {
 	const mutationKey = ['postApiApplications'];
@@ -239,11 +229,11 @@ export const getPostApiApplicationsMutationOptions = <
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof postApiApplications>>,
-		{ params?: PostApiApplicationsParams }
+		{ data: CreateNewApplicationRequest }
 	> = props => {
-		const { params } = props ?? {};
+		const { data } = props ?? {};
 
-		return postApiApplications(params, requestOptions);
+		return postApiApplications(data, requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
@@ -252,7 +242,7 @@ export const getPostApiApplicationsMutationOptions = <
 export type PostApiApplicationsMutationResult = NonNullable<
 	Awaited<ReturnType<typeof postApiApplications>>
 >;
-
+export type PostApiApplicationsMutationBody = CreateNewApplicationRequest;
 export type PostApiApplicationsMutationError = Error;
 
 /**
@@ -263,7 +253,7 @@ export const usePostApiApplications = <TError = Error, TContext = unknown>(
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof postApiApplications>>,
 			TError,
-			{ params?: PostApiApplicationsParams },
+			{ data: CreateNewApplicationRequest },
 			TContext
 		>;
 		request?: SecondParameter<typeof customFetch>;
@@ -272,7 +262,7 @@ export const usePostApiApplications = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
 	Awaited<ReturnType<typeof postApiApplications>>,
 	TError,
-	{ params?: PostApiApplicationsParams },
+	{ data: CreateNewApplicationRequest },
 	TContext
 > => {
 	const mutationOptions = getPostApiApplicationsMutationOptions(options);

@@ -6,39 +6,46 @@ import {
 	ApiApplicationModel,
 	ApplicationType,
 	ClientType,
-	ConsentType,
-	PostApiApplicationsParams
+	ConsentType
 } from '../../lib/api/generated/cleanIAM.schemas';
-import { usePostApiApplications } from '../../lib/api/generated/applications-api/applications-api';
+import {
+	usePostApiApplications,
+	usePutApiApplicationsId
+} from '../../lib/api/generated/applications-api/applications-api';
 import { TextField, SelectField, ArrayField, MultiSelectField, FormButton } from '../form';
 import { useGetApiScopes } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+import { toast } from 'react-toastify';
 
 // Define the validation schema with Zod
 const applicationSchema = z.object({
+	clientId: z
+		.string()
+		.min(1, 'Client ID is required')
+		.max(32, 'Client ID must be less than 32 characters'),
 	displayName: z.string().min(1, 'Application name is required'),
 	applicationType: z.nativeEnum(ApplicationType),
 	clientType: z.nativeEnum(ClientType),
 	consentType: z.nativeEnum(ConsentType),
-	redirectUris: z.array(z.string()).min(1, 'At least one redirect URI is required'),
-	postLogoutRedirectUris: z
-		.array(z.string())
-		.min(1, 'At least one post-logout redirect URI is required'),
-	scopes: z.array(z.string()).min(1, 'At least one scope is required'),
-	grantTypes: z.array(z.string()).optional(),
-	responseTypes: z.array(z.string()).optional(),
-	endpoints: z.array(z.string()).optional(),
-	requirements: z.array(z.string()).optional()
+	redirectUris: z.array(z.string()),
+	postLogoutRedirectUris: z.array(z.string()),
+	scopes: z.array(z.string()).min(1, 'At least one scope is required')
 });
 
 type ApplicationFormValues = z.infer<typeof applicationSchema>;
 
 interface ApplicationFormProps {
+	isEdit?: boolean;
 	onSuccess?: () => void;
 	onCancel?: () => void;
-	initialData?: Partial<ApiApplicationModel>;
+	initialData?: ApiApplicationModel;
 }
 
-export const ApplicationForm = ({ onSuccess, onCancel, initialData }: ApplicationFormProps) => {
+export const ApplicationForm = ({
+	onSuccess,
+	onCancel,
+	isEdit,
+	initialData
+}: ApplicationFormProps) => {
 	// Initialize the form with react-hook-form and zod resolver
 	const {
 		control,
@@ -50,17 +57,13 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 	} = useForm<ApplicationFormValues>({
 		resolver: zodResolver(applicationSchema),
 		defaultValues: {
+			clientId: initialData?.clientId || '',
 			displayName: initialData?.displayName || '',
 			applicationType: initialData?.applicationType || ApplicationType.web,
 			clientType: initialData?.clientType || ClientType.confidential,
 			consentType: initialData?.consentType || ConsentType.explicit,
 			redirectUris: initialData?.redirectUris || [],
-			postLogoutRedirectUris: initialData?.postLogoutRedirectUris || [],
-			scopes: initialData?.scopes || ['openid', 'profile', 'email'],
-			grantTypes: initialData?.grantTypes || ['authorization_code'],
-			responseTypes: initialData?.responseTypes || ['code'],
-			endpoints: initialData?.endpoints || [],
-			requirements: initialData?.requirements || []
+			postLogoutRedirectUris: initialData?.postLogoutRedirectUris || []
 		}
 	});
 
@@ -80,7 +83,27 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 	// Create application mutation
 	const createApplicationMutation = usePostApiApplications({
 		mutation: {
-			onSuccess: () => {
+			onSuccess: data => {
+				if (data.status !== 200) {
+					toast.error(data.data.message);
+					return;
+				}
+				toast.success('Application created successfully');
+				reset();
+				if (onSuccess) onSuccess();
+			}
+		}
+	});
+
+	// Create application mutation
+	const updateApplicationMutation = usePutApiApplicationsId({
+		mutation: {
+			onSuccess: data => {
+				if (data.status !== 200) {
+					toast.error(data.data.message);
+					return;
+				}
+				toast.success('Application updated successfully');
 				reset();
 				if (onSuccess) onSuccess();
 			}
@@ -89,21 +112,16 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 
 	// Handle form submission
 	const onSubmit = (data: ApplicationFormValues) => {
-		const applicationParams: PostApiApplicationsParams = {
-			DisplayName: data.displayName,
-			ApplicationType: data.applicationType,
-			ClientType: data.clientType,
-			ConsentType: data.consentType,
-			RedirectUris: data.redirectUris,
-			PostLogoutRedirectUris: data.postLogoutRedirectUris,
-			Scopes: data.scopes,
-			GrantTypes: data.grantTypes,
-			ResponseTypes: data.responseTypes,
-			Endpoints: data.endpoints,
-			Requirements: data.requirements
-		};
-
-		createApplicationMutation.mutate({ params: applicationParams });
+		if (isEdit && initialData) {
+			// Update existing application
+			updateApplicationMutation.mutate({
+				id: data.clientId,
+				data: { id: initialData.id, ...data }
+			});
+			return;
+		} else {
+			createApplicationMutation.mutate({ data: { id: '', ...data } });
+		}
 	};
 
 	// Application type options - defined as constants to prevent re-creation
@@ -132,12 +150,10 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 				return 'Loading scopes...';
 			}
 
-			// If there's no response data, return defaults
-			if (!scopesResponse || scopesResponse.status !== 200) {
+			if (!scopesResponse || scopesResponse?.status !== 200) {
 				return 'No scopes available';
 			}
 
-			// Check if data is an array before mapping
 			if (scopesResponse.data) {
 				return scopesResponse.data.map(scope => ({
 					value: scope.value,
@@ -156,9 +172,20 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+			{/* Client ID Field - only visible create mode */}
+			<TextField
+				name="clientId"
+				label="Client ID"
+				control={control}
+				error={errors.clientId}
+				disabled={true}
+				className="opacity-70"
+				placeholder="Client ID"
+			/>
+
 			<TextField
 				name="displayName"
-				label="Application Name"
+				label="Application Display Name"
 				control={control}
 				error={errors.displayName}
 				placeholder="My Application"
@@ -233,7 +260,7 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 					disabled={createApplicationMutation.isPending}
 					isLoading={createApplicationMutation.isPending}
 				>
-					Create Application
+					{isEdit ? 'Update Application' : 'Create Application'}
 				</FormButton>
 			</div>
 		</form>

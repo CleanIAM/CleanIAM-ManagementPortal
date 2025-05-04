@@ -20,18 +20,10 @@ export interface ApiApplicationModel {
 	displayName: string | null;
 	/** Allowed scopes for the application. */
 	scopes: string[];
-	/** Allowed endpoints for the application. */
-	endpoints: string[];
-	/** Allowed grant types for the application. */
-	grantTypes: string[];
-	/** Allowed response types for the application. */
-	responseTypes: string[];
 	/** Gets the post-logout redirect URIs associated with the application. */
 	postLogoutRedirectUris: string[];
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
-	/** Gets the requirements associated with the application. */
-	requirements: string[];
 }
 
 /**
@@ -75,6 +67,27 @@ export const ConsentType = {
 	implicit: 'implicit',
 	systematic: 'systematic'
 } as const;
+
+export interface CreateNewApplicationRequest {
+	/** Gets or sets the id associated with the application. */
+	id: string;
+	applicationType: ApplicationType;
+	/** Gets or sets the client identifier associated with the application. */
+	clientId: string;
+	clientType: ClientType;
+	consentType: ConsentType;
+	/**
+	 * Gets or sets the display name associated with the application.
+	 * @nullable
+	 */
+	displayName: string | null;
+	/** Allowed scopes for the application. */
+	scopes: string[];
+	/** Gets the post-logout redirect URIs associated with the application. */
+	postLogoutRedirectUris: string[];
+	/** Gets the redirect URIs associated with the application. */
+	redirectUris: string[];
+}
 
 export interface Error {
 	message: string;
@@ -120,12 +133,6 @@ export interface OpenIdApplication {
 	displayName: string | null;
 	/** Allowed scopes for the application. */
 	scopes: string[];
-	/** Allowed endpoints for the application. */
-	endpoints: string[];
-	/** Allowed grant types for the application. */
-	grantTypes: string[];
-	/** Allowed response types for the application. */
-	responseTypes: string[];
 	/** Gets the post-logout redirect URIs associated with the application. */
 	postLogoutRedirectUris: string[];
 	/** Gets the additional properties associated with the application. */
@@ -133,8 +140,6 @@ export interface OpenIdApplication {
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
 }
-
-export type OpenIdApplicationCreatedSettings = { [key: string]: string };
 
 export interface OpenIdApplicationCreated {
 	id: string;
@@ -146,19 +151,15 @@ export interface OpenIdApplicationCreated {
 	consentType: ConsentType;
 	/** @nullable */
 	displayName: string | null;
-	permissions: string[];
+	scopes: string[];
 	postLogoutRedirectUris: string[];
 	redirectUris: string[];
-	requirements: string[];
-	settings: OpenIdApplicationCreatedSettings;
 }
 
 export interface OpenIdApplicationDeleted {
 	id: string;
 	displayName: string;
 }
-
-export type OpenIdApplicationUpdatedSettings = { [key: string]: string };
 
 export interface OpenIdApplicationUpdated {
 	id: string;
@@ -168,11 +169,9 @@ export interface OpenIdApplicationUpdated {
 	consentType: ConsentType;
 	/** @nullable */
 	displayName: string | null;
-	permissions: string[];
+	scopes: string[];
 	postLogoutRedirectUris: string[];
 	redirectUris: string[];
-	requirements: string[];
-	settings: OpenIdApplicationUpdatedSettings;
 }
 
 export interface StringStringValuesKeyValuePair {
@@ -195,18 +194,10 @@ export interface UpdateApplicationRequest {
 	displayName: string | null;
 	/** Allowed scopes for the application. */
 	scopes: string[];
-	/** Allowed endpoints for the application. */
-	endpoints: string[];
-	/** Allowed grant types for the application. */
-	grantTypes: string[];
-	/** Allowed response types for the application. */
-	responseTypes: string[];
 	/** Gets the post-logout redirect URIs associated with the application. */
 	postLogoutRedirectUris: string[];
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
-	/** Gets the requirements associated with the application. */
-	requirements: string[];
 }
 
 export interface UserCreated {
@@ -255,61 +246,6 @@ export interface UserUpdated {
 	lastName: string;
 	roles: UserRole[];
 }
-
-export type PostApiApplicationsParams = {
-	/**
-	 * Gets or sets the id associated with the application.
-	 */
-	Id?: string;
-	/**
-	 * Gets or sets the application type associated with the application.
-	 */
-	ApplicationType?: ApplicationType;
-	/**
-	 * Gets or sets the client identifier associated with the application.
-	 */
-	ClientId?: string;
-	/**
-	 * Gets or sets the client type associated with the application.
-	 */
-	ClientType?: ClientType;
-	/**
-	 * Gets or sets the consent type associated with the application.
-	 */
-	ConsentType?: ConsentType;
-	/**
-	 * Gets or sets the display name associated with the application.
-	 */
-	DisplayName?: string;
-	/**
-	 * Allowed scopes for the application.
-	 */
-	Scopes?: string[];
-	/**
-	 * Allowed endpoints for the application.
-	 */
-	Endpoints?: string[];
-	/**
-	 * Allowed grant types for the application.
-	 */
-	GrantTypes?: string[];
-	/**
-	 * Allowed response types for the application.
-	 */
-	ResponseTypes?: string[];
-	/**
-	 * Gets the post-logout redirect URIs associated with the application.
-	 */
-	PostLogoutRedirectUris?: string[];
-	/**
-	 * Gets the redirect URIs associated with the application.
-	 */
-	RedirectUris?: string[];
-	/**
-	 * Gets the requirements associated with the application.
-	 */
-	Requirements?: string[];
-};
 
 export type PostConnectEndsessionParams = {
 	'AccessToken'?: string;
