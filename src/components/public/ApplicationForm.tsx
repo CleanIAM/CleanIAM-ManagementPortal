@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import {
 	ApiApplicationModel,
 	ApplicationType,
@@ -10,25 +8,8 @@ import {
 	PostApiApplicationsParams
 } from '../../lib/api/generated/cleanIAM.schemas';
 import { usePostApiApplications } from '../../lib/api/generated/applications-api/applications-api';
-
-// Define the validation schema with Zod
-const applicationSchema = z.object({
-	displayName: z.string().min(1, 'Application name is required'),
-	applicationType: z.nativeEnum(ApplicationType),
-	clientType: z.nativeEnum(ClientType),
-	consentType: z.nativeEnum(ConsentType),
-	redirectUris: z.array(z.string()).min(1, 'At least one redirect URI is required'),
-	postLogoutRedirectUris: z
-		.array(z.string())
-		.min(1, 'At least one post-logout redirect URI is required'),
-	scopes: z.array(z.string()).min(1, 'At least one scope is required'),
-	grantTypes: z.array(z.string()).optional(),
-	responseTypes: z.array(z.string()).optional(),
-	endpoints: z.array(z.string()).optional(),
-	requirements: z.array(z.string()).optional()
-});
-
-type ApplicationFormValues = z.infer<typeof applicationSchema>;
+import { TextField, SelectField, ArrayField, TagsField, FormButton } from '../form';
+import { ApplicationFormValues, applicationSchema } from '@/lib/schemas/ApplicationSchema';
 
 interface ApplicationFormProps {
 	onSuccess?: () => void;
@@ -37,10 +18,6 @@ interface ApplicationFormProps {
 }
 
 export const ApplicationForm = ({ onSuccess, onCancel, initialData }: ApplicationFormProps) => {
-	const [redirectUri, setRedirectUri] = useState('');
-	const [postLogoutRedirectUri, setPostLogoutRedirectUri] = useState('');
-	const [scope, setScope] = useState('');
-
 	// Initialize the form with react-hook-form and zod resolver
 	const {
 		control,
@@ -58,18 +35,13 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 			consentType: initialData?.consentType || ConsentType.explicit,
 			redirectUris: initialData?.redirectUris || [],
 			postLogoutRedirectUris: initialData?.postLogoutRedirectUris || [],
-			scopes: initialData?.scopes || ['openid', 'profile', 'email', 'roles'],
+			scopes: initialData?.scopes || ['openid', 'profile', 'email'],
 			grantTypes: initialData?.grantTypes || ['authorization_code'],
 			responseTypes: initialData?.responseTypes || ['code'],
 			endpoints: initialData?.endpoints || [],
 			requirements: initialData?.requirements || []
 		}
 	});
-
-	// Watch arrays to display them in the UI
-	const redirectUris = watch('redirectUris');
-	const postLogoutRedirectUris = watch('postLogoutRedirectUris');
-	const scopes = watch('scopes');
 
 	// Create application mutation
 	const createApplicationMutation = usePostApiApplications({
@@ -100,272 +72,102 @@ export const ApplicationForm = ({ onSuccess, onCancel, initialData }: Applicatio
 		createApplicationMutation.mutate({ params: applicationParams });
 	};
 
-	// Handle adding a new redirect URI
-	const addRedirectUri = () => {
-		if (redirectUri && !redirectUris.includes(redirectUri)) {
-			setValue('redirectUris', [...redirectUris, redirectUri]);
-			setRedirectUri('');
-		}
-	};
+	// Application type options
+	const applicationTypeOptions = [
+		{ label: 'Web', value: ApplicationType.web },
+		{ label: 'Native', value: ApplicationType.native }
+	];
 
-	// Handle removing a redirect URI
-	const removeRedirectUri = (uri: string) => {
-		setValue(
-			'redirectUris',
-			redirectUris.filter(u => u !== uri)
-		);
-	};
+	// Client type options
+	const clientTypeOptions = [
+		{ label: 'Confidential', value: ClientType.confidential },
+		{ label: 'Public', value: ClientType.public }
+	];
 
-	// Handle adding a new post-logout redirect URI
-	const addPostLogoutRedirectUri = () => {
-		if (postLogoutRedirectUri && !postLogoutRedirectUris.includes(postLogoutRedirectUri)) {
-			setValue('postLogoutRedirectUris', [...postLogoutRedirectUris, postLogoutRedirectUri]);
-			setPostLogoutRedirectUri('');
-		}
-	};
-
-	// Handle removing a post-logout redirect URI
-	const removePostLogoutRedirectUri = (uri: string) => {
-		setValue(
-			'postLogoutRedirectUris',
-			postLogoutRedirectUris.filter(u => u !== uri)
-		);
-	};
-
-	// Handle adding a new scope
-	const addScope = () => {
-		if (scope && !scopes.includes(scope)) {
-			setValue('scopes', [...scopes, scope]);
-			setScope('');
-		}
-	};
-
-	// Handle removing a scope
-	const removeScope = (s: string) => {
-		setValue(
-			'scopes',
-			scopes.filter(item => item !== s)
-		);
-	};
+	// Consent type options
+	const consentTypeOptions = [
+		{ label: 'Explicit', value: ConsentType.explicit },
+		{ label: 'Implicit', value: ConsentType.implicit },
+		{ label: 'External', value: ConsentType.external },
+		{ label: 'Systematic', value: ConsentType.systematic }
+	];
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-			<div>
-				<label className="block text-sm font-medium text-gray-700">Application Name</label>
-				<Controller
-					name="displayName"
-					control={control}
-					render={({ field }) => (
-						<input
-							{...field}
-							type="text"
-							className={`mt-1 block w-full rounded-md border ${errors.displayName ? 'border-red-300' : 'border-gray-300'} px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm`}
-						/>
-					)}
-				/>
-				{errors.displayName && (
-					<p className="mt-1 text-sm text-red-600">{errors.displayName.message}</p>
-				)}
-			</div>
+			<TextField
+				name="displayName"
+				label="Application Name"
+				control={control}
+				error={errors.displayName}
+				placeholder="My Application"
+			/>
 
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Application Type</label>
-					<Controller
-						name="applicationType"
-						control={control}
-						render={({ field }) => (
-							<select
-								{...field}
-								className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-							>
-								<option value={ApplicationType.web}>Web</option>
-								<option value={ApplicationType.native}>Native</option>
-							</select>
-						)}
-					/>
-					{errors.applicationType && (
-						<p className="mt-1 text-sm text-red-600">{errors.applicationType.message}</p>
-					)}
-				</div>
+				<SelectField
+					name="applicationType"
+					label="Application Type"
+					control={control}
+					options={applicationTypeOptions}
+					error={errors.applicationType}
+				/>
 
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Client Type</label>
-					<Controller
-						name="clientType"
-						control={control}
-						render={({ field }) => (
-							<select
-								{...field}
-								className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-							>
-								<option value={ClientType.confidential}>Confidential</option>
-								<option value={ClientType.public}>Public</option>
-							</select>
-						)}
-					/>
-					{errors.clientType && (
-						<p className="mt-1 text-sm text-red-600">{errors.clientType.message}</p>
-					)}
-				</div>
+				<SelectField
+					name="clientType"
+					label="Client Type"
+					control={control}
+					options={clientTypeOptions}
+					error={errors.clientType}
+				/>
 
-				<div>
-					<label className="block text-sm font-medium text-gray-700">Consent Type</label>
-					<Controller
-						name="consentType"
-						control={control}
-						render={({ field }) => (
-							<select
-								{...field}
-								className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-							>
-								<option value={ConsentType.explicit}>Explicit</option>
-								<option value={ConsentType.implicit}>Implicit</option>
-								<option value={ConsentType.external}>External</option>
-								<option value={ConsentType.systematic}>Systematic</option>
-							</select>
-						)}
-					/>
-					{errors.consentType && (
-						<p className="mt-1 text-sm text-red-600">{errors.consentType.message}</p>
-					)}
-				</div>
+				<SelectField
+					name="consentType"
+					label="Consent Type"
+					control={control}
+					options={consentTypeOptions}
+					error={errors.consentType}
+				/>
 			</div>
 
-			<div>
-				<label className="block text-sm font-medium text-gray-700">Redirect URIs</label>
-				<div className="mt-1 flex rounded-md shadow-sm">
-					<input
-						type="text"
-						value={redirectUri}
-						onChange={e => setRedirectUri(e.target.value)}
-						placeholder="https://example.com/callback"
-						className="block w-full flex-1 rounded-none rounded-l-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-					/>
-					<button
-						type="button"
-						onClick={addRedirectUri}
-						className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-					>
-						Add
-					</button>
-				</div>
-				{errors.redirectUris && (
-					<p className="mt-1 text-sm text-red-600">{errors.redirectUris.message}</p>
-				)}
+			<ArrayField
+				name="redirectUris"
+				label="Redirect URIs"
+				setValue={setValue}
+				watch={watch}
+				error={errors.redirectUris}
+				placeholder="https://example.com/callback"
+			/>
 
-				<div className="mt-2 space-y-2">
-					{redirectUris.map((uri, index) => (
-						<div key={index} className="flex items-center justify-between rounded bg-gray-100 p-2">
-							<span className="text-sm">{uri}</span>
-							<button
-								type="button"
-								onClick={() => removeRedirectUri(uri)}
-								className="text-red-600 hover:text-red-800"
-							>
-								Remove
-							</button>
-						</div>
-					))}
-				</div>
-			</div>
+			<ArrayField
+				name="postLogoutRedirectUris"
+				label="Post-Logout Redirect URIs"
+				setValue={setValue}
+				watch={watch}
+				error={errors.postLogoutRedirectUris}
+				placeholder="https://example.com"
+			/>
 
-			<div>
-				<label className="block text-sm font-medium text-gray-700">Post-Logout Redirect URIs</label>
-				<div className="mt-1 flex rounded-md shadow-sm">
-					<input
-						type="text"
-						value={postLogoutRedirectUri}
-						onChange={e => setPostLogoutRedirectUri(e.target.value)}
-						placeholder="https://example.com"
-						className="block w-full flex-1 rounded-none rounded-l-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-					/>
-					<button
-						type="button"
-						onClick={addPostLogoutRedirectUri}
-						className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-					>
-						Add
-					</button>
-				</div>
-				{errors.postLogoutRedirectUris && (
-					<p className="mt-1 text-sm text-red-600">{errors.postLogoutRedirectUris.message}</p>
-				)}
-
-				<div className="mt-2 space-y-2">
-					{postLogoutRedirectUris.map((uri, index) => (
-						<div key={index} className="flex items-center justify-between rounded bg-gray-100 p-2">
-							<span className="text-sm">{uri}</span>
-							<button
-								type="button"
-								onClick={() => removePostLogoutRedirectUri(uri)}
-								className="text-red-600 hover:text-red-800"
-							>
-								Remove
-							</button>
-						</div>
-					))}
-				</div>
-			</div>
-
-			<div>
-				<label className="block text-sm font-medium text-gray-700">Scopes</label>
-				<div className="mt-1 flex rounded-md shadow-sm">
-					<input
-						type="text"
-						value={scope}
-						onChange={e => setScope(e.target.value)}
-						placeholder="openid"
-						className="block w-full flex-1 rounded-none rounded-l-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-					/>
-					<button
-						type="button"
-						onClick={addScope}
-						className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-					>
-						Add
-					</button>
-				</div>
-				{errors.scopes && <p className="mt-1 text-sm text-red-600">{errors.scopes.message}</p>}
-
-				<div className="mt-2 flex flex-wrap gap-2">
-					{scopes.map((s, index) => (
-						<div
-							key={index}
-							className="flex items-center rounded bg-blue-100 px-3 py-1 text-sm text-blue-800"
-						>
-							{s}
-							<button
-								type="button"
-								onClick={() => removeScope(s)}
-								className="ml-2 text-blue-600 hover:text-blue-800"
-							>
-								×
-							</button>
-						</div>
-					))}
-				</div>
-			</div>
+			<TagsField
+				name="scopes"
+				label="Scopes"
+				setValue={setValue}
+				watch={watch}
+				error={errors.scopes}
+				placeholder="openid"
+			/>
 
 			<div className="flex justify-end space-x-3">
 				{onCancel && (
-					<button
-						type="button"
-						onClick={onCancel}
-						className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-					>
+					<FormButton onClick={onCancel} variant="secondary">
 						Cancel
-					</button>
+					</FormButton>
 				)}
-				<button
+				<FormButton
 					type="submit"
 					disabled={createApplicationMutation.isPending}
-					className={`inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-						createApplicationMutation.isPending ? 'cursor-not-allowed opacity-75' : ''
-					}`}
+					isLoading={createApplicationMutation.isPending}
 				>
-					{createApplicationMutation.isPending ? 'Creating...' : 'Create Application'}
-				</button>
+					Create Application
+				</FormButton>
 			</div>
 		</form>
 	);
