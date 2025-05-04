@@ -10,13 +10,13 @@ export default defineConfig({
 			prettier: true,
 			override: {
 				mutator: {
-					path: 'src/api/custom-fetch.ts',
+					path: 'src/lib/api/custom-fetch.ts',
 					name: 'customFetch'
 				}
 			}
 		},
 		input: {
-			target: 'src/api/open-api/swagger.json' // your OpenAPI file
+			target: 'src/lib/api/open-api/swagger.json' // your OpenAPI file
 		}
 	}
 });
