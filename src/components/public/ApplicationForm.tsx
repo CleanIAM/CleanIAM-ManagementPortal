@@ -59,11 +59,12 @@ export const ApplicationForm = ({
 		defaultValues: {
 			clientId: initialData?.clientId || '',
 			displayName: initialData?.displayName || '',
-			applicationType: initialData?.applicationType || ApplicationType.web,
-			clientType: initialData?.clientType || ClientType.confidential,
-			consentType: initialData?.consentType || ConsentType.explicit,
+			applicationType: initialData?.applicationType || ApplicationType.Web,
+			clientType: initialData?.clientType || ClientType.Public,
+			consentType: initialData?.consentType || ConsentType.Explicit,
 			redirectUris: initialData?.redirectUris || [],
-			postLogoutRedirectUris: initialData?.postLogoutRedirectUris || []
+			postLogoutRedirectUris: initialData?.postLogoutRedirectUris || [],
+			scopes: initialData?.scopes || ['openid', 'profile', 'roles']
 		}
 	});
 
@@ -115,32 +116,33 @@ export const ApplicationForm = ({
 		if (isEdit && initialData) {
 			// Update existing application
 			updateApplicationMutation.mutate({
-				id: data.clientId,
+				id: initialData.id,
 				data: { id: initialData.id, ...data }
 			});
-			return;
 		} else {
-			createApplicationMutation.mutate({ data: { id: '', ...data } });
+			console.log('Creating new application:', data);
+
+			createApplicationMutation.mutate({ data: data });
 		}
 	};
 
 	// Application type options - defined as constants to prevent re-creation
 	const applicationTypeOptions = [
-		{ label: 'Web', value: ApplicationType.web },
-		{ label: 'Native', value: ApplicationType.native }
+		{ label: 'Web', value: ApplicationType.Web },
+		{ label: 'Native', value: ApplicationType.Native }
 	];
 
 	// Client type options
 	const clientTypeOptions = [
-		{ label: 'Confidential', value: ClientType.confidential },
-		{ label: 'Public', value: ClientType.public }
+		{ label: 'Confidential', value: ClientType.Confidential },
+		{ label: 'Public', value: ClientType.Public }
 	];
 	// Consent type options
 	const consentTypeOptions = [
-		{ label: 'Explicit', value: ConsentType.explicit },
-		{ label: 'Implicit', value: ConsentType.implicit },
-		{ label: 'External', value: ConsentType.external },
-		{ label: 'Systematic', value: ConsentType.systematic }
+		{ label: 'Explicit', value: ConsentType.Explicit },
+		{ label: 'Implicit', value: ConsentType.Implicit },
+		{ label: 'External', value: ConsentType.External },
+		{ label: 'Systematic', value: ConsentType.Systematic }
 	];
 
 	// Process scope options safely
@@ -172,13 +174,12 @@ export const ApplicationForm = ({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-			{/* Client ID Field - only visible create mode */}
 			<TextField
 				name="clientId"
 				label="Client ID"
 				control={control}
 				error={errors.clientId}
-				disabled={true}
+				disabled={isEdit}
 				className="opacity-70"
 				placeholder="Client ID"
 			/>
@@ -203,6 +204,7 @@ export const ApplicationForm = ({
 				<SelectField
 					name="clientType"
 					label="Client Type"
+					disabled={isEdit}
 					control={control}
 					options={clientTypeOptions}
 					error={errors.clientType}
@@ -257,8 +259,8 @@ export const ApplicationForm = ({
 				)}
 				<FormButton
 					type="submit"
-					disabled={createApplicationMutation.isPending}
-					isLoading={createApplicationMutation.isPending}
+					disabled={createApplicationMutation.isPending || updateApplicationMutation.isPending}
+					isLoading={createApplicationMutation.isPending || updateApplicationMutation.isPending}
 				>
 					{isEdit ? 'Update Application' : 'Create Application'}
 				</FormButton>

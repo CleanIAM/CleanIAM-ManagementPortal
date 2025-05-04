@@ -9,7 +9,10 @@ export interface ApiApplicationModel {
 	/** Gets or sets the id associated with the application. */
 	id: string;
 	applicationType: ApplicationType;
-	/** Gets or sets the client identifier associated with the application. */
+	/**
+	 * Gets or sets the client identifier associated with the application.
+	 * @minLength 1
+	 */
 	clientId: string;
 	clientType: ClientType;
 	consentType: ConsentType;
@@ -46,33 +49,34 @@ export type ApplicationType = (typeof ApplicationType)[keyof typeof ApplicationT
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ApplicationType = {
-	native: 'native',
-	web: 'web'
+	Native: 'Native',
+	Web: 'Web'
 } as const;
 
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ClientType = {
-	public: 'public',
-	confidential: 'confidential'
+	Public: 'Public',
+	Confidential: 'Confidential'
 } as const;
 
 export type ConsentType = (typeof ConsentType)[keyof typeof ConsentType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConsentType = {
-	explicit: 'explicit',
-	external: 'external',
-	implicit: 'implicit',
-	systematic: 'systematic'
+	Explicit: 'Explicit',
+	External: 'External',
+	Implicit: 'Implicit',
+	Systematic: 'Systematic'
 } as const;
 
 export interface CreateNewApplicationRequest {
-	/** Gets or sets the id associated with the application. */
-	id: string;
 	applicationType: ApplicationType;
-	/** Gets or sets the client identifier associated with the application. */
+	/**
+	 * Gets or sets the client identifier associated with the application.
+	 * @minLength 1
+	 */
 	clientId: string;
 	clientType: ClientType;
 	consentType: ConsentType;
@@ -103,14 +107,14 @@ export type JsonValueKind = (typeof JsonValueKind)[keyof typeof JsonValueKind];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const JsonValueKind = {
-	undefined: 'undefined',
-	object: 'object',
-	array: 'array',
-	string: 'string',
-	number: 'number',
-	true: 'true',
-	false: 'false',
-	null: 'null'
+	NUMBER_0: 0,
+	NUMBER_1: 1,
+	NUMBER_2: 2,
+	NUMBER_3: 3,
+	NUMBER_4: 4,
+	NUMBER_5: 5,
+	NUMBER_6: 6,
+	NUMBER_7: 7
 } as const;
 
 /**
@@ -183,7 +187,10 @@ export interface UpdateApplicationRequest {
 	/** Gets or sets the id associated with the application. */
 	id: string;
 	applicationType: ApplicationType;
-	/** Gets or sets the client identifier associated with the application. */
+	/**
+	 * Gets or sets the client identifier associated with the application.
+	 * @minLength 1
+	 */
 	clientId: string;
 	clientType: ClientType;
 	consentType: ConsentType;
@@ -234,9 +241,9 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserRole = {
-	user: 'user',
-	admin: 'admin',
-	superAdmin: 'superAdmin'
+	NUMBER_0: 0,
+	NUMBER_1: 1,
+	NUMBER_2: 2
 } as const;
 
 export interface UserUpdated {
