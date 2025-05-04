@@ -1,9 +1,9 @@
 import { toast } from 'react-toastify';
-import { useGetTest } from '../lib/api/generated/applications-api/applications-api';
 import { Button } from './ui/button';
+import { useGetApiUsersTest } from '@/lib/api/generated/users-api/users-api';
 
 export const Test = () => {
-	const { data, isLoading } = useGetTest();
+	const { data, isLoading } = useGetApiUsersTest();
 
 	return (
 		<h1 className="text-2xl text-green-800">

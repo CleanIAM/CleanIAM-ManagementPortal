@@ -19,9 +19,11 @@ const getUrl = (contextUrl: string): string => {
 };
 
 const getHeaders = (headers?: HeadersInit): HeadersInit => {
+	const token = localStorage.getItem('access_token');
+
 	return {
-		...headers,
-		'Content-Type': 'multipart/form-data'
+		Authorization: `Bearer ${token}`,
+		...headers
 	};
 };
 
