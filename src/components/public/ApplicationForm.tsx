@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	ApiApplicationModel,
 	ApplicationType,
@@ -24,7 +24,12 @@ import {
 	DialogTitle,
 	DialogFooter
 } from '../ui/dialog';
-import { Copy01Icon } from 'hugeicons-react';
+import {
+	AlertCircleIcon,
+	CheckmarkSquare01Icon,
+	Copy01Icon,
+	InformationCircleIcon
+} from 'hugeicons-react';
 
 // Define the validation schema with Zod
 const applicationSchema = z.object({
@@ -60,6 +65,7 @@ export const ApplicationForm = ({
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
 	const [showSecretDialog, setShowSecretDialog] = useState(false);
 	const [newAppName, setNewAppName] = useState<string>('');
+	const [secretCopied, setSecretCopied] = useState(false);
 
 	// Initialize the form with react-hook-form and zod resolver
 	const {
@@ -102,7 +108,13 @@ export const ApplicationForm = ({
 			navigator.clipboard
 				.writeText(clientSecret)
 				.then(() => {
+					setSecretCopied(true);
 					toast.success('Client secret copied to clipboard');
+
+					// Reset the copied state after 3 seconds
+					setTimeout(() => {
+						setSecretCopied(false);
+					}, 3000);
 				})
 				.catch(() => {
 					toast.error('Failed to copy secret to clipboard');
@@ -114,7 +126,19 @@ export const ApplicationForm = ({
 	const handleCloseSecretDialog = () => {
 		setShowSecretDialog(false);
 		setClientSecret(null);
+		setSecretCopied(false);
 		if (onSuccess) onSuccess();
+	};
+
+	// Handle user trying to close the modal by clicking outside
+	const handleSecretDialogChange = (open: boolean) => {
+		// Only allow the dialog to be closed if it's being explicitly closed by our button
+		// Prevent closing when user clicks outside
+		if (!open && clientSecret) {
+			// Do nothing - dialog stays open
+			return;
+		}
+		setShowSecretDialog(open);
 	};
 
 	// Create application mutation
@@ -312,36 +336,83 @@ export const ApplicationForm = ({
 				</div>
 			</form>
 
-			{/* Client Secret Dialog */}
-			<Dialog open={showSecretDialog} onOpenChange={setShowSecretDialog}>
-				<DialogContent className="sm:max-w-md">
+			{/* Client Secret Dialog - not closable by clicking outside */}
+			<Dialog open={showSecretDialog} onOpenChange={handleSecretDialogChange}>
+				<DialogContent
+					className="sm:max-w-md [&>button]:hidden"
+					onInteractOutside={e => e.preventDefault()}
+				>
 					<DialogHeader>
-						<DialogTitle>Save Your Client Secret</DialogTitle>
-						<DialogDescription>
-							The client secret for {newAppName} has been generated. This is the only time you'll be
-							able to view it. Please copy and store it in a secure location.
+						<div className="mb-2 flex items-center justify-center">
+							<div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+								<InformationCircleIcon size={28} />
+							</div>
+						</div>
+						<DialogTitle className="text-center text-xl">
+							Important: Save Your Client Secret
+						</DialogTitle>
+						<DialogDescription className="text-center">
+							The client secret for <span className="font-semibold">{newAppName}</span> has been
+							generated. Please copy and securely store this secret.
 						</DialogDescription>
 					</DialogHeader>
 
-					<div className="my-6">
-						<div className="flex items-center justify-between rounded-md bg-gray-100 p-3">
-							<code className="break-all font-mono text-sm">{clientSecret}</code>
+					<div className="my-6 space-y-4">
+						{/* Secret display box with gradient border */}
+						<div className="relative rounded-lg border border-gray-200 bg-gray-50 p-1">
+							<div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 opacity-30"></div>
+							<div className="relative rounded-md bg-white p-4">
+								<code className="block w-full break-all font-mono text-sm">{clientSecret}</code>
+							</div>
+						</div>
+
+						{/* Copy button */}
+						<div className="flex justify-center">
 							<button
 								onClick={handleCopySecret}
-								className="ml-2 rounded-md bg-gray-200 p-2 text-sm hover:bg-gray-300"
-								title="Copy to clipboard"
+								className={`flex items-center justify-center gap-2 rounded-md ${
+									secretCopied ? 'bg-green-100 text-green-700' : 'bg-blue-600 text-white'
+								} px-4 py-2 text-sm font-medium transition-colors hover:${
+									secretCopied ? 'bg-green-200' : 'bg-blue-700'
+								}`}
 							>
-								<Copy01Icon size={20} />
+								{secretCopied ? (
+									<>
+										<CheckmarkSquare01Icon size={20} />
+										Copied!
+									</>
+								) : (
+									<>
+										<Copy01Icon size={20} />
+										Copy to Clipboard
+									</>
+								)}
 							</button>
 						</div>
-						<p className="mt-2 text-sm text-red-600">
-							Warning: You will not be able to retrieve this secret again. If you lose it, you'll
-							need to generate a new one.
-						</p>
+
+						{/* Warning message */}
+						<div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4">
+							<div className="flex items-center justify-between">
+								<div className="flex-shrink-0">
+									<AlertCircleIcon size={40} className="text-amber-400" />
+								</div>
+								<div className="ml-3">
+									<h3 className="text-sm font-medium text-amber-800">Important</h3>
+									<div className="mt-1 text-sm text-amber-700">
+										<p>
+											This is the <strong>only time</strong> you'll be able to view this secret. If
+											you lose it, you'll need to generate a new one.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 
-					<DialogFooter>
-						<FormButton onClick={handleCloseSecretDialog}>I've Saved My Secret</FormButton>
+					<DialogFooter className="sm:justify-center">
+						<FormButton onClick={handleCloseSecretDialog} className="w-full sm:w-auto">
+							I've Saved My Secret
+						</FormButton>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
