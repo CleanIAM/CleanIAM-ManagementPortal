@@ -3,6 +3,14 @@ import { useGetApiApplications, useDeleteApiApplicationsId } from '../lib/api/ge
 import { ApiApplicationModel } from '../lib/api/generated/cleanIAM.schemas';
 import { Test } from '../components/test';
 import { ApplicationForm } from '../components/public/ApplicationForm';
+import { FormButton } from '../components/form';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
 
 export const ApplicationsPage = () => {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -69,24 +77,24 @@ export const ApplicationsPage = () => {
 			) : isError ? (
 				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
 					<p>Error loading applications: {error instanceof Error ? error.message : 'Unknown error'}</p>
-					<button 
+					<FormButton 
 						onClick={() => refetch()} 
-						className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+						variant="danger"
+						className="mt-2"
 					>
 						Try Again
-					</button>
+					</FormButton>
 				</div>
 			) : (
 				<div className="mb-8 rounded-lg bg-white p-6 shadow-md">
 					{applications.length === 0 ? (
 						<div className="text-center py-8">
 							<p className="text-gray-500 mb-4">No applications found</p>
-							<button 
+							<FormButton 
 								onClick={() => setIsAddModalOpen(true)} 
-								className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
 							>
 								Add Your First Application
-							</button>
+							</FormButton>
 						</div>
 					) : (
 						<>
@@ -119,46 +127,38 @@ export const ApplicationsPage = () => {
 							</div>
 
 							<div className="mt-6 flex justify-end">
-								<button 
+								<FormButton 
 									onClick={() => setIsAddModalOpen(true)}
-									className="rounded bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
 								>
 									Add Application
-								</button>
+								</FormButton>
 							</div>
 						</>
 					)}
 				</div>
 			)}
 
-			{/* Add Application Modal */}
-			{isAddModalOpen && (
-				<div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-					<div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full">
-						<div className="flex justify-between items-center mb-4">
-							<h2 className="text-xl font-semibold">Add New Application</h2>
-							<button 
-								onClick={() => setIsAddModalOpen(false)}
-								className="text-gray-400 hover:text-gray-600"
-							>
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-								</svg>
-							</button>
-						</div>
-						
-						<div className="max-h-[80vh] overflow-y-auto pr-2">
-							<ApplicationForm 
-								onSuccess={() => {
-									setIsAddModalOpen(false);
-									refetch();
-								}}
-								onCancel={() => setIsAddModalOpen(false)}
-							/>
-						</div>
+			{/* Application Form Dialog */}
+			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+				<DialogContent className="max-w-3xl">
+					<DialogHeader>
+						<DialogTitle>Add New Application</DialogTitle>
+						<DialogDescription>
+							Create a new OpenID Connect application
+						</DialogDescription>
+					</DialogHeader>
+					
+					<div className="max-h-[80vh] overflow-y-auto py-4 pr-2">
+						<ApplicationForm 
+							onSuccess={() => {
+								setIsAddModalOpen(false);
+								refetch();
+							}}
+							onCancel={() => setIsAddModalOpen(false)}
+						/>
 					</div>
-				</div>
-			)}
+				</DialogContent>
+			</Dialog>
 
 			<div className="rounded-lg bg-white p-6 shadow-md">
 				<h2 className="mb-4 text-xl font-semibold text-gray-800">API Test</h2>
