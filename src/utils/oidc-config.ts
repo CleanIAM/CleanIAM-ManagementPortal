@@ -9,7 +9,7 @@ export const oidcConfig: AuthProviderProps = {
 	redirect_uri: 'https://localhost:3001/auth/signin-callback',
 	silent_redirect_uri: 'https://localhost:3001/auth/signin-callback',
 	response_type: 'code',
-	scope: 'openid profile',
+	scope: 'openid profile roles',
 	onSigninCallback: (user: User | undefined) => {
 		queryClient.setQueryData(['user'], user?.profile);
 		localStorage.setItem('access_token', user?.access_token || '');
