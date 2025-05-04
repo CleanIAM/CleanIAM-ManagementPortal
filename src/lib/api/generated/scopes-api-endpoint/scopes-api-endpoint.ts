@@ -27,78 +27,69 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get the list of supported scopes.
  */
-export type getEndpointsScopesResponse200 = {
+export type getApiScopesResponse200 = {
 	data: ItemWithTooltip[];
 	status: 200;
 };
 
-export type getEndpointsScopesResponse500 = {
+export type getApiScopesResponse500 = {
 	data: Error;
 	status: 500;
 };
 
-export type getEndpointsScopesResponseComposite =
-	| getEndpointsScopesResponse200
-	| getEndpointsScopesResponse500;
+export type getApiScopesResponseComposite = getApiScopesResponse200 | getApiScopesResponse500;
 
-export type getEndpointsScopesResponse = getEndpointsScopesResponseComposite & {
+export type getApiScopesResponse = getApiScopesResponseComposite & {
 	headers: Headers;
 };
 
-export const getGetEndpointsScopesUrl = () => {
-	return `/endpoints/scopes`;
+export const getGetApiScopesUrl = () => {
+	return `/api/scopes`;
 };
 
-export const getEndpointsScopes = async (
-	options?: RequestInit
-): Promise<getEndpointsScopesResponse> => {
-	return customFetch<getEndpointsScopesResponse>(getGetEndpointsScopesUrl(), {
+export const getApiScopes = async (options?: RequestInit): Promise<getApiScopesResponse> => {
+	return customFetch<getApiScopesResponse>(getGetApiScopesUrl(), {
 		...options,
 		method: 'GET'
 	});
 };
 
-export const getGetEndpointsScopesQueryKey = () => {
-	return [`/endpoints/scopes`] as const;
+export const getGetApiScopesQueryKey = () => {
+	return [`/api/scopes`] as const;
 };
 
-export const getGetEndpointsScopesQueryOptions = <
-	TData = Awaited<ReturnType<typeof getEndpointsScopes>>,
+export const getGetApiScopesQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApiScopes>>,
 	TError = Error
 >(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEndpointsScopes>>, TError, TData>>;
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopes>>, TError, TData>>;
 	request?: SecondParameter<typeof customFetch>;
 }) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetEndpointsScopesQueryKey();
+	const queryKey = queryOptions?.queryKey ?? getGetApiScopesQueryKey();
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getEndpointsScopes>>> = ({ signal }) =>
-		getEndpointsScopes({ signal, ...requestOptions });
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiScopes>>> = ({ signal }) =>
+		getApiScopes({ signal, ...requestOptions });
 
 	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getEndpointsScopes>>,
+		Awaited<ReturnType<typeof getApiScopes>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetEndpointsScopesQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getEndpointsScopes>>
->;
-export type GetEndpointsScopesQueryError = Error;
+export type GetApiScopesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiScopes>>>;
+export type GetApiScopesQueryError = Error;
 
-export function useGetEndpointsScopes<
-	TData = Awaited<ReturnType<typeof getEndpointsScopes>>,
-	TError = Error
->(
+export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>, TError = Error>(
 	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEndpointsScopes>>, TError, TData>> &
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopes>>, TError, TData>> &
 			Pick<
 				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEndpointsScopes>>,
+					Awaited<ReturnType<typeof getApiScopes>>,
 					TError,
-					Awaited<ReturnType<typeof getEndpointsScopes>>
+					Awaited<ReturnType<typeof getApiScopes>>
 				>,
 				'initialData'
 			>;
@@ -106,19 +97,14 @@ export function useGetEndpointsScopes<
 	},
 	queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetEndpointsScopes<
-	TData = Awaited<ReturnType<typeof getEndpointsScopes>>,
-	TError = Error
->(
+export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>, TError = Error>(
 	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEndpointsScopes>>, TError, TData>
-		> &
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopes>>, TError, TData>> &
 			Pick<
 				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEndpointsScopes>>,
+					Awaited<ReturnType<typeof getApiScopes>>,
 					TError,
-					Awaited<ReturnType<typeof getEndpointsScopes>>
+					Awaited<ReturnType<typeof getApiScopes>>
 				>,
 				'initialData'
 			>;
@@ -126,12 +112,9 @@ export function useGetEndpointsScopes<
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetEndpointsScopes<
-	TData = Awaited<ReturnType<typeof getEndpointsScopes>>,
-	TError = Error
->(
+export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>, TError = Error>(
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEndpointsScopes>>, TError, TData>>;
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopes>>, TError, TData>>;
 		request?: SecondParameter<typeof customFetch>;
 	},
 	queryClient?: QueryClient
@@ -140,17 +123,14 @@ export function useGetEndpointsScopes<
  * @summary Get the list of supported scopes.
  */
 
-export function useGetEndpointsScopes<
-	TData = Awaited<ReturnType<typeof getEndpointsScopes>>,
-	TError = Error
->(
+export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>, TError = Error>(
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEndpointsScopes>>, TError, TData>>;
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopes>>, TError, TData>>;
 		request?: SecondParameter<typeof customFetch>;
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetEndpointsScopesQueryOptions(options);
+	const queryOptions = getGetApiScopesQueryOptions(options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;

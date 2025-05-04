@@ -1223,7 +1223,7 @@
         }
       }
     },
-    "/endpoints/scopes": {
+    "/api/scopes": {
       "get": {
         "tags": [
           "ScopesApiEndpoint"
@@ -2412,7 +2412,7 @@
           },
           "properties": {
             "type": "object",
-            "additionalProperties": { },
+            "additionalProperties": {},
             "description": "Gets the additional properties associated with the application."
           },
           "redirectUris": {
@@ -2866,7 +2866,7 @@
   },
   "security": [
     {
-      "Bearer": [ ]
+      "Bearer": []
     }
   ]
 }
