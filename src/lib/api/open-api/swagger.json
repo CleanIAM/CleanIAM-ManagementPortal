@@ -1603,15 +1603,6 @@
             }
           },
           {
-            "name": "Email",
-            "in": "query",
-            "description": "Email of the user",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "FirstName",
             "in": "query",
             "description": "First name of the user",
@@ -2073,9 +2064,11 @@
         "required": [
           "id",
           "email",
+          "emailVerified",
           "firstName",
           "lastName",
-          "roles"
+          "roles",
+          "isDisabled"
         ],
         "type": "object",
         "properties": {
@@ -2087,6 +2080,10 @@
           "email": {
             "type": "string",
             "description": "Email of the user"
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Indicates whether the user's email has been verified."
           },
           "firstName": {
             "type": "string",
@@ -2102,6 +2099,10 @@
               "$ref": "#/components/schemas/UserRole"
             },
             "description": "User roles"
+          },
+          "isDisabled": {
+            "type": "boolean",
+            "description": "Indicates whether the user account is disabled."
           }
         },
         "additionalProperties": false,
@@ -2634,12 +2635,11 @@
       },
       "UserRole": {
         "enum": [
-          0,
-          1,
-          2
+          "User",
+          "Admin",
+          "SuperAdmin"
         ],
-        "type": "integer",
-        "format": "int32"
+        "type": "string"
       },
       "UserUpdated": {
         "required": [

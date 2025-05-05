@@ -37,12 +37,16 @@ export interface ApiUserModel {
 	id: string;
 	/** Email of the user */
 	email: string;
+	/** Indicates whether the user's email has been verified. */
+	emailVerified: boolean;
 	/** First name of the user */
 	firstName: string;
 	/** last name of the user */
 	lastName: string;
 	/** User roles */
 	roles: UserRole[];
+	/** Indicates whether the user account is disabled. */
+	isDisabled: boolean;
 }
 
 export type ApplicationType = (typeof ApplicationType)[keyof typeof ApplicationType];
@@ -241,9 +245,9 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserRole = {
-	NUMBER_0: 0,
-	NUMBER_1: 1,
-	NUMBER_2: 2
+	User: 'User',
+	Admin: 'Admin',
+	SuperAdmin: 'SuperAdmin'
 } as const;
 
 export interface UserUpdated {
@@ -375,10 +379,6 @@ export type PostApiUsersParams = {
 };
 
 export type PutApiUsersIdParams = {
-	/**
-	 * Email of the user
-	 */
-	Email: string;
 	/**
 	 * First name of the user
 	 */
