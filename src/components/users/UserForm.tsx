@@ -65,12 +65,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 	// Form submission handler
 	const onSubmit = (data: UserFormValues) => {
 		createUserMutation.mutate({
-			params: {
-				Email: data.email,
-				FirstName: data.firstName,
-				LastName: data.lastName,
-				Roles: data.roles
-			}
+			data: data
 		});
 	};
 

@@ -6,15 +6,9 @@ import { UserActions } from './UserActions';
 
 interface UserTableProps {
 	users: ApiUserModel[];
-	onDeleteUser: (id: string) => void;
-	onToggleUserStatus: (id: string, isDisabled: boolean) => void;
 }
 
-export const UserTable: React.FC<UserTableProps> = ({
-	users,
-	onDeleteUser,
-	onToggleUserStatus
-}) => {
+export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 	if (users.length === 0) {
 		return (
 			<div className="py-8 text-center">
@@ -79,12 +73,7 @@ export const UserTable: React.FC<UserTableProps> = ({
 								<UserStatus user={user} />
 							</td>
 							<td className="whitespace-nowrap px-6 py-4 text-right">
-								<UserActions
-									userId={user.id}
-									onDelete={() => onDeleteUser(user.id)}
-									onToggleStatus={() => onToggleUserStatus(user.id, false)}
-									isDisabled={false}
-								/>
+								<UserActions user={user} />
 							</td>
 						</tr>
 					))}

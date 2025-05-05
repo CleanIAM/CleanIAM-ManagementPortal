@@ -1,10 +1,5 @@
 import { useState, useMemo } from 'react';
-import {
-	useGetApiUsers,
-	useDeleteApiUsersId,
-	usePutApiUsersIdDisabled,
-	usePutApiUsersIdEnabled
-} from '../lib/api/generated/users-api/users-api';
+import { useGetApiUsers } from '../lib/api/generated/users-api/users-api';
 import { FormButton } from '../components/form';
 import {
 	Dialog,
@@ -13,7 +8,6 @@ import {
 	DialogHeader,
 	DialogTitle
 } from '../components/ui/dialog';
-import { toast } from 'react-toastify';
 import { UserTable, UserForm } from '@/components/users';
 
 export const UsersPage = () => {
@@ -24,64 +18,13 @@ export const UsersPage = () => {
 
 	// Get users array from response with proper error handling
 	const users = useMemo(() => {
-		if (isLoading || isError || usersResponse?.status !== 200) return [];
+		if (isLoading || isError || usersResponse?.status !== 200) {
+			return [];
+		}
+		console.log('Users:', usersResponse?.data);
+
 		return usersResponse?.data;
 	}, [isError, isLoading, usersResponse?.data, usersResponse?.status]);
-
-	// Delete user mutation
-	const deleteUserMutation = useDeleteApiUsersId({
-		mutation: {
-			onSuccess: () => {
-				toast.success('User deleted successfully');
-				refetch();
-			},
-			onError: error => {
-				toast.error(`Failed to delete user: ${error.message}`);
-			}
-		}
-	});
-
-	// Disable user mutation
-	const disableUserMutation = usePutApiUsersIdDisabled({
-		mutation: {
-			onSuccess: () => {
-				toast.success('User disabled successfully');
-				refetch();
-			},
-			onError: error => {
-				toast.error(`Failed to disable user: ${error.message}`);
-			}
-		}
-	});
-
-	// Enable user mutation
-	const enableUserMutation = usePutApiUsersIdEnabled({
-		mutation: {
-			onSuccess: () => {
-				toast.success('User enabled successfully');
-				refetch();
-			},
-			onError: error => {
-				toast.error(`Failed to enable user: ${error.message}`);
-			}
-		}
-	});
-
-	// Handle delete user
-	const handleDeleteUser = (id: string) => {
-		if (confirm('Are you sure you want to delete this user?')) {
-			deleteUserMutation.mutate({ id });
-		}
-	};
-
-	// Handle toggle user status (enable/disable)
-	const handleToggleUserStatus = (id: string, isDisabled: boolean) => {
-		if (isDisabled) {
-			enableUserMutation.mutate({ id });
-		} else {
-			disableUserMutation.mutate({ id });
-		}
-	};
 
 	// Handle closing the user form dialog
 	const handleCloseUserDialog = () => {
@@ -97,7 +40,9 @@ export const UsersPage = () => {
 
 			{isLoading ? (
 				<div className="flex justify-center py-12">
-					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-600"></div>
+					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-600">
+						Loading...
+					</div>
 				</div>
 			) : isError ? (
 				<div className="mb-6 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
@@ -112,11 +57,7 @@ export const UsersPage = () => {
 						<FormButton onClick={() => setIsAddModalOpen(true)}>Add User</FormButton>
 					</div>
 
-					<UserTable
-						users={users}
-						onDeleteUser={handleDeleteUser}
-						onToggleUserStatus={handleToggleUserStatus}
-					/>
+					<UserTable users={users} />
 				</div>
 			)}
 
