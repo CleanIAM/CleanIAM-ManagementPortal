@@ -2,14 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { Container } from '@/components/ui/container';
 import { Button } from '@/components/ui/button';
 import { useAuth } from 'react-oidc-context';
+import { useRoles } from '@/lib/hooks/useRoles';
 
 export const Navbar = () => {
 	const auth = useAuth();
+	const roles = useRoles();
 	const handleLogout = async () => {
 		try {
-			console.log('Logout: ', window.location.origin);
-
-			await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin });
+			await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin + '/' });
 		} catch (error) {
 			console.error('Logout error:', error);
 		}
@@ -79,8 +79,8 @@ export const Navbar = () => {
 					{/* Right side user dropdown (desktop) */}
 					<div className="hidden sm:ml-6 sm:flex sm:items-center">
 						{/* User name */}
-						<div className="hidden sm:block">
-							<span className="text-sm font-medium text-gray-700">{auth.user?.profile.name}</span>
+						<div className="sm:block">
+							<span className="text-sm font-medium text-gray-700">{roles}</span>
 						</div>
 
 						<Button

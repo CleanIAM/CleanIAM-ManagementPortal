@@ -12,7 +12,7 @@ export const useRoles = (): string[] => {
 		return [];
 	}
 
-	const roles = (user.profile?.roles as string[]) || [];
+	const roles = (user.profile?.role || user.profile?.roles || []) as string[];
 	console.log('User roles:', roles);
 
 	return roles;
