@@ -1337,6 +1337,38 @@
         }
       }
     },
+    "/mfa/enabled": {
+      "put": {
+        "tags": [
+          "UserApiEndpoint"
+        ],
+        "summary": "Enable or disable MFA for the current user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMfaRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMfaRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMfaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/users": {
       "get": {
         "tags": [
@@ -1960,35 +1992,6 @@
           }
         }
       }
-    },
-    "/api/users/test": {
-      "get": {
-        "tags": [
-          "UsersApi"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -2068,7 +2071,8 @@
           "firstName",
           "lastName",
           "roles",
-          "isDisabled"
+          "isDisabled",
+          "isMFAEnabled"
         ],
         "type": "object",
         "properties": {
@@ -2103,6 +2107,10 @@
           "isDisabled": {
             "type": "boolean",
             "description": "Indicates whether the user account is disabled."
+          },
+          "isMFAEnabled": {
+            "type": "boolean",
+            "description": "Indicates whether the user has enabled multi-factor authentication (MFA)."
           }
         },
         "additionalProperties": false,
@@ -2535,6 +2543,19 @@
               "format": "uri"
             },
             "description": "Gets the redirect URIs associated with the application."
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateMfaRequest": {
+        "required": [
+          "enabled"
+        ],
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Enable or disable MFA"
           }
         },
         "additionalProperties": false

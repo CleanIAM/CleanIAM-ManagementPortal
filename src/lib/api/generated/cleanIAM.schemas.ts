@@ -47,6 +47,8 @@ export interface ApiUserModel {
 	roles: UserRole[];
 	/** Indicates whether the user account is disabled. */
 	isDisabled: boolean;
+	/** Indicates whether the user has enabled multi-factor authentication (MFA). */
+	isMFAEnabled: boolean;
 }
 
 export type ApplicationType = (typeof ApplicationType)[keyof typeof ApplicationType];
@@ -209,6 +211,11 @@ export interface UpdateApplicationRequest {
 	postLogoutRedirectUris: string[];
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
+}
+
+export interface UpdateMfaRequest {
+	/** Enable or disable MFA */
+	enabled: boolean;
 }
 
 export interface UserCreated {
