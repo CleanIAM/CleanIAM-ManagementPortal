@@ -89,7 +89,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 				)}
 			</FormButton>
 			<FormButton onClick={handleDeleteUser} variant="danger" className="w-20 py-1 text-sm">
-				{deleteUserMutation.isPending ? 'Delete' : <Loader />}
+				{deleteUserMutation.isPending ? <Loader /> : 'Delete'}
 			</FormButton>
 		</div>
 	);

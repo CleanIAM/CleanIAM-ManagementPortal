@@ -14,6 +14,7 @@ import {
 } from '../components/ui/dialog';
 
 import { ApplicationBanner } from '@/components/public/ApplicationBanner';
+import { Loader } from '@/components/public/Loader';
 
 export const ApplicationsPage = () => {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -59,8 +60,8 @@ export const ApplicationsPage = () => {
 			</div>
 
 			{isLoading ? (
-				<div className="flex justify-center py-12">
-					<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-blue-600"></div>
+				<div className="my-20 flex h-full w-full items-center justify-center">
+					<Loader className="h-16 w-16" />
 				</div>
 			) : isError ? (
 				<div className="mb-6 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">

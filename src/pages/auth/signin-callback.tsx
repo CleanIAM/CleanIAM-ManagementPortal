@@ -1,3 +1,4 @@
+import { Loader } from '@/components/public/Loader';
 import { useSignin } from '@/lib/auth/useSignin';
 import { useAuth } from 'react-oidc-context';
 import { Navigate } from 'react-router-dom';
@@ -17,8 +18,7 @@ export const SigninCallback = () => {
 		return (
 			<div className="flex h-screen w-full items-center justify-center bg-gray-100">
 				<div className="flex flex-col items-center">
-					<div className="mb-4 text-xl font-medium text-gray-700">Loading...</div>
-					<div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+					<Loader className="h-10 w-10" />
 				</div>
 			</div>
 		);

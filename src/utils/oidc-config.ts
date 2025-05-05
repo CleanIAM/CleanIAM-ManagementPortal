@@ -1,7 +1,6 @@
 import { router } from '@/router';
 import { User } from 'oidc-client-ts';
 import { AuthProviderProps } from 'react-oidc-context';
-import { queryClient } from './query-client';
 
 export const oidcConfig: AuthProviderProps = {
 	authority: 'https://localhost:5000',
@@ -11,7 +10,8 @@ export const oidcConfig: AuthProviderProps = {
 	response_type: 'code',
 	scope: 'openid profile roles',
 	onSigninCallback: (user: User | undefined) => {
-		queryClient.setQueryData(['user'], user?.profile);
+		console.log('user', user);
+
 		localStorage.setItem('access_token', user?.access_token || '');
 	},
 	onRemoveUser: () => {

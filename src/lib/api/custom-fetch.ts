@@ -1,11 +1,3 @@
-// We'll create a token getter function that will be set by our auth context
-let getAccessToken: () => string | null = () => null;
-
-// This will be called from our AuthContext to set the token getter function
-export const setTokenGetter = (tokenFn: () => string | null) => {
-	getAccessToken = tokenFn;
-};
-
 const getBody = <T>(c: Response | Request): Promise<T> => {
 	const contentType = c.headers.get('content-type');
 
@@ -27,7 +19,7 @@ const getUrl = (contextUrl: string): string => {
 };
 
 const getHeaders = (headers?: HeadersInit): HeadersInit => {
-	const token = getAccessToken();
+	const token = localStorage.getItem('access_token');
 
 	if (!token) {
 		return headers || {};

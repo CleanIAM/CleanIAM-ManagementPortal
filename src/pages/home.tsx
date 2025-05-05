@@ -18,7 +18,7 @@ export const HomePage = () => {
 						</p>
 						<Link
 							to="/applications"
-							className="inline-block rounded bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
+							className="inline-block w-full rounded bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
 						>
 							View Applications
 						</Link>
@@ -31,22 +31,12 @@ export const HomePage = () => {
 						</p>
 						<Link
 							to="/profile"
-							className="inline-block rounded bg-purple-600 px-4 py-2 font-medium text-white transition-colors hover:bg-purple-700"
+							className="inline-block w-full rounded bg-purple-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-purple-700"
 						>
 							View Profile
 						</Link>
 					</div>
 				</div>
-			</div>
-
-			<div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-				<h2 className="mb-3 text-xl font-semibold text-gray-800">API Status</h2>
-				<Link
-					to="/test"
-					className="inline-block rounded bg-gray-600 px-4 py-2 font-medium text-white transition-colors hover:bg-gray-700"
-				>
-					Check API Status
-				</Link>
 			</div>
 		</div>
 	);

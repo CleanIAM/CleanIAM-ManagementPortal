@@ -8,12 +8,5 @@ export const useRoles = (): string[] => {
 	const auth = useAuth();
 	const user = auth.user;
 
-	if (!user) {
-		return [];
-	}
-
-	const roles = (user.profile?.role || user.profile?.roles || []) as string[];
-	console.log('User roles:', roles);
-
-	return roles;
+	return (user?.profile?.role || user?.profile?.roles || []) as string[];
 };
