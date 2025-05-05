@@ -7,6 +7,8 @@ export const Navbar = () => {
 	const auth = useAuth();
 	const handleLogout = async () => {
 		try {
+			console.log('Logout: ', window.location.origin);
+
 			await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin });
 		} catch (error) {
 			console.error('Logout error:', error);
@@ -43,6 +45,15 @@ export const Navbar = () => {
 								}
 							>
 								Applications
+							</NavLink>
+
+							<NavLink
+								to="/users"
+								className={({ isActive }) =>
+									`${isActive ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium`
+								}
+							>
+								Users
 							</NavLink>
 
 							<NavLink

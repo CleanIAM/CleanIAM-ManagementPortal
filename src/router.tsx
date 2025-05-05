@@ -6,7 +6,7 @@ import { LandingPage } from './pages/landing';
 import { ApplicationsPage } from './pages/applications';
 import { ProfilePage } from './pages/profile';
 import { TestPage } from './pages/test';
-import { Signin } from './pages/auth/signin';
+import { UsersPage } from './pages/users';
 import { SigninCallback } from './pages/auth/signin-callback';
 import { AuthGuard } from './components/layout/AuthGuard';
 import { RootLayout } from './components/layout/RootLayout';
@@ -31,6 +31,7 @@ export const router = createBrowserRouter([
 				children: [
 					{ path: '/home', element: <HomePage /> },
 					{ path: '/applications', element: <ApplicationsPage /> },
+					{ path: '/users', element: <UsersPage /> },
 					{ path: '/profile', element: <ProfilePage /> },
 					{ path: '/test', element: <TestPage /> }
 				]
