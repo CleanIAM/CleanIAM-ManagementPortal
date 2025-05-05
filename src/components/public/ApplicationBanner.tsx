@@ -103,7 +103,13 @@ export const ApplicationBanner = ({
 			</div>
 
 			{/* Application Info Dialog */}
-			<Dialog open={isInfoModalOpen} onOpenChange={setIsInfoModalOpen}>
+			<Dialog
+				open={isInfoModalOpen}
+				onOpenChange={open => {
+					setIsInfoModalOpen(open);
+				}}
+				modal={true}
+			>
 				<DialogContent className="max-w-2xl">
 					<DialogHeader>
 						<div className="mb-2 flex items-center gap-3">
@@ -232,7 +238,13 @@ export const ApplicationBanner = ({
 			</Dialog>
 
 			{/* Edit Application Form Dialog */}
-			<Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+			<Dialog
+				open={isEditModalOpen}
+				onOpenChange={open => {
+					setIsEditModalOpen(open);
+				}}
+				modal={false}
+			>
 				<DialogContent className="max-w-3xl">
 					<DialogHeader>
 						<DialogTitle>{app.displayName || app.clientId}</DialogTitle>
