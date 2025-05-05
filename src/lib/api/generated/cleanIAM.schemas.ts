@@ -99,6 +99,17 @@ export interface CreateNewApplicationRequest {
 	redirectUris: string[];
 }
 
+export interface CreateNewUserRequest {
+	/** Email of the user */
+	email: string;
+	/** First name of the user */
+	firstName: string;
+	/** last name of the user */
+	lastName: string;
+	/** User roles */
+	roles: UserRole[];
+}
+
 export interface Error {
 	message: string;
 	code: number;
@@ -364,25 +375,6 @@ export type PostSignupBody = {
 	/** @minLength 3 */
 	LastName: string;
 	Password: string;
-};
-
-export type PostApiUsersParams = {
-	/**
-	 * Email of the user
-	 */
-	Email: string;
-	/**
-	 * First name of the user
-	 */
-	FirstName: string;
-	/**
-	 * last name of the user
-	 */
-	LastName: string;
-	/**
-	 * User roles
-	 */
-	Roles: UserRole[];
 };
 
 export type PutApiUsersIdParams = {

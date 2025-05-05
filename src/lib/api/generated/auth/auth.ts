@@ -29,7 +29,6 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
-            
 If the user is not authenticated, the user will be redirected to the signin page.
  */
 export type getConnectAuthorizeResponse200 = {
@@ -140,7 +139,6 @@ export function useGetConnectAuthorize<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
-            
 If the user is not authenticated, the user will be redirected to the signin page.
  */
 
@@ -411,7 +409,6 @@ export const usePostConnectEndsession = <TError = unknown, TContext = unknown>(
 };
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
-            
 Just a fallback in case the client application did not provide a redirect URI.
  */
 export type getConnectEndsessionSuccessResponse200 = {
@@ -525,7 +522,6 @@ export function useGetConnectEndsessionSuccess<
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
-            
 Just a fallback in case the client application did not provide a redirect URI.
  */
 

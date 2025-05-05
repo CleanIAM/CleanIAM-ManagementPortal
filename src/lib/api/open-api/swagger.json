@@ -400,7 +400,7 @@
         "tags": [
           "Auth"
         ],
-        "summary": "The main endpoint for OAuth 2 authorization code flow.\r\n            \r\nIf the user is not authenticated, the user will be redirected to the signin page.",
+        "summary": "The main endpoint for OAuth 2 authorization code flow.\r\nIf the user is not authenticated, the user will be redirected to the signin page.",
         "responses": {
           "200": {
             "description": "OK"
@@ -769,7 +769,7 @@
         "tags": [
           "Auth"
         ],
-        "summary": "Show the view to confirm the consent of the user to sing out.\r\n            \r\nJust a fallback in case the client application did not provide a redirect URI.",
+        "summary": "Show the view to confirm the consent of the user to sing out.\r\nJust a fallback in case the client application did not provide a redirect URI.",
         "responses": {
           "200": {
             "description": "OK"
@@ -1432,47 +1432,26 @@
           "UsersApi"
         ],
         "summary": "Create new user",
-        "parameters": [
-          {
-            "name": "Email",
-            "in": "query",
-            "description": "Email of the user",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "FirstName",
-            "in": "query",
-            "description": "First name of the user",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "LastName",
-            "in": "query",
-            "description": "last name of the user",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Roles",
-            "in": "query",
-            "description": "User roles",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/UserRole"
+        "requestBody": {
+          "description": "New user data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewUserRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewUserRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewUserRequest"
               }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -2196,6 +2175,37 @@
               "format": "uri"
             },
             "description": "Gets the redirect URIs associated with the application."
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateNewUserRequest": {
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "roles"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email of the user"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "First name of the user"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "last name of the user"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRole"
+            },
+            "description": "User roles"
           }
         },
         "additionalProperties": false

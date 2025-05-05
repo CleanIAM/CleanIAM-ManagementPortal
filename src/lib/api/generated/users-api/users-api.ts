@@ -23,8 +23,8 @@ import type {
 
 import type {
 	ApiUserModel,
+	CreateNewUserRequest,
 	Error,
-	PostApiUsersParams,
 	PutApiUsersIdParams,
 	UserCreated,
 	UserDeleted,
@@ -172,27 +172,19 @@ export type postApiUsersResponse = postApiUsersResponseComposite & {
 	headers: Headers;
 };
 
-export const getPostApiUsersUrl = (params: PostApiUsersParams) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0 ? `/api/users?${stringifiedParams}` : `/api/users`;
+export const getPostApiUsersUrl = () => {
+	return `/api/users`;
 };
 
 export const postApiUsers = async (
-	params: PostApiUsersParams,
+	createNewUserRequest: CreateNewUserRequest,
 	options?: RequestInit
 ): Promise<postApiUsersResponse> => {
-	return customFetch<postApiUsersResponse>(getPostApiUsersUrl(params), {
+	return customFetch<postApiUsersResponse>(getPostApiUsersUrl(), {
 		...options,
-		method: 'POST'
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json', ...options?.headers },
+		body: JSON.stringify(createNewUserRequest)
 	});
 };
 
@@ -200,14 +192,14 @@ export const getPostApiUsersMutationOptions = <TError = Error, TContext = unknow
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof postApiUsers>>,
 		TError,
-		{ params: PostApiUsersParams },
+		{ data: CreateNewUserRequest },
 		TContext
 	>;
 	request?: SecondParameter<typeof customFetch>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof postApiUsers>>,
 	TError,
-	{ params: PostApiUsersParams },
+	{ data: CreateNewUserRequest },
 	TContext
 > => {
 	const mutationKey = ['postApiUsers'];
@@ -219,18 +211,18 @@ export const getPostApiUsersMutationOptions = <TError = Error, TContext = unknow
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof postApiUsers>>,
-		{ params: PostApiUsersParams }
+		{ data: CreateNewUserRequest }
 	> = props => {
-		const { params } = props ?? {};
+		const { data } = props ?? {};
 
-		return postApiUsers(params, requestOptions);
+		return postApiUsers(data, requestOptions);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
 export type PostApiUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postApiUsers>>>;
-
+export type PostApiUsersMutationBody = CreateNewUserRequest;
 export type PostApiUsersMutationError = Error;
 
 /**
@@ -241,7 +233,7 @@ export const usePostApiUsers = <TError = Error, TContext = unknown>(
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof postApiUsers>>,
 			TError,
-			{ params: PostApiUsersParams },
+			{ data: CreateNewUserRequest },
 			TContext
 		>;
 		request?: SecondParameter<typeof customFetch>;
@@ -250,7 +242,7 @@ export const usePostApiUsers = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
 	Awaited<ReturnType<typeof postApiUsers>>,
 	TError,
-	{ params: PostApiUsersParams },
+	{ data: CreateNewUserRequest },
 	TContext
 > => {
 	const mutationOptions = getPostApiUsersMutationOptions(options);
