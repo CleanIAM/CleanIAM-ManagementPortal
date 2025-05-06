@@ -122,17 +122,6 @@ export interface CreateNewTenantRequest {
 	name: string;
 }
 
-export interface CreateNewUserRequest {
-	/** Email of the user */
-	email: string;
-	/** First name of the user */
-	firstName: string;
-	/** last name of the user */
-	lastName: string;
-	/** User roles */
-	roles: UserRole[];
-}
-
 export interface Error {
 	message: string;
 	code: number;
@@ -292,6 +281,15 @@ export interface UpdateTenantRequest {
 	name: string;
 }
 
+export interface UpdateUserRequest {
+	/** First name of the user */
+	firstName: string;
+	/** last name of the user */
+	lastName: string;
+	/** User roles */
+	roles: UserRole[];
+}
+
 export interface UpdateUserSimpleRequest {
 	/** First name of the user */
 	firstName: string;
@@ -303,8 +301,10 @@ export interface UpdateUserSimpleRequest {
  * Event that is raised when a user is assigned to a tenant
  */
 export interface UserAssignedToTenant {
-	/** Id of the tenant */
-	tenantId: string;
+	/** Id of the new tenant */
+	newTenantId: string;
+	/** Id of the old tenant */
+	oldTenantId: string;
 	/** New tenant name */
 	tenantName: string;
 	/** Id of the user */
@@ -313,14 +313,6 @@ export interface UserAssignedToTenant {
 	userFirstName: string;
 	/** Last name of the user */
 	userLastName: string;
-}
-
-export interface UserCreated {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	roles: UserRole[];
 }
 
 export interface UserDeleted {
@@ -375,6 +367,17 @@ export interface UserUpdated {
 	lastName: string;
 	roles: UserRole[];
 }
+
+export type GetConnectAuthorizeParams = {
+	/**
+	 * Indicates whether the user should be prompted with account chooser
+	 */
+	chooseAccount?: boolean;
+};
+
+export type PostConnectAuthorizeBody = {
+	newSignIn?: boolean;
+};
 
 export type PostConnectEndsessionParams = {
 	'AccessToken'?: string;
@@ -481,21 +484,6 @@ export type PostSignupBody = {
 	/** @minLength 3 */
 	LastName: string;
 	Password: string;
-};
-
-export type PutApiUsersIdParams = {
-	/**
-	 * First name of the user
-	 */
-	FirstName: string;
-	/**
-	 * last name of the user
-	 */
-	LastName: string;
-	/**
-	 * User roles
-	 */
-	Roles: UserRole[];
 };
 
 export type PostApiUsersInvitedParams = {

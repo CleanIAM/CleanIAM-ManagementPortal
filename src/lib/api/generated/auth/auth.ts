@@ -21,34 +21,44 @@ import type {
 	UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostConnectEndsessionParams } from '../cleanIAM.schemas';
+import type {
+	GetConnectAuthorizeParams,
+	PostConnectAuthorizeBody,
+	PostConnectEndsessionParams
+} from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
 If the user is not authenticated, the user will be redirected to the signin page.
+If user is authenticated, the confirmation will be shown.
  */
-export const getConnectAuthorize = (signal?: AbortSignal) => {
-	return customAxiosRequest<void>({ url: `/connect/authorize`, method: 'GET', signal });
+export const getConnectAuthorize = (params?: GetConnectAuthorizeParams, signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/authorize`, method: 'GET', params, signal });
 };
 
-export const getGetConnectAuthorizeQueryKey = () => {
-	return [`/connect/authorize`] as const;
+export const getGetConnectAuthorizeQueryKey = (params?: GetConnectAuthorizeParams) => {
+	return [`/connect/authorize`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetConnectAuthorizeQueryOptions = <
 	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
 	TError = unknown
->(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>>;
-}) => {
+>(
+	params?: GetConnectAuthorizeParams,
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
+		>;
+	}
+) => {
 	const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetConnectAuthorizeQueryKey();
+	const queryKey = queryOptions?.queryKey ?? getGetConnectAuthorizeQueryKey(params);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectAuthorize>>> = ({ signal }) =>
-		getConnectAuthorize(signal);
+		getConnectAuthorize(params, signal);
 
 	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
 		Awaited<ReturnType<typeof getConnectAuthorize>>,
@@ -66,6 +76,7 @@ export function useGetConnectAuthorize<
 	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
 	TError = unknown
 >(
+	params: undefined | GetConnectAuthorizeParams,
 	options: {
 		query: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
@@ -85,6 +96,7 @@ export function useGetConnectAuthorize<
 	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
 	TError = unknown
 >(
+	params?: GetConnectAuthorizeParams,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
@@ -104,6 +116,7 @@ export function useGetConnectAuthorize<
 	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
 	TError = unknown
 >(
+	params?: GetConnectAuthorizeParams,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
@@ -114,12 +127,14 @@ export function useGetConnectAuthorize<
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
 If the user is not authenticated, the user will be redirected to the signin page.
+If user is authenticated, the confirmation will be shown.
  */
 
 export function useGetConnectAuthorize<
 	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
 	TError = unknown
 >(
+	params?: GetConnectAuthorizeParams,
 	options?: {
 		query?: Partial<
 			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
@@ -127,7 +142,7 @@ export function useGetConnectAuthorize<
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetConnectAuthorizeQueryOptions(options);
+	const queryOptions = getGetConnectAuthorizeQueryOptions(params, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -138,6 +153,91 @@ export function useGetConnectAuthorize<
 	return query;
 }
 
+/**
+ * @summary Endpoint handling the OpenId Connect authorization request.
+ */
+export const postConnectAuthorize = (
+	postConnectAuthorizeBody: PostConnectAuthorizeBody,
+	signal?: AbortSignal
+) => {
+	const formData = new FormData();
+	if (postConnectAuthorizeBody.newSignIn !== undefined) {
+		formData.append('newSignIn', postConnectAuthorizeBody.newSignIn.toString());
+	}
+
+	return customAxiosRequest<void>({
+		url: `/connect/authorize`,
+		method: 'POST',
+		headers: { 'Content-Type': 'multipart/form-data' },
+		data: formData,
+		signal
+	});
+};
+
+export const getPostConnectAuthorizeMutationOptions = <
+	TError = unknown,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postConnectAuthorize>>,
+		TError,
+		{ data: PostConnectAuthorizeBody },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postConnectAuthorize>>,
+	TError,
+	{ data: PostConnectAuthorizeBody },
+	TContext
+> => {
+	const mutationKey = ['postConnectAuthorize'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postConnectAuthorize>>,
+		{ data: PostConnectAuthorizeBody }
+	> = props => {
+		const { data } = props ?? {};
+
+		return postConnectAuthorize(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostConnectAuthorizeMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postConnectAuthorize>>
+>;
+export type PostConnectAuthorizeMutationBody = PostConnectAuthorizeBody;
+export type PostConnectAuthorizeMutationError = unknown;
+
+/**
+ * @summary Endpoint handling the OpenId Connect authorization request.
+ */
+export const usePostConnectAuthorize = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postConnectAuthorize>>,
+			TError,
+			{ data: PostConnectAuthorizeBody },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postConnectAuthorize>>,
+	TError,
+	{ data: PostConnectAuthorizeBody },
+	TContext
+> => {
+	const mutationOptions = getPostConnectAuthorizeMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
  */

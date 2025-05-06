@@ -23,13 +23,11 @@ import type {
 
 import type {
 	ApiUserModel,
-	CreateNewUserRequest,
 	Error,
 	InviteUserRequest,
 	PostApiUsersIdInvitationEmailParams,
 	PostApiUsersInvitedParams,
-	PutApiUsersIdParams,
-	UserCreated,
+	UpdateUserRequest,
 	UserDeleted,
 	UserDisabled,
 	UserInvited,
@@ -127,78 +125,6 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
 	return query;
 }
 
-/**
- * @summary Create new user
- */
-export const postApiUsers = (createNewUserRequest: CreateNewUserRequest, signal?: AbortSignal) => {
-	return customAxiosRequest<UserCreated>({
-		url: `/api/users`,
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		data: createNewUserRequest,
-		signal
-	});
-};
-
-export const getPostApiUsersMutationOptions = <TError = Error, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiUsers>>,
-		TError,
-		{ data: CreateNewUserRequest },
-		TContext
-	>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiUsers>>,
-	TError,
-	{ data: CreateNewUserRequest },
-	TContext
-> => {
-	const mutationKey = ['postApiUsers'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiUsers>>,
-		{ data: CreateNewUserRequest }
-	> = props => {
-		const { data } = props ?? {};
-
-		return postApiUsers(data);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PostApiUsersMutationResult = NonNullable<Awaited<ReturnType<typeof postApiUsers>>>;
-export type PostApiUsersMutationBody = CreateNewUserRequest;
-export type PostApiUsersMutationError = Error;
-
-/**
- * @summary Create new user
- */
-export const usePostApiUsers = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiUsers>>,
-			TError,
-			{ data: CreateNewUserRequest },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postApiUsers>>,
-	TError,
-	{ data: CreateNewUserRequest },
-	TContext
-> => {
-	const mutationOptions = getPostApiUsersMutationOptions(options);
-
-	return useMutation(mutationOptions, queryClient);
-};
 /**
  * @summary Get specific user by its id
  */
@@ -298,21 +224,26 @@ export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId
 /**
  * @summary Update user
  */
-export const putApiUsersId = (id: string, params: PutApiUsersIdParams) => {
-	return customAxiosRequest<UserUpdated>({ url: `/api/users/${id}`, method: 'PUT', params });
+export const putApiUsersId = (id: string, updateUserRequest: UpdateUserRequest) => {
+	return customAxiosRequest<UserUpdated>({
+		url: `/api/users/${id}`,
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		data: updateUserRequest
+	});
 };
 
 export const getPutApiUsersIdMutationOptions = <TError = Error, TContext = unknown>(options?: {
 	mutation?: UseMutationOptions<
 		Awaited<ReturnType<typeof putApiUsersId>>,
 		TError,
-		{ id: string; params: PutApiUsersIdParams },
+		{ id: string; data: UpdateUserRequest },
 		TContext
 	>;
 }): UseMutationOptions<
 	Awaited<ReturnType<typeof putApiUsersId>>,
 	TError,
-	{ id: string; params: PutApiUsersIdParams },
+	{ id: string; data: UpdateUserRequest },
 	TContext
 > => {
 	const mutationKey = ['putApiUsersId'];
@@ -324,18 +255,18 @@ export const getPutApiUsersIdMutationOptions = <TError = Error, TContext = unkno
 
 	const mutationFn: MutationFunction<
 		Awaited<ReturnType<typeof putApiUsersId>>,
-		{ id: string; params: PutApiUsersIdParams }
+		{ id: string; data: UpdateUserRequest }
 	> = props => {
-		const { id, params } = props ?? {};
+		const { id, data } = props ?? {};
 
-		return putApiUsersId(id, params);
+		return putApiUsersId(id, data);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
 export type PutApiUsersIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiUsersId>>>;
-
+export type PutApiUsersIdMutationBody = UpdateUserRequest;
 export type PutApiUsersIdMutationError = Error;
 
 /**
@@ -346,7 +277,7 @@ export const usePutApiUsersId = <TError = Error, TContext = unknown>(
 		mutation?: UseMutationOptions<
 			Awaited<ReturnType<typeof putApiUsersId>>,
 			TError,
-			{ id: string; params: PutApiUsersIdParams },
+			{ id: string; data: UpdateUserRequest },
 			TContext
 		>;
 	},
@@ -354,7 +285,7 @@ export const usePutApiUsersId = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
 	Awaited<ReturnType<typeof putApiUsersId>>,
 	TError,
-	{ id: string; params: PutApiUsersIdParams },
+	{ id: string; data: UpdateUserRequest },
 	TContext
 > => {
 	const mutationOptions = getPutApiUsersIdMutationOptions(options);
