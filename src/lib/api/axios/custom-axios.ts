@@ -8,24 +8,6 @@ const axiosInstance = axios.create({
 	}
 });
 
-// Create a request interceptor to add the auth token
-axiosInstance.interceptors.request.use(
-	config => {
-		// Get the token from the auth context
-		const token = localStorage.getItem('access_token');
-
-		// If token exists, add it to the headers
-		if (token) {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
-
-		return config;
-	},
-	error => {
-		return Promise.reject(error);
-	}
-);
-
 // Create a function to handle axios requests that is compatible with orval
 export const customAxiosRequest = async <T>(
 	config: AxiosRequestConfig

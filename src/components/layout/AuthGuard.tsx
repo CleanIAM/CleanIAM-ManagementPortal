@@ -1,8 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { useSignin } from '@/lib/auth/useSignin';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Loader } from '../public/Loader';
+import axiosInstance from '@/lib/api/axios/custom-axios';
 
 export const AuthGuard = () => {
 	const auth = useAuth();
@@ -10,11 +11,30 @@ export const AuthGuard = () => {
 
 	//TODO: test this
 	useEffect(() => {
-		if (!auth.isAuthenticated && !auth.isLoading && !auth.error) {
+		if (!auth.isAuthenticated && !auth.isLoading) {
 			signin();
 		}
 	}, [auth, signin]);
 
+	// Update access token in axios interceptor
+	useMemo(() => {
+		axiosInstance.interceptors.request.use(
+			config => {
+				// Get the token from the auth context
+				const token = auth.user?.access_token;
+
+				// If token exists, add it to the headers
+				if (token) {
+					config.headers.Authorization = `Bearer ${token}`;
+				}
+
+				return config;
+			},
+			error => {
+				return Promise.reject(error);
+			}
+		);
+	}, [auth]);
 	switch (auth.activeNavigator) {
 		case 'signinSilent':
 			return (
