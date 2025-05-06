@@ -3,6 +3,7 @@ import { FormButton } from '@/components/form';
 import {
 	useDeleteApiUsersId,
 	useGetApiUsers,
+	usePostApiUsersIdInvitationEmail,
 	usePutApiUsersIdDisabled,
 	usePutApiUsersIdEnabled
 } from '@/lib/api/generated/users-api/users-api';
@@ -57,11 +58,29 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 		}
 	});
 
+	// Resend invitation mutation
+	const resendInvitationMutation = usePostApiUsersIdInvitationEmail({
+		mutation: {
+			onSuccess: () => {
+				toast.success('Invitation resent successfully');
+				refetch();
+			},
+			onError: error => {
+				toast.error(`Failed to resend invitation: ${error.message}`);
+			}
+		}
+	});
+
 	// Handle delete user
 	const handleDeleteUser = () => {
 		if (confirm('Are you sure you want to delete this user?')) {
 			deleteUserMutation.mutate({ id: user.id });
 		}
+	};
+
+	// Handle resend invitation
+	const handleResendInvitation = () => {
+		resendInvitationMutation.mutate({ id: user.id });
 	};
 
 	// Handle toggle user status (enable/disable)
@@ -75,6 +94,15 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 
 	return (
 		<div className="flex justify-end gap-2">
+			{user.isInvitePending && (
+				<FormButton
+					onClick={handleResendInvitation}
+					variant="secondary"
+					className="w-fit py-1 text-sm"
+				>
+					{resendInvitationMutation.isPending ? <Loader /> : 'Resend Invitation'}
+				</FormButton>
+			)}
 			<FormButton
 				onClick={handleToggleUserStatus}
 				variant="secondary"

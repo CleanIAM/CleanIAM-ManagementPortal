@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { usePostApiUsers } from '@/lib/api/generated/users-api/users-api';
+import { usePostApiUsersInvited } from '@/lib/api/generated/users-api/users-api';
 import { UserRole } from '@/lib/api/generated/cleanIAM.schemas';
 import { FormButton } from '@/components/form';
 import { toast } from 'react-toastify';
@@ -50,7 +50,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 	});
 
 	// Create user mutation
-	const createUserMutation = usePostApiUsers({
+	const createUserMutation = usePostApiUsersInvited({
 		mutation: {
 			onSuccess: () => {
 				toast.success('User created successfully');
@@ -113,7 +113,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 			</div>
 
 			<div>
-				<label className="mb-1 block text-sm font-medium text-gray-700">Roles *</label>
+				<label className="mb-1 block text-sm font-medium text-gray-700">Roles</label>
 				<Controller
 					control={control}
 					name="roles"

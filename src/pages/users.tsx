@@ -53,7 +53,7 @@ export const UsersPage = () => {
 			) : (
 				<div className="mb-8 rounded-lg bg-white p-6 shadow-md">
 					<div className="mb-4 flex justify-end">
-						<FormButton onClick={() => setIsAddModalOpen(true)}>Add User</FormButton>
+						<FormButton onClick={() => setIsAddModalOpen(true)}>Invite User</FormButton>
 					</div>
 
 					<UserTable users={users} />
@@ -64,8 +64,8 @@ export const UsersPage = () => {
 			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen} modal={false}>
 				<DialogContent className="max-w-2xl">
 					<DialogHeader>
-						<DialogTitle>Add New User</DialogTitle>
-						<DialogDescription>Create a new user account</DialogDescription>
+						<DialogTitle>Invite New User</DialogTitle>
+						<DialogDescription>Invite a new user to the system</DialogDescription>
 					</DialogHeader>
 
 					<div className="py-4">
