@@ -32,7 +32,7 @@ import type {
 	UpdateApplicationRequest
 } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Show the main application page with a list of all applications.

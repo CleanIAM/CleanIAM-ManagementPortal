@@ -20,7 +20,7 @@ import type {
 
 import type { GetErrorParams } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 export const getError = (params?: GetErrorParams, signal?: AbortSignal) => {
 	return customAxiosRequest<void>({ url: `/error`, method: 'GET', params, signal });

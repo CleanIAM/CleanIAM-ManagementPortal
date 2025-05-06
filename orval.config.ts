@@ -10,7 +10,7 @@ export default defineConfig({
 			prettier: true,
 			override: {
 				mutator: {
-					path: 'src/lib/api/axios/custom-axios.ts',
+					path: 'src/lib/api/mutator/axios/custom-axios.ts',
 					name: 'customAxiosRequest'
 				}
 			}

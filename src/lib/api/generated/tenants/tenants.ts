@@ -31,7 +31,7 @@ import type {
 	UserAssignedToTenant
 } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Get all tenants in the system

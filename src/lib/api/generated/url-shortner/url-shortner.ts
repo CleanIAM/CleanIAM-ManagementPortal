@@ -18,7 +18,7 @@ import type {
 	UseQueryResult
 } from '@tanstack/react-query';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary The endpoint handling the shortened url access

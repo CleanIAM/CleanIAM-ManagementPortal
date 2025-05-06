@@ -20,7 +20,7 @@ import type {
 
 import type { Error, ItemWithTooltip } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Get the list of supported scopes.

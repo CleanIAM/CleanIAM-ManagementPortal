@@ -20,7 +20,7 @@ import type {
 
 import type { GetExternalProvidersRequestProviderParams } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Initiates the authentication process with Microsoft provider

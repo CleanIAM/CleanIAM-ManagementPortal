@@ -23,7 +23,7 @@ import type {
 
 import type { PostSignupBody } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 export const getSignup = (signal?: AbortSignal) => {
 	return customAxiosRequest<void>({ url: `/signup`, method: 'GET', signal });

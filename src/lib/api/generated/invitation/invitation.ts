@@ -5,115 +5,131 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
 	DefinedUseQueryResult,
+	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetInvitationParams } from '../cleanIAM.schemas';
+import type { PostInvitationsRequestIdBody } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
-export const getInvitation = (params?: GetInvitationParams, signal?: AbortSignal) => {
-	return customAxiosRequest<void>({ url: `/invitation`, method: 'GET', params, signal });
+export const getInvitationsRequestId = (requestId: string, signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/invitations/${requestId}`, method: 'GET', signal });
 };
 
-export const getGetInvitationQueryKey = (params?: GetInvitationParams) => {
-	return [`/invitation`, ...(params ? [params] : [])] as const;
+export const getGetInvitationsRequestIdQueryKey = (requestId: string) => {
+	return [`/invitations/${requestId}`] as const;
 };
 
-export const getGetInvitationQueryOptions = <
-	TData = Awaited<ReturnType<typeof getInvitation>>,
+export const getGetInvitationsRequestIdQueryOptions = <
+	TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
 	TError = unknown
 >(
-	params?: GetInvitationParams,
+	requestId: string,
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitation>>, TError, TData>>;
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getInvitationsRequestId>>, TError, TData>
+		>;
 	}
 ) => {
 	const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetInvitationQueryKey(params);
+	const queryKey = queryOptions?.queryKey ?? getGetInvitationsRequestIdQueryKey(requestId);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvitation>>> = ({ signal }) =>
-		getInvitation(params, signal);
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getInvitationsRequestId>>> = ({
+		signal
+	}) => getInvitationsRequestId(requestId, signal);
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getInvitation>>,
+	return { queryKey, queryFn, enabled: !!requestId, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getInvitationsRequestId>>,
 		TError,
 		TData
 	> & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetInvitationQueryResult = NonNullable<Awaited<ReturnType<typeof getInvitation>>>;
-export type GetInvitationQueryError = unknown;
+export type GetInvitationsRequestIdQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getInvitationsRequestId>>
+>;
+export type GetInvitationsRequestIdQueryError = unknown;
 
-export function useGetInvitation<
-	TData = Awaited<ReturnType<typeof getInvitation>>,
+export function useGetInvitationsRequestId<
+	TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
 	TError = unknown
 >(
-	params: undefined | GetInvitationParams,
+	requestId: string,
 	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitation>>, TError, TData>> &
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getInvitationsRequestId>>, TError, TData>
+		> &
 			Pick<
 				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getInvitation>>,
+					Awaited<ReturnType<typeof getInvitationsRequestId>>,
 					TError,
-					Awaited<ReturnType<typeof getInvitation>>
+					Awaited<ReturnType<typeof getInvitationsRequestId>>
 				>,
 				'initialData'
 			>;
 	},
 	queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetInvitation<
-	TData = Awaited<ReturnType<typeof getInvitation>>,
+export function useGetInvitationsRequestId<
+	TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
 	TError = unknown
 >(
-	params?: GetInvitationParams,
+	requestId: string,
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitation>>, TError, TData>> &
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getInvitationsRequestId>>, TError, TData>
+		> &
 			Pick<
 				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getInvitation>>,
+					Awaited<ReturnType<typeof getInvitationsRequestId>>,
 					TError,
-					Awaited<ReturnType<typeof getInvitation>>
+					Awaited<ReturnType<typeof getInvitationsRequestId>>
 				>,
 				'initialData'
 			>;
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetInvitation<
-	TData = Awaited<ReturnType<typeof getInvitation>>,
+export function useGetInvitationsRequestId<
+	TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
 	TError = unknown
 >(
-	params?: GetInvitationParams,
+	requestId: string,
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitation>>, TError, TData>>;
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getInvitationsRequestId>>, TError, TData>
+		>;
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export function useGetInvitation<
-	TData = Awaited<ReturnType<typeof getInvitation>>,
+export function useGetInvitationsRequestId<
+	TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
 	TError = unknown
 >(
-	params?: GetInvitationParams,
+	requestId: string,
 	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getInvitation>>, TError, TData>>;
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getInvitationsRequestId>>, TError, TData>
+		>;
 	},
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetInvitationQueryOptions(params, options);
+	const queryOptions = getGetInvitationsRequestIdQueryOptions(requestId, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -123,3 +139,84 @@ export function useGetInvitation<
 
 	return query;
 }
+
+export const postInvitationsRequestId = (
+	requestId: string,
+	postInvitationsRequestIdBody: PostInvitationsRequestIdBody,
+	signal?: AbortSignal
+) => {
+	const formData = new FormData();
+	formData.append('RequestId', postInvitationsRequestIdBody.RequestId);
+	formData.append('NewPassword', postInvitationsRequestIdBody.NewPassword);
+	formData.append('ConfirmPassword', postInvitationsRequestIdBody.ConfirmPassword);
+
+	return customAxiosRequest<void>({
+		url: `/invitations/${requestId}`,
+		method: 'POST',
+		headers: { 'Content-Type': 'multipart/form-data' },
+		data: formData,
+		signal
+	});
+};
+
+export const getPostInvitationsRequestIdMutationOptions = <
+	TError = unknown,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postInvitationsRequestId>>,
+		TError,
+		{ requestId: string; data: PostInvitationsRequestIdBody },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postInvitationsRequestId>>,
+	TError,
+	{ requestId: string; data: PostInvitationsRequestIdBody },
+	TContext
+> => {
+	const mutationKey = ['postInvitationsRequestId'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postInvitationsRequestId>>,
+		{ requestId: string; data: PostInvitationsRequestIdBody }
+	> = props => {
+		const { requestId, data } = props ?? {};
+
+		return postInvitationsRequestId(requestId, data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostInvitationsRequestIdMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postInvitationsRequestId>>
+>;
+export type PostInvitationsRequestIdMutationBody = PostInvitationsRequestIdBody;
+export type PostInvitationsRequestIdMutationError = unknown;
+
+export const usePostInvitationsRequestId = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postInvitationsRequestId>>,
+			TError,
+			{ requestId: string; data: PostInvitationsRequestIdBody },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postInvitationsRequestId>>,
+	TError,
+	{ requestId: string; data: PostInvitationsRequestIdBody },
+	TContext
+> => {
+	const mutationOptions = getPostInvitationsRequestIdMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};

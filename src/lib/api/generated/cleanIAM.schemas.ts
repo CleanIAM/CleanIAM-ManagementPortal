@@ -148,6 +148,8 @@ export interface InviteUserRequest {
 	firstName: string;
 	/** Last name of the invited user */
 	lastName: string;
+	/** Roles of the invited user */
+	roles: UserRole[];
 }
 
 export interface ItemWithTooltip {
@@ -441,8 +443,10 @@ export type GetExternalProvidersRequestProviderParams = {
 	request?: string;
 };
 
-export type GetInvitationParams = {
-	requestId?: string;
+export type PostInvitationsRequestIdBody = {
+	RequestId: string;
+	NewPassword: string;
+	ConfirmPassword: string;
 };
 
 export type PostPasswordResetBody = {
@@ -479,13 +483,6 @@ export type PostSignupBody = {
 	Password: string;
 };
 
-export type PostApiUserInvitedParams = {
-	/**
-	 * custom tenant id if superAdmin wants to invite user to different organization
-	 */
-	tenant?: string;
-};
-
 export type PutApiUsersIdParams = {
 	/**
 	 * First name of the user
@@ -499,4 +496,18 @@ export type PutApiUsersIdParams = {
 	 * User roles
 	 */
 	Roles: UserRole[];
+};
+
+export type PostApiUsersInvitedParams = {
+	/**
+	 * custom tenant id if superAdmin wants to invite user to different organization
+	 */
+	tenant?: string;
+};
+
+export type PostApiUsersIdInvitationEmailParams = {
+	/**
+	 * custom tenant id if superAdmin wants to invite user to different organization
+	 */
+	tenant?: string;
 };

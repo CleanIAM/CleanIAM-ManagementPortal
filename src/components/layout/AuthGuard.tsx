@@ -3,7 +3,7 @@ import { useAuth } from 'react-oidc-context';
 import { useSignin } from '@/lib/auth/useSignin';
 import { useEffect, useMemo } from 'react';
 import { Loader } from '../public/Loader';
-import axiosInstance from '@/lib/api/axios/custom-axios';
+import axiosInstance from '@/lib/api/mutator/axios/custom-axios';
 
 export const AuthGuard = () => {
 	const auth = useAuth();

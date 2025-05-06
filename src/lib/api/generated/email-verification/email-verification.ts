@@ -23,7 +23,7 @@ import type {
 
 import type { PostEmailVerificationBody } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Show a page announcing that email verification is required

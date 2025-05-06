@@ -23,7 +23,7 @@ import type {
 
 import type { GetSigninParams, PostSigninBody, PostSigninParams } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 export const getSignin = (params?: GetSigninParams, signal?: AbortSignal) => {
 	return customAxiosRequest<void>({ url: `/signin`, method: 'GET', params, signal });

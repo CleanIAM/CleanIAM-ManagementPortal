@@ -23,7 +23,7 @@ import type {
 
 import type { PostPasswordResetBody, PostPasswordResetRequestIdBody } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Show the form where the user fills in his email, and if the email is valid, a password reset request is sent.

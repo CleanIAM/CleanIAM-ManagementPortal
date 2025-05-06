@@ -23,7 +23,7 @@ import type {
 
 import type { PostConnectEndsessionParams } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.

@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Error } from '../generated/cleanIAM.schemas';
 
 // Create the axios instance
 const axiosInstance = axios.create({

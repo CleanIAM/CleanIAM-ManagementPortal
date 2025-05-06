@@ -24,15 +24,12 @@ import type {
 import type {
 	ApiUserModel,
 	Error,
-	InviteUserRequest,
-	PostApiUserInvitedParams,
 	UpdateMfaRequest,
 	UpdateUserSimpleRequest,
-	UserInvited,
 	UserUpdated
 } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Get user info for the current user
@@ -267,85 +264,6 @@ export const usePutApiUserMfaEnabled = <TError = unknown, TContext = unknown>(
 	TContext
 > => {
 	const mutationOptions = getPutApiUserMfaEnabledMutationOptions(options);
-
-	return useMutation(mutationOptions, queryClient);
-};
-/**
- * @summary Invite a user to the system
- */
-export const postApiUserInvited = (
-	inviteUserRequest: InviteUserRequest,
-	params?: PostApiUserInvitedParams,
-	signal?: AbortSignal
-) => {
-	return customAxiosRequest<UserInvited>({
-		url: `/api/user/invited`,
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		data: inviteUserRequest,
-		params,
-		signal
-	});
-};
-
-export const getPostApiUserInvitedMutationOptions = <TError = Error, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiUserInvited>>,
-		TError,
-		{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
-		TContext
-	>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiUserInvited>>,
-	TError,
-	{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
-	TContext
-> => {
-	const mutationKey = ['postApiUserInvited'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiUserInvited>>,
-		{ data: InviteUserRequest; params?: PostApiUserInvitedParams }
-	> = props => {
-		const { data, params } = props ?? {};
-
-		return postApiUserInvited(data, params);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PostApiUserInvitedMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postApiUserInvited>>
->;
-export type PostApiUserInvitedMutationBody = InviteUserRequest;
-export type PostApiUserInvitedMutationError = Error;
-
-/**
- * @summary Invite a user to the system
- */
-export const usePostApiUserInvited = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiUserInvited>>,
-			TError,
-			{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postApiUserInvited>>,
-	TError,
-	{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
-	TContext
-> => {
-	const mutationOptions = getPostApiUserInvitedMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

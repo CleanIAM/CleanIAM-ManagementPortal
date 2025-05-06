@@ -25,14 +25,18 @@ import type {
 	ApiUserModel,
 	CreateNewUserRequest,
 	Error,
+	InviteUserRequest,
+	PostApiUsersIdInvitationEmailParams,
+	PostApiUsersInvitedParams,
 	PutApiUsersIdParams,
 	UserCreated,
 	UserDeleted,
 	UserDisabled,
+	UserInvited,
 	UserUpdated
 } from '../cleanIAM.schemas';
 
-import { customAxiosRequest } from '../../axios/custom-axios';
+import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Get all users
@@ -564,6 +568,168 @@ export const usePutApiUsersIdEnabled = <TError = Error, TContext = unknown>(
 	TContext
 > => {
 	const mutationOptions = getPutApiUsersIdEnabledMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Invite a user to the system
+ */
+export const postApiUsersInvited = (
+	inviteUserRequest: InviteUserRequest,
+	params?: PostApiUsersInvitedParams,
+	signal?: AbortSignal
+) => {
+	return customAxiosRequest<UserInvited>({
+		url: `/api/users/invited`,
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		data: inviteUserRequest,
+		params,
+		signal
+	});
+};
+
+export const getPostApiUsersInvitedMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postApiUsersInvited>>,
+		TError,
+		{ data: InviteUserRequest; params?: PostApiUsersInvitedParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postApiUsersInvited>>,
+	TError,
+	{ data: InviteUserRequest; params?: PostApiUsersInvitedParams },
+	TContext
+> => {
+	const mutationKey = ['postApiUsersInvited'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postApiUsersInvited>>,
+		{ data: InviteUserRequest; params?: PostApiUsersInvitedParams }
+	> = props => {
+		const { data, params } = props ?? {};
+
+		return postApiUsersInvited(data, params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiUsersInvitedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postApiUsersInvited>>
+>;
+export type PostApiUsersInvitedMutationBody = InviteUserRequest;
+export type PostApiUsersInvitedMutationError = Error;
+
+/**
+ * @summary Invite a user to the system
+ */
+export const usePostApiUsersInvited = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postApiUsersInvited>>,
+			TError,
+			{ data: InviteUserRequest; params?: PostApiUsersInvitedParams },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postApiUsersInvited>>,
+	TError,
+	{ data: InviteUserRequest; params?: PostApiUsersInvitedParams },
+	TContext
+> => {
+	const mutationOptions = getPostApiUsersInvitedMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Resend user invitation email
+ */
+export const postApiUsersIdInvitationEmail = (
+	id: string,
+	params?: PostApiUsersIdInvitationEmailParams,
+	signal?: AbortSignal
+) => {
+	return customAxiosRequest<UserInvited>({
+		url: `/api/users/${id}/invitation/email`,
+		method: 'POST',
+		params,
+		signal
+	});
+};
+
+export const getPostApiUsersIdInvitationEmailMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>,
+		TError,
+		{ id: string; params?: PostApiUsersIdInvitationEmailParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>,
+	TError,
+	{ id: string; params?: PostApiUsersIdInvitationEmailParams },
+	TContext
+> => {
+	const mutationKey = ['postApiUsersIdInvitationEmail'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>,
+		{ id: string; params?: PostApiUsersIdInvitationEmailParams }
+	> = props => {
+		const { id, params } = props ?? {};
+
+		return postApiUsersIdInvitationEmail(id, params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiUsersIdInvitationEmailMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>
+>;
+
+export type PostApiUsersIdInvitationEmailMutationError = Error;
+
+/**
+ * @summary Resend user invitation email
+ */
+export const usePostApiUsersIdInvitationEmail = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>,
+			TError,
+			{ id: string; params?: PostApiUsersIdInvitationEmailParams },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postApiUsersIdInvitationEmail>>,
+	TError,
+	{ id: string; params?: PostApiUsersIdInvitationEmailParams },
+	TContext
+> => {
+	const mutationOptions = getPostApiUsersIdInvitationEmailMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };
