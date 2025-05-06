@@ -60,7 +60,7 @@ export const UsersPage = () => {
 				</div>
 			)}
 
-			{/* Add User Form Dialog */}
+			{/* Invite Form Dialog */}
 			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen} modal={false}>
 				<DialogContent className="max-w-2xl">
 					<DialogHeader>

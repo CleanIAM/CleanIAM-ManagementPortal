@@ -2,10 +2,15 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { usePostApiUsersInvited } from '@/lib/api/generated/users-api/users-api';
-import { UserRole } from '@/lib/api/generated/cleanIAM.schemas';
+import {
+	useGetApiUsers,
+	usePostApiUsersInvited,
+	usePutApiUsersId
+} from '@/lib/api/generated/users-api/users-api';
+import { ApiUserModel, UserRole } from '@/lib/api/generated/cleanIAM.schemas';
 import { FormButton } from '@/components/form';
 import { toast } from 'react-toastify';
+import { Loader } from '../public/Loader';
 
 // Define the validation schema with Zod
 const userFormSchema = z.object({
@@ -28,11 +33,18 @@ const userFormSchema = z.object({
 type UserFormValues = z.infer<typeof userFormSchema>;
 
 interface UserFormProps {
+	user?: ApiUserModel;
 	onSuccess: () => void;
 	onCancel: () => void;
+	disableEmail?: boolean;
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
+export const UserForm: React.FC<UserFormProps> = ({
+	user,
+	onSuccess,
+	onCancel,
+	disableEmail = false
+}) => {
 	// Initialize React Hook Form with Zod validation
 	const {
 		register,
@@ -42,18 +54,21 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 	} = useForm<UserFormValues>({
 		resolver: zodResolver(userFormSchema),
 		defaultValues: {
-			email: '',
-			firstName: '',
-			lastName: '',
-			roles: []
+			email: user?.email || '',
+			firstName: user?.firstName || '',
+			lastName: user?.lastName || '',
+			roles: user?.roles || []
 		}
 	});
+
+	const { refetch } = useGetApiUsers();
 
 	// Create user mutation
 	const createUserMutation = usePostApiUsersInvited({
 		mutation: {
 			onSuccess: () => {
 				toast.success('User created successfully');
+				refetch();
 				onSuccess();
 			},
 			onError: error => {
@@ -62,11 +77,38 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 		}
 	});
 
+	// Update user mutation
+	const updateUserMutation = usePutApiUsersId({
+		mutation: {
+			onSuccess: () => {
+				toast.success('User updated successfully');
+				refetch();
+				onSuccess();
+			},
+			onError: error => {
+				toast.error(`Failed to update user: ${error.message}`);
+			}
+		}
+	});
+
 	// Form submission handler
 	const onSubmit = (data: UserFormValues) => {
-		createUserMutation.mutate({
-			data: data
-		});
+		if (user) {
+			// Update existing user
+			updateUserMutation.mutate({
+				id: user.id,
+				params: {
+					FirstName: data.firstName,
+					LastName: data.lastName,
+					Roles: data.roles
+				}
+			});
+		} else {
+			// Create new user
+			createUserMutation.mutate({
+				data: data
+			});
+		}
 	};
 
 	return (
@@ -79,7 +121,8 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 					{...register('email')}
 					className={`w-full rounded-md border px-3 py-2 ${
 						errors.email ? 'border-red-500' : 'border-gray-300'
-					}`}
+					} ${disableEmail ? 'bg-gray-100' : ''}`}
+					disabled={disableEmail}
 				/>
 				{errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
 			</div>
@@ -145,8 +188,27 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 				<FormButton type="button" variant="secondary" onClick={onCancel}>
 					Cancel
 				</FormButton>
-				<FormButton type="submit" disabled={isSubmitting || createUserMutation.isPending}>
-					{isSubmitting || createUserMutation.isPending ? 'Creating...' : 'Create User'}
+				<FormButton
+					type="submit"
+					disabled={isSubmitting || createUserMutation.isPending || updateUserMutation.isPending}
+				>
+					{isSubmitting || createUserMutation.isPending || updateUserMutation.isPending ? (
+						user ? (
+							<p className="flex">
+								<Loader className="mr-1 h-4 w-4" />
+								Updating...
+							</p>
+						) : (
+							<p className="flex">
+								<Loader className="mr-1 h-4 w-4" />
+								Creating...
+							</p>
+						)
+					) : user ? (
+						'Update User'
+					) : (
+						'Create User'
+					)}
 				</FormButton>
 			</div>
 		</form>

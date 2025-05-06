@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { UserRoleBadges } from './UserRoleBadges';
 import { UserStatus } from './UserStatus';
 import { UserActions } from './UserActions';
+import { UserDialog } from './UserDialog';
 
 interface UserTableProps {
 	users: ApiUserModel[];
 }
 
 export const UserTable: React.FC<UserTableProps> = ({ users }) => {
+	// State for managing the selected user and dialog visibility
+	const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+	// Handle row click
+	const handleRowClick = (user: ApiUserModel) => {
+		setSelectedUser(user);
+		setIsDialogOpen(true);
+	};
 	if (users.length === 0) {
 		return (
 			<div className="py-8 text-center">
@@ -56,7 +66,17 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 				</thead>
 				<tbody className="divide-y divide-gray-200 bg-white">
 					{users.map(user => (
-						<tr key={user.id} className="hover:bg-gray-50">
+						<tr
+							key={user.id}
+							className="cursor-pointer hover:bg-gray-50"
+							onClick={e => {
+								// Prevent row click when clicking on the actions column
+								if ((e.target as HTMLElement).closest('.actions-column')) {
+									return;
+								}
+								handleRowClick(user);
+							}}
+						>
 							<td className="whitespace-nowrap px-6 py-4">
 								<div className="text-sm font-medium text-gray-900">
 									{user.firstName} {user.lastName}
@@ -72,13 +92,15 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 								{/* In a real app, we'd have an isDisabled flag - mocked for demonstration */}
 								<UserStatus user={user} />
 							</td>
-							<td className="whitespace-nowrap px-6 py-4 text-right">
+							<td className="actions-column whitespace-nowrap px-6 py-4 text-right">
 								<UserActions user={user} />
 							</td>
 						</tr>
 					))}
 				</tbody>
 			</table>
+			{/* User Dialog */}
+			<UserDialog user={selectedUser} isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
 		</div>
 	);
 };
