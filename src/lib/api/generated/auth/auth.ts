@@ -5,509 +5,601 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	MutationFunction,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult
 } from '@tanstack/react-query';
 
-import type {
-  PostConnectEndsessionParams
-} from '../cleanIAM.schemas';
+import type { PostConnectEndsessionParams } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../axios/custom-axios';
 
-
-
-
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
 If the user is not authenticated, the user will be redirected to the signin page.
  */
-export const getConnectAuthorize = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/authorize`, method: 'GET', signal
-    },
-      );
-    }
-  
+export const getConnectAuthorize = (signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/authorize`, method: 'GET', signal });
+};
 
 export const getGetConnectAuthorizeQueryKey = () => {
-    return [`/connect/authorize`] as const;
-    }
+	return [`/connect/authorize`] as const;
+};
 
-    
-export const getGetConnectAuthorizeQueryOptions = <TData = Awaited<ReturnType<typeof getConnectAuthorize>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>>, }
-) => {
+export const getGetConnectAuthorizeQueryOptions = <
+	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
+	TError = unknown
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetConnectAuthorizeQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetConnectAuthorizeQueryKey();
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectAuthorize>>> = ({ signal }) =>
+		getConnectAuthorize(signal);
 
-  
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getConnectAuthorize>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectAuthorize>>> = ({ signal }) => getConnectAuthorize(signal);
+export type GetConnectAuthorizeQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getConnectAuthorize>>
+>;
+export type GetConnectAuthorizeQueryError = unknown;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConnectAuthorizeQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectAuthorize>>>
-export type GetConnectAuthorizeQueryError = unknown
-
-
-export function useGetConnectAuthorize<TData = Awaited<ReturnType<typeof getConnectAuthorize>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectAuthorize>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectAuthorize>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectAuthorize<TData = Awaited<ReturnType<typeof getConnectAuthorize>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectAuthorize>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectAuthorize>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectAuthorize<TData = Awaited<ReturnType<typeof getConnectAuthorize>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectAuthorize<
+	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
+	TError = unknown
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectAuthorize>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectAuthorize>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectAuthorize<
+	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectAuthorize>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectAuthorize>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectAuthorize<
+	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary The main endpoint for OAuth 2 authorization code flow.
 If the user is not authenticated, the user will be redirected to the signin page.
  */
 
-export function useGetConnectAuthorize<TData = Awaited<ReturnType<typeof getConnectAuthorize>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetConnectAuthorize<
+	TData = Awaited<ReturnType<typeof getConnectAuthorize>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectAuthorize>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetConnectAuthorizeQueryOptions(options);
 
-  const queryOptions = getGetConnectAuthorizeQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+	query.queryKey = queryOptions.queryKey;
 
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
+	return query;
 }
-
-
 
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
  */
-export const getConnectEndsession = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/endsession`, method: 'GET', signal
-    },
-      );
-    }
-  
+export const getConnectEndsession = (signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/endsession`, method: 'GET', signal });
+};
 
 export const getGetConnectEndsessionQueryKey = () => {
-    return [`/connect/endsession`] as const;
-    }
+	return [`/connect/endsession`] as const;
+};
 
-    
-export const getGetConnectEndsessionQueryOptions = <TData = Awaited<ReturnType<typeof getConnectEndsession>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>>, }
-) => {
+export const getGetConnectEndsessionQueryOptions = <
+	TData = Awaited<ReturnType<typeof getConnectEndsession>>,
+	TError = unknown
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetConnectEndsessionQueryKey();
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsession>>> = ({ signal }) =>
+		getConnectEndsession(signal);
 
-  
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getConnectEndsession>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsession>>> = ({ signal }) => getConnectEndsession(signal);
+export type GetConnectEndsessionQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getConnectEndsession>>
+>;
+export type GetConnectEndsessionQueryError = unknown;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConnectEndsessionQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectEndsession>>>
-export type GetConnectEndsessionQueryError = unknown
-
-
-export function useGetConnectEndsession<TData = Awaited<ReturnType<typeof getConnectEndsession>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectEndsession>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectEndsession>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectEndsession<TData = Awaited<ReturnType<typeof getConnectEndsession>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectEndsession>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectEndsession>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectEndsession<TData = Awaited<ReturnType<typeof getConnectEndsession>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectEndsession<
+	TData = Awaited<ReturnType<typeof getConnectEndsession>>,
+	TError = unknown
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectEndsession>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectEndsession>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectEndsession<
+	TData = Awaited<ReturnType<typeof getConnectEndsession>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectEndsession>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectEndsession>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectEndsession<
+	TData = Awaited<ReturnType<typeof getConnectEndsession>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
  */
 
-export function useGetConnectEndsession<TData = Awaited<ReturnType<typeof getConnectEndsession>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetConnectEndsession<
+	TData = Awaited<ReturnType<typeof getConnectEndsession>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetConnectEndsessionQueryOptions(options);
 
-  const queryOptions = getGetConnectEndsessionQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+	query.queryKey = queryOptions.queryKey;
 
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
+	return query;
 }
-
-
 
 /**
  * @summary Endpoint handling the sign-out request.
  */
 export const postConnectEndsession = (
-    params: PostConnectEndsessionParams,
- signal?: AbortSignal
+	params: PostConnectEndsessionParams,
+	signal?: AbortSignal
 ) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/endsession`, method: 'POST',
-        params, signal
-    },
-      );
-    }
-  
+	return customAxiosRequest<void>({ url: `/connect/endsession`, method: 'POST', params, signal });
+};
 
+export const getPostConnectEndsessionMutationOptions = <
+	TError = unknown,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postConnectEndsession>>,
+		TError,
+		{ params: PostConnectEndsessionParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postConnectEndsession>>,
+	TError,
+	{ params: PostConnectEndsessionParams },
+	TContext
+> => {
+	const mutationKey = ['postConnectEndsession'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
 
-export const getPostConnectEndsessionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postConnectEndsession>>, TError,{params: PostConnectEndsessionParams}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postConnectEndsession>>, TError,{params: PostConnectEndsessionParams}, TContext> => {
-    
-const mutationKey = ['postConnectEndsession'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postConnectEndsession>>,
+		{ params: PostConnectEndsessionParams }
+	> = props => {
+		const { params } = props ?? {};
 
-      
+		return postConnectEndsession(params);
+	};
 
+	return { mutationFn, ...mutationOptions };
+};
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postConnectEndsession>>, {params: PostConnectEndsessionParams}> = (props) => {
-          const {params} = props ?? {};
+export type PostConnectEndsessionMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postConnectEndsession>>
+>;
 
-          return  postConnectEndsession(params,)
-        }
+export type PostConnectEndsessionMutationError = unknown;
 
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostConnectEndsessionMutationResult = NonNullable<Awaited<ReturnType<typeof postConnectEndsession>>>
-    
-    export type PostConnectEndsessionMutationError = unknown
-
-    /**
+/**
  * @summary Endpoint handling the sign-out request.
  */
-export const usePostConnectEndsession = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postConnectEndsession>>, TError,{params: PostConnectEndsessionParams}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postConnectEndsession>>,
-        TError,
-        {params: PostConnectEndsessionParams},
-        TContext
-      > => {
+export const usePostConnectEndsession = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postConnectEndsession>>,
+			TError,
+			{ params: PostConnectEndsessionParams },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postConnectEndsession>>,
+	TError,
+	{ params: PostConnectEndsessionParams },
+	TContext
+> => {
+	const mutationOptions = getPostConnectEndsessionMutationOptions(options);
 
-      const mutationOptions = getPostConnectEndsessionMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+	return useMutation(mutationOptions, queryClient);
+};
+/**
  * @summary Show the view to confirm the consent of the user to sing out.
 Just a fallback in case the client application did not provide a redirect URI.
  */
-export const getConnectEndsessionSuccess = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/endsession/success`, method: 'GET', signal
-    },
-      );
-    }
-  
+export const getConnectEndsessionSuccess = (signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/endsession/success`, method: 'GET', signal });
+};
 
 export const getGetConnectEndsessionSuccessQueryKey = () => {
-    return [`/connect/endsession/success`] as const;
-    }
+	return [`/connect/endsession/success`] as const;
+};
 
-    
-export const getGetConnectEndsessionSuccessQueryOptions = <TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>>, }
-) => {
+export const getGetConnectEndsessionSuccessQueryOptions = <
+	TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+	TError = unknown
+>(options?: {
+	query?: Partial<
+		UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+	>;
+}) => {
+	const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionSuccessQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetConnectEndsessionSuccessQueryKey();
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>> = ({
+		signal
+	}) => getConnectEndsessionSuccess(signal);
 
-  
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>> = ({ signal }) => getConnectEndsessionSuccess(signal);
+export type GetConnectEndsessionSuccessQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getConnectEndsessionSuccess>>
+>;
+export type GetConnectEndsessionSuccessQueryError = unknown;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConnectEndsessionSuccessQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>>
-export type GetConnectEndsessionSuccessQueryError = unknown
-
-
-export function useGetConnectEndsessionSuccess<TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectEndsessionSuccess>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectEndsessionSuccess<TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectEndsessionSuccess>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectEndsessionSuccess<TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectEndsessionSuccess<
+	TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+	TError = unknown
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectEndsessionSuccess>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectEndsessionSuccess<
+	TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectEndsessionSuccess>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectEndsessionSuccess<
+	TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
 Just a fallback in case the client application did not provide a redirect URI.
  */
 
-export function useGetConnectEndsessionSuccess<TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetConnectEndsessionSuccess<
+	TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetConnectEndsessionSuccessQueryOptions(options);
 
-  const queryOptions = getGetConnectEndsessionSuccessQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+	query.queryKey = queryOptions.queryKey;
 
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
+	return query;
 }
-
-
 
 /**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
-export const getConnectUserinfo = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/userinfo`, method: 'GET', signal
-    },
-      );
-    }
-  
+export const getConnectUserinfo = (signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'GET', signal });
+};
 
 export const getGetConnectUserinfoQueryKey = () => {
-    return [`/connect/userinfo`] as const;
-    }
+	return [`/connect/userinfo`] as const;
+};
 
-    
-export const getGetConnectUserinfoQueryOptions = <TData = Awaited<ReturnType<typeof getConnectUserinfo>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>, }
-) => {
+export const getGetConnectUserinfoQueryOptions = <
+	TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
+	TError = unknown
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+	const queryKey = queryOptions?.queryKey ?? getGetConnectUserinfoQueryKey();
 
-  const queryKey =  queryOptions?.queryKey ?? getGetConnectUserinfoQueryKey();
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectUserinfo>>> = ({ signal }) =>
+		getConnectUserinfo(signal);
 
-  
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getConnectUserinfo>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectUserinfo>>> = ({ signal }) => getConnectUserinfo(signal);
+export type GetConnectUserinfoQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getConnectUserinfo>>
+>;
+export type GetConnectUserinfoQueryError = unknown;
 
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetConnectUserinfoQueryResult = NonNullable<Awaited<ReturnType<typeof getConnectUserinfo>>>
-export type GetConnectUserinfoQueryError = unknown
-
-
-export function useGetConnectUserinfo<TData = Awaited<ReturnType<typeof getConnectUserinfo>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectUserinfo>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectUserinfo>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectUserinfo<TData = Awaited<ReturnType<typeof getConnectUserinfo>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getConnectUserinfo>>,
-          TError,
-          Awaited<ReturnType<typeof getConnectUserinfo>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetConnectUserinfo<TData = Awaited<ReturnType<typeof getConnectUserinfo>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetConnectUserinfo<
+	TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
+	TError = unknown
+>(
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectUserinfo>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectUserinfo>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectUserinfo<
+	TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getConnectUserinfo>>,
+					TError,
+					Awaited<ReturnType<typeof getConnectUserinfo>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetConnectUserinfo<
+	TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
 
-export function useGetConnectUserinfo<TData = Awaited<ReturnType<typeof getConnectUserinfo>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetConnectUserinfo<
+	TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
+	TError = unknown
+>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetConnectUserinfoQueryOptions(options);
 
-  const queryOptions = getGetConnectUserinfoQueryOptions(options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+	query.queryKey = queryOptions.queryKey;
 
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
+	return query;
 }
-
-
 
 /**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
-export const postConnectUserinfo = (
-    
- signal?: AbortSignal
-) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/connect/userinfo`, method: 'POST', signal
-    },
-      );
-    }
-  
+export const postConnectUserinfo = (signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'POST', signal });
+};
 
+export const getPostConnectUserinfoMutationOptions = <
+	TError = unknown,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postConnectUserinfo>>,
+		TError,
+		void,
+		TContext
+	>;
+}): UseMutationOptions<Awaited<ReturnType<typeof postConnectUserinfo>>, TError, void, TContext> => {
+	const mutationKey = ['postConnectUserinfo'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
 
-export const getPostConnectUserinfoMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postConnectUserinfo>>, TError,void, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postConnectUserinfo>>, TError,void, TContext> => {
-    
-const mutationKey = ['postConnectUserinfo'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postConnectUserinfo>>,
+		void
+	> = () => {
+		return postConnectUserinfo();
+	};
 
-      
+	return { mutationFn, ...mutationOptions };
+};
 
+export type PostConnectUserinfoMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postConnectUserinfo>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postConnectUserinfo>>, void> = () => {
-          
+export type PostConnectUserinfoMutationError = unknown;
 
-          return  postConnectUserinfo()
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostConnectUserinfoMutationResult = NonNullable<Awaited<ReturnType<typeof postConnectUserinfo>>>
-    
-    export type PostConnectUserinfoMutationError = unknown
-
-    /**
+/**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
-export const usePostConnectUserinfo = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postConnectUserinfo>>, TError,void, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postConnectUserinfo>>,
-        TError,
-        void,
-        TContext
-      > => {
+export const usePostConnectUserinfo = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postConnectUserinfo>>,
+			TError,
+			void,
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<Awaited<ReturnType<typeof postConnectUserinfo>>, TError, void, TContext> => {
+	const mutationOptions = getPostConnectUserinfoMutationOptions(options);
 
-      const mutationOptions = getPostConnectUserinfoMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+	return useMutation(mutationOptions, queryClient);
+};

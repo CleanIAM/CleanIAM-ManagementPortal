@@ -5,86 +5,347 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import {
-  useMutation
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-  MutationFunction,
-  QueryClient,
-  UseMutationOptions,
-  UseMutationResult
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	MutationFunction,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
+	UseQueryOptions,
+	UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  UpdateMfaRequest
+	ApiUserModel,
+	Error,
+	InviteUserRequest,
+	PostApiUserInvitedParams,
+	UpdateMfaRequest,
+	UpdateUserSimpleRequest,
+	UserInvited,
+	UserUpdated
 } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../axios/custom-axios';
 
+/**
+ * @summary Get user info for the current user
+ */
+export const getApiUser = (signal?: AbortSignal) => {
+	return customAxiosRequest<ApiUserModel>({ url: `/api/user`, method: 'GET', signal });
+};
 
+export const getGetApiUserQueryKey = () => {
+	return [`/api/user`] as const;
+};
 
+export const getGetApiUserQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApiUser>>,
+	TError = Error
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUser>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetApiUserQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUser>>> = ({ signal }) =>
+		getApiUser(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getApiUser>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiUserQueryResult = NonNullable<Awaited<ReturnType<typeof getApiUser>>>;
+export type GetApiUserQueryError = Error;
+
+export function useGetApiUser<TData = Awaited<ReturnType<typeof getApiUser>>, TError = Error>(
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUser>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiUser>>,
+					TError,
+					Awaited<ReturnType<typeof getApiUser>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiUser<TData = Awaited<ReturnType<typeof getApiUser>>, TError = Error>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUser>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiUser>>,
+					TError,
+					Awaited<ReturnType<typeof getApiUser>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiUser<TData = Awaited<ReturnType<typeof getApiUser>>, TError = Error>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUser>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get user info for the current user
+ */
+
+export function useGetApiUser<TData = Awaited<ReturnType<typeof getApiUser>>, TError = Error>(
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUser>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetApiUserQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+/**
+ * @summary Update user info for the current user
+ */
+export const putApiUser = (updateUserSimpleRequest: UpdateUserSimpleRequest) => {
+	return customAxiosRequest<UserUpdated>({
+		url: `/api/user`,
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		data: updateUserSimpleRequest
+	});
+};
+
+export const getPutApiUserMutationOptions = <TError = Error, TContext = unknown>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof putApiUser>>,
+		TError,
+		{ data: UpdateUserSimpleRequest },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof putApiUser>>,
+	TError,
+	{ data: UpdateUserSimpleRequest },
+	TContext
+> => {
+	const mutationKey = ['putApiUser'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof putApiUser>>,
+		{ data: UpdateUserSimpleRequest }
+	> = props => {
+		const { data } = props ?? {};
+
+		return putApiUser(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiUserMutationResult = NonNullable<Awaited<ReturnType<typeof putApiUser>>>;
+export type PutApiUserMutationBody = UpdateUserSimpleRequest;
+export type PutApiUserMutationError = Error;
+
+/**
+ * @summary Update user info for the current user
+ */
+export const usePutApiUser = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof putApiUser>>,
+			TError,
+			{ data: UpdateUserSimpleRequest },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof putApiUser>>,
+	TError,
+	{ data: UpdateUserSimpleRequest },
+	TContext
+> => {
+	const mutationOptions = getPutApiUserMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Enable or disable MFA for the current user
+ */
+export const putApiUserMfaEnabled = (updateMfaRequest: UpdateMfaRequest) => {
+	return customAxiosRequest<void>({
+		url: `/api/user/mfa/enabled`,
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		data: updateMfaRequest
+	});
+};
+
+export const getPutApiUserMfaEnabledMutationOptions = <
+	TError = unknown,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof putApiUserMfaEnabled>>,
+		TError,
+		{ data: UpdateMfaRequest },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof putApiUserMfaEnabled>>,
+	TError,
+	{ data: UpdateMfaRequest },
+	TContext
+> => {
+	const mutationKey = ['putApiUserMfaEnabled'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof putApiUserMfaEnabled>>,
+		{ data: UpdateMfaRequest }
+	> = props => {
+		const { data } = props ?? {};
+
+		return putApiUserMfaEnabled(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiUserMfaEnabledMutationResult = NonNullable<
+	Awaited<ReturnType<typeof putApiUserMfaEnabled>>
+>;
+export type PutApiUserMfaEnabledMutationBody = UpdateMfaRequest;
+export type PutApiUserMfaEnabledMutationError = unknown;
 
 /**
  * @summary Enable or disable MFA for the current user
  */
-export const putMfaEnabled = (
-    updateMfaRequest: UpdateMfaRequest,
- ) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/mfa/enabled`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: updateMfaRequest
-    },
-      );
-    }
-  
+export const usePutApiUserMfaEnabled = <TError = unknown, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof putApiUserMfaEnabled>>,
+			TError,
+			{ data: UpdateMfaRequest },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof putApiUserMfaEnabled>>,
+	TError,
+	{ data: UpdateMfaRequest },
+	TContext
+> => {
+	const mutationOptions = getPutApiUserMfaEnabledMutationOptions(options);
 
-
-export const getPutMfaEnabledMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext> => {
-    
-const mutationKey = ['putMfaEnabled'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putMfaEnabled>>, {data: UpdateMfaRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  putMfaEnabled(data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PutMfaEnabledMutationResult = NonNullable<Awaited<ReturnType<typeof putMfaEnabled>>>
-    export type PutMfaEnabledMutationBody = UpdateMfaRequest
-    export type PutMfaEnabledMutationError = unknown
-
-    /**
- * @summary Enable or disable MFA for the current user
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Invite a user to the system
  */
-export const usePutMfaEnabled = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putMfaEnabled>>,
-        TError,
-        {data: UpdateMfaRequest},
-        TContext
-      > => {
+export const postApiUserInvited = (
+	inviteUserRequest: InviteUserRequest,
+	params?: PostApiUserInvitedParams,
+	signal?: AbortSignal
+) => {
+	return customAxiosRequest<UserInvited>({
+		url: `/api/user/invited`,
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		data: inviteUserRequest,
+		params,
+		signal
+	});
+};
 
-      const mutationOptions = getPutMfaEnabledMutationOptions(options);
+export const getPostApiUserInvitedMutationOptions = <TError = Error, TContext = unknown>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postApiUserInvited>>,
+		TError,
+		{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postApiUserInvited>>,
+	TError,
+	{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
+	TContext
+> => {
+	const mutationKey = ['postApiUserInvited'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
 
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postApiUserInvited>>,
+		{ data: InviteUserRequest; params?: PostApiUserInvitedParams }
+	> = props => {
+		const { data, params } = props ?? {};
+
+		return postApiUserInvited(data, params);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiUserInvitedMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postApiUserInvited>>
+>;
+export type PostApiUserInvitedMutationBody = InviteUserRequest;
+export type PostApiUserInvitedMutationError = Error;
+
+/**
+ * @summary Invite a user to the system
+ */
+export const usePostApiUserInvited = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postApiUserInvited>>,
+			TError,
+			{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postApiUserInvited>>,
+	TError,
+	{ data: InviteUserRequest; params?: PostApiUserInvitedParams },
+	TContext
+> => {
+	const mutationOptions = getPostApiUserInvitedMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};

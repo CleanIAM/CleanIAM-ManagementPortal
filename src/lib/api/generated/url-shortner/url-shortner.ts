@@ -5,110 +5,125 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseQueryOptions,
-  UseQueryResult
+	DataTag,
+	DefinedInitialDataOptions,
+	DefinedUseQueryResult,
+	QueryClient,
+	QueryFunction,
+	QueryKey,
+	UndefinedInitialDataOptions,
+	UseQueryOptions,
+	UseQueryResult
 } from '@tanstack/react-query';
 
 import { customAxiosRequest } from '../../axios/custom-axios';
 
-
-
-
 /**
  * @summary The endpoint handling the shortened url access
  */
-export const getUrlShortnerId = (
-    id: string,
- signal?: AbortSignal
+export const getUrlShortnerId = (id: string, signal?: AbortSignal) => {
+	return customAxiosRequest<void>({ url: `/url-shortner/${id}`, method: 'GET', signal });
+};
+
+export const getGetUrlShortnerIdQueryKey = (id: string) => {
+	return [`/url-shortner/${id}`] as const;
+};
+
+export const getGetUrlShortnerIdQueryOptions = <
+	TData = Awaited<ReturnType<typeof getUrlShortnerId>>,
+	TError = unknown
+>(
+	id: string,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>;
+	}
 ) => {
-      
-      
-      return customAxiosRequest<void>(
-      {url: `/url-shortner/${id}`, method: 'GET', signal
-    },
-      );
-    }
-  
+	const { query: queryOptions } = options ?? {};
 
-export const getGetUrlShortnerIdQueryKey = (id: string,) => {
-    return [`/url-shortner/${id}`] as const;
-    }
+	const queryKey = queryOptions?.queryKey ?? getGetUrlShortnerIdQueryKey(id);
 
-    
-export const getGetUrlShortnerIdQueryOptions = <TData = Awaited<ReturnType<typeof getUrlShortnerId>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>, }
-) => {
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getUrlShortnerId>>> = ({ signal }) =>
+		getUrlShortnerId(id, signal);
 
-const {query: queryOptions} = options ?? {};
+	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getUrlShortnerId>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUrlShortnerIdQueryKey(id);
+export type GetUrlShortnerIdQueryResult = NonNullable<Awaited<ReturnType<typeof getUrlShortnerId>>>;
+export type GetUrlShortnerIdQueryError = unknown;
 
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUrlShortnerId>>> = ({ signal }) => getUrlShortnerId(id, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetUrlShortnerIdQueryResult = NonNullable<Awaited<ReturnType<typeof getUrlShortnerId>>>
-export type GetUrlShortnerIdQueryError = unknown
-
-
-export function useGetUrlShortnerId<TData = Awaited<ReturnType<typeof getUrlShortnerId>>, TError = unknown>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getUrlShortnerId>>,
-          TError,
-          Awaited<ReturnType<typeof getUrlShortnerId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUrlShortnerId<TData = Awaited<ReturnType<typeof getUrlShortnerId>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getUrlShortnerId>>,
-          TError,
-          Awaited<ReturnType<typeof getUrlShortnerId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUrlShortnerId<TData = Awaited<ReturnType<typeof getUrlShortnerId>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUrlShortnerId<
+	TData = Awaited<ReturnType<typeof getUrlShortnerId>>,
+	TError = unknown
+>(
+	id: string,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUrlShortnerId>>,
+					TError,
+					Awaited<ReturnType<typeof getUrlShortnerId>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUrlShortnerId<
+	TData = Awaited<ReturnType<typeof getUrlShortnerId>>,
+	TError = unknown
+>(
+	id: string,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getUrlShortnerId>>,
+					TError,
+					Awaited<ReturnType<typeof getUrlShortnerId>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUrlShortnerId<
+	TData = Awaited<ReturnType<typeof getUrlShortnerId>>,
+	TError = unknown
+>(
+	id: string,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary The endpoint handling the shortened url access
  */
 
-export function useGetUrlShortnerId<TData = Awaited<ReturnType<typeof getUrlShortnerId>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetUrlShortnerId<
+	TData = Awaited<ReturnType<typeof getUrlShortnerId>>,
+	TError = unknown
+>(
+	id: string,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUrlShortnerId>>, TError, TData>>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetUrlShortnerIdQueryOptions(id, options);
 
-  const queryOptions = getGetUrlShortnerIdQueryOptions(id,options)
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+	query.queryKey = queryOptions.queryKey;
 
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
+	return query;
 }
-
-
-
