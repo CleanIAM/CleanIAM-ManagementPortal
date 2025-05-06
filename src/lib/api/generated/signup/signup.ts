@@ -5,221 +5,176 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostSignupBody } from '../cleanIAM.schemas';
+import type {
+  PostSignupBody
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export type getSignupResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type getSignupResponseComposite = getSignupResponse200;
 
-export type getSignupResponse = getSignupResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetSignupUrl = () => {
-	return `/signup`;
-};
-
-export const getSignup = async (options?: RequestInit): Promise<getSignupResponse> => {
-	return customFetch<getSignupResponse>(getGetSignupUrl(), {
-		...options,
-		method: 'GET'
-	});
-};
+export const getSignup = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/signup`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetSignupQueryKey = () => {
-	return [`/signup`] as const;
-};
+    return [`/signup`] as const;
+    }
 
-export const getGetSignupQueryOptions = <
-	TData = Awaited<ReturnType<typeof getSignup>>,
-	TError = unknown
->(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
-	request?: SecondParameter<typeof customFetch>;
-}) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+    
+export const getGetSignupQueryOptions = <TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>, }
+) => {
 
-	const queryKey = queryOptions?.queryKey ?? getGetSignupQueryKey();
+const {query: queryOptions} = options ?? {};
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getSignup>>> = ({ signal }) =>
-		getSignup({ signal, ...requestOptions });
+  const queryKey =  queryOptions?.queryKey ?? getGetSignupQueryKey();
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getSignup>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type GetSignupQueryResult = NonNullable<Awaited<ReturnType<typeof getSignup>>>;
-export type GetSignupQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSignup>>> = ({ signal }) => getSignup(signal);
 
-export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getSignup>>,
-					TError,
-					Awaited<ReturnType<typeof getSignup>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getSignup>>,
-					TError,
-					Awaited<ReturnType<typeof getSignup>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+      
 
-export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetSignupQueryOptions(options);
+      
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type postSignupResponse200 = {
-	data: void;
-	status: 200;
-};
+export type GetSignupQueryResult = NonNullable<Awaited<ReturnType<typeof getSignup>>>
+export type GetSignupQueryError = unknown
 
-export type postSignupResponseComposite = postSignupResponse200;
 
-export type postSignupResponse = postSignupResponseComposite & {
-	headers: Headers;
-};
+export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSignup>>,
+          TError,
+          Awaited<ReturnType<typeof getSignup>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSignup>>,
+          TError,
+          Awaited<ReturnType<typeof getSignup>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export const getPostSignupUrl = () => {
-	return `/signup`;
-};
+export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-export const postSignup = async (
-	postSignupBody: PostSignupBody,
-	options?: RequestInit
-): Promise<postSignupResponse> => {
-	const formData = new FormData();
-	formData.append('Email', postSignupBody.Email);
-	formData.append('FirstName', postSignupBody.FirstName);
-	formData.append('LastName', postSignupBody.LastName);
-	formData.append('Password', postSignupBody.Password);
+  const queryOptions = getGetSignupQueryOptions(options)
 
-	return customFetch<postSignupResponse>(getPostSignupUrl(), {
-		...options,
-		method: 'POST',
-		body: formData
-	});
-};
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export const getPostSignupMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postSignup>>,
-		TError,
-		{ data: PostSignupBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postSignup>>,
-	TError,
-	{ data: PostSignupBody },
-	TContext
-> => {
-	const mutationKey = ['postSignup'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
+  query.queryKey = queryOptions.queryKey ;
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postSignup>>,
-		{ data: PostSignupBody }
-	> = props => {
-		const { data } = props ?? {};
+  return query;
+}
 
-		return postSignup(data, requestOptions);
-	};
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type PostSignupMutationResult = NonNullable<Awaited<ReturnType<typeof postSignup>>>;
-export type PostSignupMutationBody = PostSignupBody;
-export type PostSignupMutationError = unknown;
+export const postSignup = (
+    postSignupBody: PostSignupBody,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append('Email', postSignupBody.Email)
+formData.append('FirstName', postSignupBody.FirstName)
+formData.append('LastName', postSignupBody.LastName)
+formData.append('Password', postSignupBody.Password)
 
-export const usePostSignup = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postSignup>>,
-			TError,
-			{ data: PostSignupBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postSignup>>,
-	TError,
-	{ data: PostSignupBody },
-	TContext
-> => {
-	const mutationOptions = getPostSignupMutationOptions(options);
+      return customAxiosRequest<void>(
+      {url: `/signup`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
 
-	return useMutation(mutationOptions, queryClient);
-};
+
+export const getPostSignupMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postSignup>>, TError,{data: PostSignupBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postSignup>>, TError,{data: PostSignupBody}, TContext> => {
+    
+const mutationKey = ['postSignup'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postSignup>>, {data: PostSignupBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postSignup(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostSignupMutationResult = NonNullable<Awaited<ReturnType<typeof postSignup>>>
+    export type PostSignupMutationBody = PostSignupBody
+    export type PostSignupMutationError = unknown
+
+    export const usePostSignup = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postSignup>>, TError,{data: PostSignupBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postSignup>>,
+        TError,
+        {data: PostSignupBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPostSignupMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

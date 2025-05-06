@@ -5,395 +5,209 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useQuery } from '@tanstack/react-query';
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetExternalProvidersRequestProviderParams } from '../cleanIAM.schemas';
+import type {
+  GetExternalProvidersRequestProviderParams
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * @summary Initiates the authentication process with Microsoft provider
  */
-export type getExternalProvidersRequestProviderResponse200 = {
-	data: void;
-	status: 200;
-};
-
-export type getExternalProvidersRequestProviderResponseComposite =
-	getExternalProvidersRequestProviderResponse200;
-
-export type getExternalProvidersRequestProviderResponse =
-	getExternalProvidersRequestProviderResponseComposite & {
-		headers: Headers;
-	};
-
-export const getGetExternalProvidersRequestProviderUrl = (
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams
+export const getExternalProvidersRequestProvider = (
+    provider: string,
+    params?: GetExternalProvidersRequestProviderParams,
+ signal?: AbortSignal
 ) => {
-	const normalizedParams = new URLSearchParams();
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/external-providers/request/${provider}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
+export const getGetExternalProvidersRequestProviderQueryKey = (provider: string,
+    params?: GetExternalProvidersRequestProviderParams,) => {
+    return [`/external-providers/request/${provider}`, ...(params ? [params]: [])] as const;
+    }
 
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0
-		? `/external-providers/request/${provider}?${stringifiedParams}`
-		: `/external-providers/request/${provider}`;
-};
-
-export const getExternalProvidersRequestProvider = async (
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams,
-	options?: RequestInit
-): Promise<getExternalProvidersRequestProviderResponse> => {
-	return customFetch<getExternalProvidersRequestProviderResponse>(
-		getGetExternalProvidersRequestProviderUrl(provider, params),
-		{
-			...options,
-			method: 'GET'
-		}
-	);
-};
-
-export const getGetExternalProvidersRequestProviderQueryKey = (
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams
+    
+export const getGetExternalProvidersRequestProviderQueryOptions = <TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError = unknown>(provider: string,
+    params?: GetExternalProvidersRequestProviderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData>>, }
 ) => {
-	return [`/external-providers/request/${provider}`, ...(params ? [params] : [])] as const;
-};
 
-export const getGetExternalProvidersRequestProviderQueryOptions = <
-	TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-	TError = unknown
->(
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	}
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-	const queryKey =
-		queryOptions?.queryKey ?? getGetExternalProvidersRequestProviderQueryKey(provider, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetExternalProvidersRequestProviderQueryKey(provider,params);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>> = ({
-		signal
-	}) => getExternalProvidersRequestProvider(provider, params, { signal, ...requestOptions });
+  
 
-	return { queryKey, queryFn, enabled: !!provider, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>> = ({ signal }) => getExternalProvidersRequestProvider(provider,params, signal);
 
-export type GetExternalProvidersRequestProviderQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>
->;
-export type GetExternalProvidersRequestProviderQueryError = unknown;
+      
 
-export function useGetExternalProvidersRequestProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-	TError = unknown
->(
-	provider: string,
-	params: undefined | GetExternalProvidersRequestProviderParams,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-					TError,
-					Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetExternalProvidersRequestProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-	TError = unknown
->(
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-					TError,
-					Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetExternalProvidersRequestProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-	TError = unknown
->(
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+      
+
+   return  { queryKey, queryFn, enabled: !!(provider), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetExternalProvidersRequestProviderQueryResult = NonNullable<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>>
+export type GetExternalProvidersRequestProviderQueryError = unknown
+
+
+export function useGetExternalProvidersRequestProvider<TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError = unknown>(
+ provider: string,
+    params: undefined |  GetExternalProvidersRequestProviderParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
+          TError,
+          Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExternalProvidersRequestProvider<TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError = unknown>(
+ provider: string,
+    params?: GetExternalProvidersRequestProviderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
+          TError,
+          Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExternalProvidersRequestProvider<TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError = unknown>(
+ provider: string,
+    params?: GetExternalProvidersRequestProviderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Initiates the authentication process with Microsoft provider
  */
 
-export function useGetExternalProvidersRequestProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-	TError = unknown
->(
-	provider: string,
-	params?: GetExternalProvidersRequestProviderParams,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetExternalProvidersRequestProviderQueryOptions(
-		provider,
-		params,
-		options
-	);
+export function useGetExternalProvidersRequestProvider<TData = Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError = unknown>(
+ provider: string,
+    params?: GetExternalProvidersRequestProviderParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersRequestProvider>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetExternalProvidersRequestProviderQueryOptions(provider,params,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
 
 /**
  * @summary Finalizes the authentication process with external signin provider
  */
-export type getExternalProvidersCallbackProviderResponse200 = {
-	data: void;
-	status: 200;
-};
-
-export type getExternalProvidersCallbackProviderResponseComposite =
-	getExternalProvidersCallbackProviderResponse200;
-
-export type getExternalProvidersCallbackProviderResponse =
-	getExternalProvidersCallbackProviderResponseComposite & {
-		headers: Headers;
-	};
-
-export const getGetExternalProvidersCallbackProviderUrl = (provider: string) => {
-	return `/external-providers/callback/${provider}`;
-};
-
-export const getExternalProvidersCallbackProvider = async (
-	provider: string,
-	options?: RequestInit
-): Promise<getExternalProvidersCallbackProviderResponse> => {
-	return customFetch<getExternalProvidersCallbackProviderResponse>(
-		getGetExternalProvidersCallbackProviderUrl(provider),
-		{
-			...options,
-			method: 'GET'
-		}
-	);
-};
-
-export const getGetExternalProvidersCallbackProviderQueryKey = (provider: string) => {
-	return [`/external-providers/callback/${provider}`] as const;
-};
-
-export const getGetExternalProvidersCallbackProviderQueryOptions = <
-	TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-	TError = unknown
->(
-	provider: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	}
+export const getExternalProvidersCallbackProvider = (
+    provider: string,
+ signal?: AbortSignal
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/external-providers/callback/${provider}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-	const queryKey =
-		queryOptions?.queryKey ?? getGetExternalProvidersCallbackProviderQueryKey(provider);
+export const getGetExternalProvidersCallbackProviderQueryKey = (provider: string,) => {
+    return [`/external-providers/callback/${provider}`] as const;
+    }
 
-	const queryFn: QueryFunction<
-		Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
-	> = ({ signal }) => getExternalProvidersCallbackProvider(provider, { signal, ...requestOptions });
+    
+export const getGetExternalProvidersCallbackProviderQueryOptions = <TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError = unknown>(provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData>>, }
+) => {
 
-	return { queryKey, queryFn, enabled: !!provider, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+const {query: queryOptions} = options ?? {};
 
-export type GetExternalProvidersCallbackProviderQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
->;
-export type GetExternalProvidersCallbackProviderQueryError = unknown;
+  const queryKey =  queryOptions?.queryKey ?? getGetExternalProvidersCallbackProviderQueryKey(provider);
 
-export function useGetExternalProvidersCallbackProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-	TError = unknown
->(
-	provider: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-					TError,
-					Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetExternalProvidersCallbackProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-	TError = unknown
->(
-	provider: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-				TError,
-				TData
-			>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-					TError,
-					Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetExternalProvidersCallbackProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-	TError = unknown
->(
-	provider: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>> = ({ signal }) => getExternalProvidersCallbackProvider(provider, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(provider), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetExternalProvidersCallbackProviderQueryResult = NonNullable<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>>
+export type GetExternalProvidersCallbackProviderQueryError = unknown
+
+
+export function useGetExternalProvidersCallbackProvider<TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError = unknown>(
+ provider: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
+          TError,
+          Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExternalProvidersCallbackProvider<TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError = unknown>(
+ provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
+          TError,
+          Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetExternalProvidersCallbackProvider<TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError = unknown>(
+ provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Finalizes the authentication process with external signin provider
  */
 
-export function useGetExternalProvidersCallbackProvider<
-	TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-	TError = unknown
->(
-	provider: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<
-				Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
-				TError,
-				TData
-			>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetExternalProvidersCallbackProviderQueryOptions(provider, options);
+export function useGetExternalProvidersCallbackProvider<TData = Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError = unknown>(
+ provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetExternalProvidersCallbackProviderQueryOptions(provider,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
+
+
+

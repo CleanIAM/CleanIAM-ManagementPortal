@@ -5,504 +5,343 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostPasswordResetBody, PostPasswordResetRequestIdBody } from '../cleanIAM.schemas';
+import type {
+  PostPasswordResetBody,
+  PostPasswordResetRequestIdBody
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * @summary Show the form where the user fills in his email, and if the email is valid, a password reset request is sent.
  */
-export type getPasswordResetResponse200 = {
-	data: void;
-	status: 200;
-};
-
-export type getPasswordResetResponseComposite = getPasswordResetResponse200;
-
-export type getPasswordResetResponse = getPasswordResetResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetPasswordResetUrl = () => {
-	return `/password-reset`;
-};
-
-export const getPasswordReset = async (
-	options?: RequestInit
-): Promise<getPasswordResetResponse> => {
-	return customFetch<getPasswordResetResponse>(getGetPasswordResetUrl(), {
-		...options,
-		method: 'GET'
-	});
-};
+export const getPasswordReset = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/password-reset`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetPasswordResetQueryKey = () => {
-	return [`/password-reset`] as const;
-};
+    return [`/password-reset`] as const;
+    }
 
-export const getGetPasswordResetQueryOptions = <
-	TData = Awaited<ReturnType<typeof getPasswordReset>>,
-	TError = unknown
->(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
-	request?: SecondParameter<typeof customFetch>;
-}) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+    
+export const getGetPasswordResetQueryOptions = <TData = Awaited<ReturnType<typeof getPasswordReset>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>, }
+) => {
 
-	const queryKey = queryOptions?.queryKey ?? getGetPasswordResetQueryKey();
+const {query: queryOptions} = options ?? {};
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordReset>>> = ({ signal }) =>
-		getPasswordReset({ signal, ...requestOptions });
+  const queryKey =  queryOptions?.queryKey ?? getGetPasswordResetQueryKey();
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getPasswordReset>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type GetPasswordResetQueryResult = NonNullable<Awaited<ReturnType<typeof getPasswordReset>>>;
-export type GetPasswordResetQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordReset>>> = ({ signal }) => getPasswordReset(signal);
 
-export function useGetPasswordReset<
-	TData = Awaited<ReturnType<typeof getPasswordReset>>,
-	TError = unknown
->(
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getPasswordReset>>,
-					TError,
-					Awaited<ReturnType<typeof getPasswordReset>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPasswordReset<
-	TData = Awaited<ReturnType<typeof getPasswordReset>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getPasswordReset>>,
-					TError,
-					Awaited<ReturnType<typeof getPasswordReset>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPasswordReset<
-	TData = Awaited<ReturnType<typeof getPasswordReset>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetPasswordResetQueryResult = NonNullable<Awaited<ReturnType<typeof getPasswordReset>>>
+export type GetPasswordResetQueryError = unknown
+
+
+export function useGetPasswordReset<TData = Awaited<ReturnType<typeof getPasswordReset>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPasswordReset>>,
+          TError,
+          Awaited<ReturnType<typeof getPasswordReset>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPasswordReset<TData = Awaited<ReturnType<typeof getPasswordReset>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPasswordReset>>,
+          TError,
+          Awaited<ReturnType<typeof getPasswordReset>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPasswordReset<TData = Awaited<ReturnType<typeof getPasswordReset>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Show the form where the user fills in his email, and if the email is valid, a password reset request is sent.
  */
 
-export function useGetPasswordReset<
-	TData = Awaited<ReturnType<typeof getPasswordReset>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetPasswordResetQueryOptions(options);
+export function useGetPasswordReset<TData = Awaited<ReturnType<typeof getPasswordReset>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetPasswordResetQueryOptions(options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
 
-/**
- * @summary Handle the form submission with email for the password reset request.
- */
-export type postPasswordResetResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type postPasswordResetResponseComposite = postPasswordResetResponse200;
-
-export type postPasswordResetResponse = postPasswordResetResponseComposite & {
-	headers: Headers;
-};
-
-export const getPostPasswordResetUrl = () => {
-	return `/password-reset`;
-};
-
-export const postPasswordReset = async (
-	postPasswordResetBody: PostPasswordResetBody,
-	options?: RequestInit
-): Promise<postPasswordResetResponse> => {
-	const formData = new FormData();
-	formData.append('Email', postPasswordResetBody.Email);
-
-	return customFetch<postPasswordResetResponse>(getPostPasswordResetUrl(), {
-		...options,
-		method: 'POST',
-		body: formData
-	});
-};
-
-export const getPostPasswordResetMutationOptions = <
-	TError = unknown,
-	TContext = unknown
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postPasswordReset>>,
-		TError,
-		{ data: PostPasswordResetBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postPasswordReset>>,
-	TError,
-	{ data: PostPasswordResetBody },
-	TContext
-> => {
-	const mutationKey = ['postPasswordReset'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postPasswordReset>>,
-		{ data: PostPasswordResetBody }
-	> = props => {
-		const { data } = props ?? {};
-
-		return postPasswordReset(data, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PostPasswordResetMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postPasswordReset>>
->;
-export type PostPasswordResetMutationBody = PostPasswordResetBody;
-export type PostPasswordResetMutationError = unknown;
 
 /**
  * @summary Handle the form submission with email for the password reset request.
  */
-export const usePostPasswordReset = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postPasswordReset>>,
-			TError,
-			{ data: PostPasswordResetBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postPasswordReset>>,
-	TError,
-	{ data: PostPasswordResetBody },
-	TContext
-> => {
-	const mutationOptions = getPostPasswordResetMutationOptions(options);
+export const postPasswordReset = (
+    postPasswordResetBody: PostPasswordResetBody,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append('Email', postPasswordResetBody.Email)
 
-	return useMutation(mutationOptions, queryClient);
-};
-/**
+      return customAxiosRequest<void>(
+      {url: `/password-reset`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getPostPasswordResetMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postPasswordReset>>, TError,{data: PostPasswordResetBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postPasswordReset>>, TError,{data: PostPasswordResetBody}, TContext> => {
+    
+const mutationKey = ['postPasswordReset'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postPasswordReset>>, {data: PostPasswordResetBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postPasswordReset(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostPasswordResetMutationResult = NonNullable<Awaited<ReturnType<typeof postPasswordReset>>>
+    export type PostPasswordResetMutationBody = PostPasswordResetBody
+    export type PostPasswordResetMutationError = unknown
+
+    /**
+ * @summary Handle the form submission with email for the password reset request.
+ */
+export const usePostPasswordReset = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postPasswordReset>>, TError,{data: PostPasswordResetBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postPasswordReset>>,
+        TError,
+        {data: PostPasswordResetBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPostPasswordResetMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * User is redirected to this page via a link in email
  * @summary Show the form where the user can set a new password.
  */
-export type getPasswordResetRequestIdResponse200 = {
-	data: void;
-	status: 200;
-};
-
-export type getPasswordResetRequestIdResponseComposite = getPasswordResetRequestIdResponse200;
-
-export type getPasswordResetRequestIdResponse = getPasswordResetRequestIdResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetPasswordResetRequestIdUrl = (requestId: string) => {
-	return `/password-reset/${requestId}`;
-};
-
-export const getPasswordResetRequestId = async (
-	requestId: string,
-	options?: RequestInit
-): Promise<getPasswordResetRequestIdResponse> => {
-	return customFetch<getPasswordResetRequestIdResponse>(
-		getGetPasswordResetRequestIdUrl(requestId),
-		{
-			...options,
-			method: 'GET'
-		}
-	);
-};
-
-export const getGetPasswordResetRequestIdQueryKey = (requestId: string) => {
-	return [`/password-reset/${requestId}`] as const;
-};
-
-export const getGetPasswordResetRequestIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-	TError = unknown
->(
-	requestId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	}
+export const getPasswordResetRequestId = (
+    requestId: string,
+ signal?: AbortSignal
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/password-reset/${requestId}`, method: 'GET', signal
+    },
+      );
+    }
+  
 
-	const queryKey = queryOptions?.queryKey ?? getGetPasswordResetRequestIdQueryKey(requestId);
+export const getGetPasswordResetRequestIdQueryKey = (requestId: string,) => {
+    return [`/password-reset/${requestId}`] as const;
+    }
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordResetRequestId>>> = ({
-		signal
-	}) => getPasswordResetRequestId(requestId, { signal, ...requestOptions });
+    
+export const getGetPasswordResetRequestIdQueryOptions = <TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError = unknown>(requestId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>>, }
+) => {
 
-	return { queryKey, queryFn, enabled: !!requestId, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+const {query: queryOptions} = options ?? {};
 
-export type GetPasswordResetRequestIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getPasswordResetRequestId>>
->;
-export type GetPasswordResetRequestIdQueryError = unknown;
+  const queryKey =  queryOptions?.queryKey ?? getGetPasswordResetRequestIdQueryKey(requestId);
 
-export function useGetPasswordResetRequestId<
-	TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-	TError = unknown
->(
-	requestId: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-					TError,
-					Awaited<ReturnType<typeof getPasswordResetRequestId>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPasswordResetRequestId<
-	TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-	TError = unknown
->(
-	requestId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-					TError,
-					Awaited<ReturnType<typeof getPasswordResetRequestId>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetPasswordResetRequestId<
-	TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-	TError = unknown
->(
-	requestId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordResetRequestId>>> = ({ signal }) => getPasswordResetRequestId(requestId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(requestId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetPasswordResetRequestIdQueryResult = NonNullable<Awaited<ReturnType<typeof getPasswordResetRequestId>>>
+export type GetPasswordResetRequestIdQueryError = unknown
+
+
+export function useGetPasswordResetRequestId<TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError = unknown>(
+ requestId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPasswordResetRequestId>>,
+          TError,
+          Awaited<ReturnType<typeof getPasswordResetRequestId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPasswordResetRequestId<TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError = unknown>(
+ requestId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPasswordResetRequestId>>,
+          TError,
+          Awaited<ReturnType<typeof getPasswordResetRequestId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetPasswordResetRequestId<TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError = unknown>(
+ requestId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Show the form where the user can set a new password.
  */
 
-export function useGetPasswordResetRequestId<
-	TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>,
-	TError = unknown
->(
-	requestId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetPasswordResetRequestIdQueryOptions(requestId, options);
+export function useGetPasswordResetRequestId<TData = Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError = unknown>(
+ requestId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetPasswordResetRequestIdQueryOptions(requestId,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
 
-/**
- * @summary Handle the form submission with new password for the password reset request.
- */
-export type postPasswordResetRequestIdResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type postPasswordResetRequestIdResponseComposite = postPasswordResetRequestIdResponse200;
-
-export type postPasswordResetRequestIdResponse = postPasswordResetRequestIdResponseComposite & {
-	headers: Headers;
-};
-
-export const getPostPasswordResetRequestIdUrl = (requestId: string) => {
-	return `/password-reset/${requestId}`;
-};
-
-export const postPasswordResetRequestId = async (
-	requestId: string,
-	postPasswordResetRequestIdBody: PostPasswordResetRequestIdBody,
-	options?: RequestInit
-): Promise<postPasswordResetRequestIdResponse> => {
-	const formData = new FormData();
-	formData.append('RequestId', postPasswordResetRequestIdBody.RequestId);
-	formData.append('NewPassword', postPasswordResetRequestIdBody.NewPassword);
-	formData.append('ConfirmPassword', postPasswordResetRequestIdBody.ConfirmPassword);
-
-	return customFetch<postPasswordResetRequestIdResponse>(
-		getPostPasswordResetRequestIdUrl(requestId),
-		{
-			...options,
-			method: 'POST',
-			body: formData
-		}
-	);
-};
-
-export const getPostPasswordResetRequestIdMutationOptions = <
-	TError = unknown,
-	TContext = unknown
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-		TError,
-		{ requestId: string; data: PostPasswordResetRequestIdBody },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-	TError,
-	{ requestId: string; data: PostPasswordResetRequestIdBody },
-	TContext
-> => {
-	const mutationKey = ['postPasswordResetRequestId'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-		{ requestId: string; data: PostPasswordResetRequestIdBody }
-	> = props => {
-		const { requestId, data } = props ?? {};
-
-		return postPasswordResetRequestId(requestId, data, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PostPasswordResetRequestIdMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postPasswordResetRequestId>>
->;
-export type PostPasswordResetRequestIdMutationBody = PostPasswordResetRequestIdBody;
-export type PostPasswordResetRequestIdMutationError = unknown;
 
 /**
  * @summary Handle the form submission with new password for the password reset request.
  */
-export const usePostPasswordResetRequestId = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-			TError,
-			{ requestId: string; data: PostPasswordResetRequestIdBody },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-	TError,
-	{ requestId: string; data: PostPasswordResetRequestIdBody },
-	TContext
-> => {
-	const mutationOptions = getPostPasswordResetRequestIdMutationOptions(options);
+export const postPasswordResetRequestId = (
+    requestId: string,
+    postPasswordResetRequestIdBody: PostPasswordResetRequestIdBody,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append('RequestId', postPasswordResetRequestIdBody.RequestId)
+formData.append('NewPassword', postPasswordResetRequestIdBody.NewPassword)
+formData.append('ConfirmPassword', postPasswordResetRequestIdBody.ConfirmPassword)
 
-	return useMutation(mutationOptions, queryClient);
-};
+      return customAxiosRequest<void>(
+      {url: `/password-reset/${requestId}`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getPostPasswordResetRequestIdMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postPasswordResetRequestId>>, TError,{requestId: string;data: PostPasswordResetRequestIdBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postPasswordResetRequestId>>, TError,{requestId: string;data: PostPasswordResetRequestIdBody}, TContext> => {
+    
+const mutationKey = ['postPasswordResetRequestId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postPasswordResetRequestId>>, {requestId: string;data: PostPasswordResetRequestIdBody}> = (props) => {
+          const {requestId,data} = props ?? {};
+
+          return  postPasswordResetRequestId(requestId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostPasswordResetRequestIdMutationResult = NonNullable<Awaited<ReturnType<typeof postPasswordResetRequestId>>>
+    export type PostPasswordResetRequestIdMutationBody = PostPasswordResetRequestIdBody
+    export type PostPasswordResetRequestIdMutationError = unknown
+
+    /**
+ * @summary Handle the form submission with new password for the password reset request.
+ */
+export const usePostPasswordResetRequestId = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postPasswordResetRequestId>>, TError,{requestId: string;data: PostPasswordResetRequestIdBody}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postPasswordResetRequestId>>,
+        TError,
+        {requestId: string;data: PostPasswordResetRequestIdBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPostPasswordResetRequestIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

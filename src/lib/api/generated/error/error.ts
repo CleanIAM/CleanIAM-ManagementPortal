@@ -5,277 +5,190 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useQuery } from '@tanstack/react-query';
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetErrorParams } from '../cleanIAM.schemas';
+import type {
+  GetErrorParams
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export type getErrorResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type getErrorResponseComposite = getErrorResponse200;
 
-export type getErrorResponse = getErrorResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetErrorUrl = (params?: GetErrorParams) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0 ? `/error?${stringifiedParams}` : `/error`;
-};
-
-export const getError = async (
-	params?: GetErrorParams,
-	options?: RequestInit
-): Promise<getErrorResponse> => {
-	return customFetch<getErrorResponse>(getGetErrorUrl(params), {
-		...options,
-		method: 'GET'
-	});
-};
-
-export const getGetErrorQueryKey = (params?: GetErrorParams) => {
-	return [`/error`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetErrorQueryOptions = <
-	TData = Awaited<ReturnType<typeof getError>>,
-	TError = unknown
->(
-	params?: GetErrorParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	}
+export const getError = (
+    params?: GetErrorParams,
+ signal?: AbortSignal
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/error`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-	const queryKey = queryOptions?.queryKey ?? getGetErrorQueryKey(params);
+export const getGetErrorQueryKey = (params?: GetErrorParams,) => {
+    return [`/error`, ...(params ? [params]: [])] as const;
+    }
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getError>>> = ({ signal }) =>
-		getError(params, { signal, ...requestOptions });
+    
+export const getGetErrorQueryOptions = <TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(params?: GetErrorParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>, }
+) => {
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getError>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+const {query: queryOptions} = options ?? {};
 
-export type GetErrorQueryResult = NonNullable<Awaited<ReturnType<typeof getError>>>;
-export type GetErrorQueryError = unknown;
+  const queryKey =  queryOptions?.queryKey ?? getGetErrorQueryKey(params);
 
-export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
-	params: undefined | GetErrorParams,
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getError>>,
-					TError,
-					Awaited<ReturnType<typeof getError>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
-	params?: GetErrorParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getError>>,
-					TError,
-					Awaited<ReturnType<typeof getError>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
-	params?: GetErrorParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  
 
-export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
-	params?: GetErrorParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetErrorQueryOptions(params, options);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getError>>> = ({ signal }) => getError(params, signal);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+      
 
-	query.queryKey = queryOptions.queryKey;
+      
 
-	return query;
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type getErrorErrorCodeResponse200 = {
-	data: void;
-	status: 200;
-};
+export type GetErrorQueryResult = NonNullable<Awaited<ReturnType<typeof getError>>>
+export type GetErrorQueryError = unknown
 
-export type getErrorErrorCodeResponseComposite = getErrorErrorCodeResponse200;
 
-export type getErrorErrorCodeResponse = getErrorErrorCodeResponseComposite & {
-	headers: Headers;
-};
+export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
+ params: undefined |  GetErrorParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getError>>,
+          TError,
+          Awaited<ReturnType<typeof getError>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
+ params?: GetErrorParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getError>>,
+          TError,
+          Awaited<ReturnType<typeof getError>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
+ params?: GetErrorParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export const getGetErrorErrorCodeUrl = (errorCode: number) => {
-	return `/error/${errorCode}`;
-};
+export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError = unknown>(
+ params?: GetErrorParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getError>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-export const getErrorErrorCode = async (
-	errorCode: number,
-	options?: RequestInit
-): Promise<getErrorErrorCodeResponse> => {
-	return customFetch<getErrorErrorCodeResponse>(getGetErrorErrorCodeUrl(errorCode), {
-		...options,
-		method: 'GET'
-	});
-};
+  const queryOptions = getGetErrorQueryOptions(params,options)
 
-export const getGetErrorErrorCodeQueryKey = (errorCode: number) => {
-	return [`/error/${errorCode}`] as const;
-};
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-export const getGetErrorErrorCodeQueryOptions = <
-	TData = Awaited<ReturnType<typeof getErrorErrorCode>>,
-	TError = unknown
->(
-	errorCode: number,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	}
-) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+  query.queryKey = queryOptions.queryKey ;
 
-	const queryKey = queryOptions?.queryKey ?? getGetErrorErrorCodeQueryKey(errorCode);
-
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getErrorErrorCode>>> = ({ signal }) =>
-		getErrorErrorCode(errorCode, { signal, ...requestOptions });
-
-	return { queryKey, queryFn, enabled: !!errorCode, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getErrorErrorCode>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GetErrorErrorCodeQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getErrorErrorCode>>
->;
-export type GetErrorErrorCodeQueryError = unknown;
-
-export function useGetErrorErrorCode<
-	TData = Awaited<ReturnType<typeof getErrorErrorCode>>,
-	TError = unknown
->(
-	errorCode: number,
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getErrorErrorCode>>,
-					TError,
-					Awaited<ReturnType<typeof getErrorErrorCode>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetErrorErrorCode<
-	TData = Awaited<ReturnType<typeof getErrorErrorCode>>,
-	TError = unknown
->(
-	errorCode: number,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getErrorErrorCode>>,
-					TError,
-					Awaited<ReturnType<typeof getErrorErrorCode>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetErrorErrorCode<
-	TData = Awaited<ReturnType<typeof getErrorErrorCode>>,
-	TError = unknown
->(
-	errorCode: number,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-export function useGetErrorErrorCode<
-	TData = Awaited<ReturnType<typeof getErrorErrorCode>>,
-	TError = unknown
->(
-	errorCode: number,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetErrorErrorCodeQueryOptions(errorCode, options);
-
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
-
-	query.queryKey = queryOptions.queryKey;
-
-	return query;
+  return query;
 }
+
+
+
+export const getErrorErrorCode = (
+    errorCode: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/error/${errorCode}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetErrorErrorCodeQueryKey = (errorCode: number,) => {
+    return [`/error/${errorCode}`] as const;
+    }
+
+    
+export const getGetErrorErrorCodeQueryOptions = <TData = Awaited<ReturnType<typeof getErrorErrorCode>>, TError = unknown>(errorCode: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetErrorErrorCodeQueryKey(errorCode);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getErrorErrorCode>>> = ({ signal }) => getErrorErrorCode(errorCode, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(errorCode), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetErrorErrorCodeQueryResult = NonNullable<Awaited<ReturnType<typeof getErrorErrorCode>>>
+export type GetErrorErrorCodeQueryError = unknown
+
+
+export function useGetErrorErrorCode<TData = Awaited<ReturnType<typeof getErrorErrorCode>>, TError = unknown>(
+ errorCode: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getErrorErrorCode>>,
+          TError,
+          Awaited<ReturnType<typeof getErrorErrorCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetErrorErrorCode<TData = Awaited<ReturnType<typeof getErrorErrorCode>>, TError = unknown>(
+ errorCode: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getErrorErrorCode>>,
+          TError,
+          Awaited<ReturnType<typeof getErrorErrorCode>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetErrorErrorCode<TData = Awaited<ReturnType<typeof getErrorErrorCode>>, TError = unknown>(
+ errorCode: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetErrorErrorCode<TData = Awaited<ReturnType<typeof getErrorErrorCode>>, TError = unknown>(
+ errorCode: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetErrorErrorCodeQueryOptions(errorCode,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+

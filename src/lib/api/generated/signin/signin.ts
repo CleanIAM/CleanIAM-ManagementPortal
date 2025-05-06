@@ -5,250 +5,179 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetSigninParams, PostSigninBody, PostSigninParams } from '../cleanIAM.schemas';
+import type {
+  GetSigninParams,
+  PostSigninBody,
+  PostSigninParams
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export type getSigninResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type getSigninResponseComposite = getSigninResponse200;
 
-export type getSigninResponse = getSigninResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetSigninUrl = (params?: GetSigninParams) => {
-	const normalizedParams = new URLSearchParams();
-
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
-
-	const stringifiedParams = normalizedParams.toString();
-
-	return stringifiedParams.length > 0 ? `/signin?${stringifiedParams}` : `/signin`;
-};
-
-export const getSignin = async (
-	params?: GetSigninParams,
-	options?: RequestInit
-): Promise<getSigninResponse> => {
-	return customFetch<getSigninResponse>(getGetSigninUrl(params), {
-		...options,
-		method: 'GET'
-	});
-};
-
-export const getGetSigninQueryKey = (params?: GetSigninParams) => {
-	return [`/signin`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetSigninQueryOptions = <
-	TData = Awaited<ReturnType<typeof getSignin>>,
-	TError = unknown
->(
-	params?: GetSigninParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	}
+export const getSignin = (
+    params?: GetSigninParams,
+ signal?: AbortSignal
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/signin`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
 
-	const queryKey = queryOptions?.queryKey ?? getGetSigninQueryKey(params);
+export const getGetSigninQueryKey = (params?: GetSigninParams,) => {
+    return [`/signin`, ...(params ? [params]: [])] as const;
+    }
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getSignin>>> = ({ signal }) =>
-		getSignin(params, { signal, ...requestOptions });
+    
+export const getGetSigninQueryOptions = <TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(params?: GetSigninParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>, }
+) => {
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getSignin>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+const {query: queryOptions} = options ?? {};
 
-export type GetSigninQueryResult = NonNullable<Awaited<ReturnType<typeof getSignin>>>;
-export type GetSigninQueryError = unknown;
+  const queryKey =  queryOptions?.queryKey ?? getGetSigninQueryKey(params);
 
-export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
-	params: undefined | GetSigninParams,
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getSignin>>,
-					TError,
-					Awaited<ReturnType<typeof getSignin>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
-	params?: GetSigninParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getSignin>>,
-					TError,
-					Awaited<ReturnType<typeof getSignin>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
-	params?: GetSigninParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  
 
-export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
-	params?: GetSigninParams,
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetSigninQueryOptions(params, options);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSignin>>> = ({ signal }) => getSignin(params, signal);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+      
 
-	query.queryKey = queryOptions.queryKey;
+      
 
-	return query;
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type postSigninResponse200 = {
-	data: void;
-	status: 200;
-};
+export type GetSigninQueryResult = NonNullable<Awaited<ReturnType<typeof getSignin>>>
+export type GetSigninQueryError = unknown
 
-export type postSigninResponseComposite = postSigninResponse200;
 
-export type postSigninResponse = postSigninResponseComposite & {
-	headers: Headers;
-};
+export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
+ params: undefined |  GetSigninParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSignin>>,
+          TError,
+          Awaited<ReturnType<typeof getSignin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
+ params?: GetSigninParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSignin>>,
+          TError,
+          Awaited<ReturnType<typeof getSignin>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
+ params?: GetSigninParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export const getPostSigninUrl = (params?: PostSigninParams) => {
-	const normalizedParams = new URLSearchParams();
+export function useGetSignin<TData = Awaited<ReturnType<typeof getSignin>>, TError = unknown>(
+ params?: GetSigninParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignin>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	Object.entries(params || {}).forEach(([key, value]) => {
-		if (value !== undefined) {
-			normalizedParams.append(key, value === null ? 'null' : value.toString());
-		}
-	});
+  const queryOptions = getGetSigninQueryOptions(params,options)
 
-	const stringifiedParams = normalizedParams.toString();
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return stringifiedParams.length > 0 ? `/signin?${stringifiedParams}` : `/signin`;
-};
+  query.queryKey = queryOptions.queryKey ;
 
-export const postSignin = async (
-	postSigninBody: PostSigninBody,
-	params?: PostSigninParams,
-	options?: RequestInit
-): Promise<postSigninResponse> => {
-	const formData = new FormData();
-	formData.append('Email', postSigninBody.Email);
-	formData.append('Password', postSigninBody.Password);
+  return query;
+}
 
-	return customFetch<postSigninResponse>(getPostSigninUrl(params), {
-		...options,
-		method: 'POST',
-		body: formData
-	});
-};
 
-export const getPostSigninMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postSignin>>,
-		TError,
-		{ data: PostSigninBody; params?: PostSigninParams },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postSignin>>,
-	TError,
-	{ data: PostSigninBody; params?: PostSigninParams },
-	TContext
-> => {
-	const mutationKey = ['postSignin'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postSignin>>,
-		{ data: PostSigninBody; params?: PostSigninParams }
-	> = props => {
-		const { data, params } = props ?? {};
+export const postSignin = (
+    postSigninBody: PostSigninBody,
+    params?: PostSigninParams,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+formData.append('Email', postSigninBody.Email)
+formData.append('Password', postSigninBody.Password)
 
-		return postSignin(data, params, requestOptions);
-	};
+      return customAxiosRequest<void>(
+      {url: `/signin`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData,
+        params, signal
+    },
+      );
+    }
+  
 
-	return { mutationFn, ...mutationOptions };
-};
 
-export type PostSigninMutationResult = NonNullable<Awaited<ReturnType<typeof postSignin>>>;
-export type PostSigninMutationBody = PostSigninBody;
-export type PostSigninMutationError = unknown;
+export const getPostSigninMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postSignin>>, TError,{data: PostSigninBody;params?: PostSigninParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postSignin>>, TError,{data: PostSigninBody;params?: PostSigninParams}, TContext> => {
+    
+const mutationKey = ['postSignin'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
 
-export const usePostSignin = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postSignin>>,
-			TError,
-			{ data: PostSigninBody; params?: PostSigninParams },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postSignin>>,
-	TError,
-	{ data: PostSigninBody; params?: PostSigninParams },
-	TContext
-> => {
-	const mutationOptions = getPostSigninMutationOptions(options);
+      
 
-	return useMutation(mutationOptions, queryClient);
-};
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postSignin>>, {data: PostSigninBody;params?: PostSigninParams}> = (props) => {
+          const {data,params} = props ?? {};
+
+          return  postSignin(data,params,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostSigninMutationResult = NonNullable<Awaited<ReturnType<typeof postSignin>>>
+    export type PostSigninMutationBody = PostSigninBody
+    export type PostSigninMutationError = unknown
+
+    export const usePostSignin = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postSignin>>, TError,{data: PostSigninBody;params?: PostSigninParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postSignin>>,
+        TError,
+        {data: PostSigninBody;params?: PostSigninParams},
+        TContext
+      > => {
+
+      const mutationOptions = getPostSigninMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

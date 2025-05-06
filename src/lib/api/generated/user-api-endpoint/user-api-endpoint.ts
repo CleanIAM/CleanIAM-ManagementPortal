@@ -5,108 +5,86 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useMutation } from '@tanstack/react-query';
+import {
+  useMutation
+} from '@tanstack/react-query';
 import type {
-	MutationFunction,
-	QueryClient,
-	UseMutationOptions,
-	UseMutationResult
+  MutationFunction,
+  QueryClient,
+  UseMutationOptions,
+  UseMutationResult
 } from '@tanstack/react-query';
 
-import type { UpdateMfaRequest } from '../cleanIAM.schemas';
+import type {
+  UpdateMfaRequest
+} from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-/**
- * @summary Enable or disable MFA for the current user
- */
-export type putMfaEnabledResponse200 = {
-	data: void;
-	status: 200;
-};
 
-export type putMfaEnabledResponseComposite = putMfaEnabledResponse200;
-
-export type putMfaEnabledResponse = putMfaEnabledResponseComposite & {
-	headers: Headers;
-};
-
-export const getPutMfaEnabledUrl = () => {
-	return `/mfa/enabled`;
-};
-
-export const putMfaEnabled = async (
-	updateMfaRequest: UpdateMfaRequest,
-	options?: RequestInit
-): Promise<putMfaEnabledResponse> => {
-	return customFetch<putMfaEnabledResponse>(getPutMfaEnabledUrl(), {
-		...options,
-		method: 'PUT',
-		headers: { 'Content-Type': 'application/json', ...options?.headers },
-		body: JSON.stringify(updateMfaRequest)
-	});
-};
-
-export const getPutMfaEnabledMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof putMfaEnabled>>,
-		TError,
-		{ data: UpdateMfaRequest },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof putMfaEnabled>>,
-	TError,
-	{ data: UpdateMfaRequest },
-	TContext
-> => {
-	const mutationKey = ['putMfaEnabled'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof putMfaEnabled>>,
-		{ data: UpdateMfaRequest }
-	> = props => {
-		const { data } = props ?? {};
-
-		return putMfaEnabled(data, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PutMfaEnabledMutationResult = NonNullable<Awaited<ReturnType<typeof putMfaEnabled>>>;
-export type PutMfaEnabledMutationBody = UpdateMfaRequest;
-export type PutMfaEnabledMutationError = unknown;
 
 /**
  * @summary Enable or disable MFA for the current user
  */
-export const usePutMfaEnabled = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof putMfaEnabled>>,
-			TError,
-			{ data: UpdateMfaRequest },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof putMfaEnabled>>,
-	TError,
-	{ data: UpdateMfaRequest },
-	TContext
-> => {
-	const mutationOptions = getPutMfaEnabledMutationOptions(options);
+export const putMfaEnabled = (
+    updateMfaRequest: UpdateMfaRequest,
+ ) => {
+      
+      
+      return customAxiosRequest<void>(
+      {url: `/mfa/enabled`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateMfaRequest
+    },
+      );
+    }
+  
 
-	return useMutation(mutationOptions, queryClient);
-};
+
+export const getPutMfaEnabledMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext> => {
+    
+const mutationKey = ['putMfaEnabled'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putMfaEnabled>>, {data: UpdateMfaRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putMfaEnabled(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutMfaEnabledMutationResult = NonNullable<Awaited<ReturnType<typeof putMfaEnabled>>>
+    export type PutMfaEnabledMutationBody = UpdateMfaRequest
+    export type PutMfaEnabledMutationError = unknown
+
+    /**
+ * @summary Enable or disable MFA for the current user
+ */
+export const usePutMfaEnabled = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putMfaEnabled>>, TError,{data: UpdateMfaRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putMfaEnabled>>,
+        TError,
+        {data: UpdateMfaRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPutMfaEnabledMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

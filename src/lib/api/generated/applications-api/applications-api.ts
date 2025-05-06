@@ -5,625 +5,402 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-	ApiApplicationModel,
-	CreateNewApplicationRequest,
-	Error,
-	OpenIdApplication,
-	OpenIdApplicationCreated,
-	OpenIdApplicationDeleted,
-	OpenIdApplicationUpdated,
-	UpdateApplicationRequest
+  ApiApplicationModel,
+  CreateNewApplicationRequest,
+  Error,
+  OpenIdApplication,
+  OpenIdApplicationCreated,
+  OpenIdApplicationDeleted,
+  OpenIdApplicationUpdated,
+  UpdateApplicationRequest
 } from '../cleanIAM.schemas';
 
-import { customFetch } from '../../custom-fetch';
+import { customAxiosRequest } from '../../axios/custom-axios';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * @summary Show the main application page with a list of all applications.
  */
-export type getApiApplicationsResponse200 = {
-	data: ApiApplicationModel[];
-	status: 200;
-};
-
-export type getApiApplicationsResponseComposite = getApiApplicationsResponse200;
-
-export type getApiApplicationsResponse = getApiApplicationsResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetApiApplicationsUrl = () => {
-	return `/api/applications`;
-};
-
-export const getApiApplications = async (
-	options?: RequestInit
-): Promise<getApiApplicationsResponse> => {
-	return customFetch<getApiApplicationsResponse>(getGetApiApplicationsUrl(), {
-		...options,
-		method: 'GET'
-	});
-};
+export const getApiApplications = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxiosRequest<ApiApplicationModel[]>(
+      {url: `/api/applications`, method: 'GET', signal
+    },
+      );
+    }
+  
 
 export const getGetApiApplicationsQueryKey = () => {
-	return [`/api/applications`] as const;
-};
+    return [`/api/applications`] as const;
+    }
 
-export const getGetApiApplicationsQueryOptions = <
-	TData = Awaited<ReturnType<typeof getApiApplications>>,
-	TError = unknown
->(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
-	request?: SecondParameter<typeof customFetch>;
-}) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+    
+export const getGetApiApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, }
+) => {
 
-	const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsQueryKey();
+const {query: queryOptions} = options ?? {};
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplications>>> = ({ signal }) =>
-		getApiApplications({ signal, ...requestOptions });
+  const queryKey =  queryOptions?.queryKey ?? getGetApiApplicationsQueryKey();
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getApiApplications>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type GetApiApplicationsQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getApiApplications>>
->;
-export type GetApiApplicationsQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplications>>> = ({ signal }) => getApiApplications(signal);
 
-export function useGetApiApplications<
-	TData = Awaited<ReturnType<typeof getApiApplications>>,
-	TError = unknown
->(
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiApplications>>,
-					TError,
-					Awaited<ReturnType<typeof getApiApplications>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiApplications<
-	TData = Awaited<ReturnType<typeof getApiApplications>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiApplications>>,
-					TError,
-					Awaited<ReturnType<typeof getApiApplications>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiApplications<
-	TData = Awaited<ReturnType<typeof getApiApplications>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiApplicationsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiApplications>>>
+export type GetApiApplicationsQueryError = unknown
+
+
+export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiApplications>>,
+          TError,
+          Awaited<ReturnType<typeof getApiApplications>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiApplications>>,
+          TError,
+          Awaited<ReturnType<typeof getApiApplications>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Show the main application page with a list of all applications.
  */
 
-export function useGetApiApplications<
-	TData = Awaited<ReturnType<typeof getApiApplications>>,
-	TError = unknown
->(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetApiApplicationsQueryOptions(options);
+export function useGetApiApplications<TData = Awaited<ReturnType<typeof getApiApplications>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetApiApplicationsQueryOptions(options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
 
-/**
- * @summary Create a new application
- */
-export type postApiApplicationsResponse200 = {
-	data: OpenIdApplicationCreated;
-	status: 200;
-};
 
-export type postApiApplicationsResponse400 = {
-	data: Error;
-	status: 400;
-};
-
-export type postApiApplicationsResponseComposite =
-	| postApiApplicationsResponse200
-	| postApiApplicationsResponse400;
-
-export type postApiApplicationsResponse = postApiApplicationsResponseComposite & {
-	headers: Headers;
-};
-
-export const getPostApiApplicationsUrl = () => {
-	return `/api/applications`;
-};
-
-export const postApiApplications = async (
-	createNewApplicationRequest: CreateNewApplicationRequest,
-	options?: RequestInit
-): Promise<postApiApplicationsResponse> => {
-	return customFetch<postApiApplicationsResponse>(getPostApiApplicationsUrl(), {
-		...options,
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json', ...options?.headers },
-		body: JSON.stringify(createNewApplicationRequest)
-	});
-};
-
-export const getPostApiApplicationsMutationOptions = <
-	TError = Error,
-	TContext = unknown
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiApplications>>,
-		TError,
-		{ data: CreateNewApplicationRequest },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiApplications>>,
-	TError,
-	{ data: CreateNewApplicationRequest },
-	TContext
-> => {
-	const mutationKey = ['postApiApplications'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiApplications>>,
-		{ data: CreateNewApplicationRequest }
-	> = props => {
-		const { data } = props ?? {};
-
-		return postApiApplications(data, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PostApiApplicationsMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postApiApplications>>
->;
-export type PostApiApplicationsMutationBody = CreateNewApplicationRequest;
-export type PostApiApplicationsMutationError = Error;
 
 /**
  * @summary Create a new application
  */
-export const usePostApiApplications = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiApplications>>,
-			TError,
-			{ data: CreateNewApplicationRequest },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof postApiApplications>>,
-	TError,
-	{ data: CreateNewApplicationRequest },
-	TContext
-> => {
-	const mutationOptions = getPostApiApplicationsMutationOptions(options);
-
-	return useMutation(mutationOptions, queryClient);
-};
-/**
- * @summary Get the application with the given id.
- */
-export type getApiApplicationsIdResponse200 = {
-	data: OpenIdApplication;
-	status: 200;
-};
-
-export type getApiApplicationsIdResponse404 = {
-	data: Error;
-	status: 404;
-};
-
-export type getApiApplicationsIdResponseComposite =
-	| getApiApplicationsIdResponse200
-	| getApiApplicationsIdResponse404;
-
-export type getApiApplicationsIdResponse = getApiApplicationsIdResponseComposite & {
-	headers: Headers;
-};
-
-export const getGetApiApplicationsIdUrl = (id: string) => {
-	return `/api/applications/${id}`;
-};
-
-export const getApiApplicationsId = async (
-	id: string,
-	options?: RequestInit
-): Promise<getApiApplicationsIdResponse> => {
-	return customFetch<getApiApplicationsIdResponse>(getGetApiApplicationsIdUrl(id), {
-		...options,
-		method: 'GET'
-	});
-};
-
-export const getGetApiApplicationsIdQueryKey = (id: string) => {
-	return [`/api/applications/${id}`] as const;
-};
-
-export const getGetApiApplicationsIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getApiApplicationsId>>,
-	TError = Error
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	}
+export const postApiApplications = (
+    createNewApplicationRequest: CreateNewApplicationRequest,
+ signal?: AbortSignal
 ) => {
-	const { query: queryOptions, request: requestOptions } = options ?? {};
+      
+      
+      return customAxiosRequest<OpenIdApplicationCreated>(
+      {url: `/api/applications`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createNewApplicationRequest, signal
+    },
+      );
+    }
+  
 
-	const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsIdQueryKey(id);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplicationsId>>> = ({ signal }) =>
-		getApiApplicationsId(id, { signal, ...requestOptions });
+export const getPostApiApplicationsMutationOptions = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{data: CreateNewApplicationRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{data: CreateNewApplicationRequest}, TContext> => {
+    
+const mutationKey = ['postApiApplications'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
 
-	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getApiApplicationsId>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+      
 
-export type GetApiApplicationsIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getApiApplicationsId>>
->;
-export type GetApiApplicationsIdQueryError = Error;
 
-export function useGetApiApplicationsId<
-	TData = Awaited<ReturnType<typeof getApiApplicationsId>>,
-	TError = Error
->(
-	id: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiApplicationsId>>,
-					TError,
-					Awaited<ReturnType<typeof getApiApplicationsId>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiApplicationsId<
-	TData = Awaited<ReturnType<typeof getApiApplicationsId>>,
-	TError = Error
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiApplicationsId>>,
-					TError,
-					Awaited<ReturnType<typeof getApiApplicationsId>>
-				>,
-				'initialData'
-			>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiApplicationsId<
-	TData = Awaited<ReturnType<typeof getApiApplicationsId>>,
-	TError = Error
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiApplications>>, {data: CreateNewApplicationRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postApiApplications(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiApplicationsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiApplications>>>
+    export type PostApiApplicationsMutationBody = CreateNewApplicationRequest
+    export type PostApiApplicationsMutationError = Error
+
+    /**
+ * @summary Create a new application
+ */
+export const usePostApiApplications = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiApplications>>, TError,{data: CreateNewApplicationRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiApplications>>,
+        TError,
+        {data: CreateNewApplicationRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiApplicationsMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
+ * @summary Get the application with the given id.
+ */
+export const getApiApplicationsId = (
+    id: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxiosRequest<OpenIdApplication>(
+      {url: `/api/applications/${id}`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetApiApplicationsIdQueryKey = (id: string,) => {
+    return [`/api/applications/${id}`] as const;
+    }
+
+    
+export const getGetApiApplicationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiApplicationsIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplicationsId>>> = ({ signal }) => getApiApplicationsId(id, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiApplicationsIdQueryResult = NonNullable<Awaited<ReturnType<typeof getApiApplicationsId>>>
+export type GetApiApplicationsIdQueryError = Error
+
+
+export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiApplicationsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiApplicationsId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiApplicationsId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiApplicationsId>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get the application with the given id.
  */
 
-export function useGetApiApplicationsId<
-	TData = Awaited<ReturnType<typeof getApiApplicationsId>>,
-	TError = Error
->(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetApiApplicationsIdQueryOptions(id, options);
+export function useGetApiApplicationsId<TData = Awaited<ReturnType<typeof getApiApplicationsId>>, TError = Error>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const queryOptions = getGetApiApplicationsIdQueryOptions(id,options)
 
-	query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-	return query;
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
 }
 
-/**
- * @summary Update the application with the given id.
- */
-export type putApiApplicationsIdResponse200 = {
-	data: OpenIdApplicationUpdated;
-	status: 200;
-};
 
-export type putApiApplicationsIdResponse404 = {
-	data: Error;
-	status: 404;
-};
-
-export type putApiApplicationsIdResponseComposite =
-	| putApiApplicationsIdResponse200
-	| putApiApplicationsIdResponse404;
-
-export type putApiApplicationsIdResponse = putApiApplicationsIdResponseComposite & {
-	headers: Headers;
-};
-
-export const getPutApiApplicationsIdUrl = (id: string) => {
-	return `/api/applications/${id}`;
-};
-
-export const putApiApplicationsId = async (
-	id: string,
-	updateApplicationRequest: UpdateApplicationRequest,
-	options?: RequestInit
-): Promise<putApiApplicationsIdResponse> => {
-	return customFetch<putApiApplicationsIdResponse>(getPutApiApplicationsIdUrl(id), {
-		...options,
-		method: 'PUT',
-		headers: { 'Content-Type': 'application/json', ...options?.headers },
-		body: JSON.stringify(updateApplicationRequest)
-	});
-};
-
-export const getPutApiApplicationsIdMutationOptions = <
-	TError = Error,
-	TContext = unknown
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof putApiApplicationsId>>,
-		TError,
-		{ id: string; data: UpdateApplicationRequest },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof putApiApplicationsId>>,
-	TError,
-	{ id: string; data: UpdateApplicationRequest },
-	TContext
-> => {
-	const mutationKey = ['putApiApplicationsId'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof putApiApplicationsId>>,
-		{ id: string; data: UpdateApplicationRequest }
-	> = props => {
-		const { id, data } = props ?? {};
-
-		return putApiApplicationsId(id, data, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type PutApiApplicationsIdMutationResult = NonNullable<
-	Awaited<ReturnType<typeof putApiApplicationsId>>
->;
-export type PutApiApplicationsIdMutationBody = UpdateApplicationRequest;
-export type PutApiApplicationsIdMutationError = Error;
 
 /**
  * @summary Update the application with the given id.
  */
-export const usePutApiApplicationsId = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof putApiApplicationsId>>,
-			TError,
-			{ id: string; data: UpdateApplicationRequest },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof putApiApplicationsId>>,
-	TError,
-	{ id: string; data: UpdateApplicationRequest },
-	TContext
-> => {
-	const mutationOptions = getPutApiApplicationsIdMutationOptions(options);
+export const putApiApplicationsId = (
+    id: string,
+    updateApplicationRequest: UpdateApplicationRequest,
+ ) => {
+      
+      
+      return customAxiosRequest<OpenIdApplicationUpdated>(
+      {url: `/api/applications/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateApplicationRequest
+    },
+      );
+    }
+  
 
-	return useMutation(mutationOptions, queryClient);
-};
-/**
+
+export const getPutApiApplicationsIdMutationOptions = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext> => {
+    
+const mutationKey = ['putApiApplicationsId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiApplicationsId>>, {id: string;data: UpdateApplicationRequest}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  putApiApplicationsId(id,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutApiApplicationsIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiApplicationsId>>>
+    export type PutApiApplicationsIdMutationBody = UpdateApplicationRequest
+    export type PutApiApplicationsIdMutationError = Error
+
+    /**
  * @summary Update the application with the given id.
  */
-export type deleteApiApplicationsIdResponse200 = {
-	data: OpenIdApplicationDeleted;
-	status: 200;
-};
+export const usePutApiApplicationsId = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiApplicationsId>>, TError,{id: string;data: UpdateApplicationRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putApiApplicationsId>>,
+        TError,
+        {id: string;data: UpdateApplicationRequest},
+        TContext
+      > => {
 
-export type deleteApiApplicationsIdResponse404 = {
-	data: Error;
-	status: 404;
-};
+      const mutationOptions = getPutApiApplicationsIdMutationOptions(options);
 
-export type deleteApiApplicationsIdResponseComposite =
-	| deleteApiApplicationsIdResponse200
-	| deleteApiApplicationsIdResponse404;
-
-export type deleteApiApplicationsIdResponse = deleteApiApplicationsIdResponseComposite & {
-	headers: Headers;
-};
-
-export const getDeleteApiApplicationsIdUrl = (id: string) => {
-	return `/api/applications/${id}`;
-};
-
-export const deleteApiApplicationsId = async (
-	id: string,
-	options?: RequestInit
-): Promise<deleteApiApplicationsIdResponse> => {
-	return customFetch<deleteApiApplicationsIdResponse>(getDeleteApiApplicationsIdUrl(id), {
-		...options,
-		method: 'DELETE'
-	});
-};
-
-export const getDeleteApiApplicationsIdMutationOptions = <
-	TError = Error,
-	TContext = unknown
->(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-		TError,
-		{ id: string },
-		TContext
-	>;
-	request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-	Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-	TError,
-	{ id: string },
-	TContext
-> => {
-	const mutationKey = ['deleteApiApplicationsId'];
-	const { mutation: mutationOptions, request: requestOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey }, request: undefined };
-
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-		{ id: string }
-	> = props => {
-		const { id } = props ?? {};
-
-		return deleteApiApplicationsId(id, requestOptions);
-	};
-
-	return { mutationFn, ...mutationOptions };
-};
-
-export type DeleteApiApplicationsIdMutationResult = NonNullable<
-	Awaited<ReturnType<typeof deleteApiApplicationsId>>
->;
-
-export type DeleteApiApplicationsIdMutationError = Error;
-
-/**
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * @summary Update the application with the given id.
  */
-export const useDeleteApiApplicationsId = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-			TError,
-			{ id: string },
-			TContext
-		>;
-		request?: SecondParameter<typeof customFetch>;
-	},
-	queryClient?: QueryClient
-): UseMutationResult<
-	Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-	TError,
-	{ id: string },
-	TContext
-> => {
-	const mutationOptions = getDeleteApiApplicationsIdMutationOptions(options);
+export const deleteApiApplicationsId = (
+    id: string,
+ ) => {
+      
+      
+      return customAxiosRequest<OpenIdApplicationDeleted>(
+      {url: `/api/applications/${id}`, method: 'DELETE'
+    },
+      );
+    }
+  
 
-	return useMutation(mutationOptions, queryClient);
-};
+
+export const getDeleteApiApplicationsIdMutationOptions = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext> => {
+    
+const mutationKey = ['deleteApiApplicationsId'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteApiApplicationsId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteApiApplicationsId(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteApiApplicationsIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteApiApplicationsId>>>
+    
+    export type DeleteApiApplicationsIdMutationError = Error
+
+    /**
+ * @summary Update the application with the given id.
+ */
+export const useDeleteApiApplicationsId = <TError = Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteApiApplicationsId>>, TError,{id: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteApiApplicationsId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteApiApplicationsIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

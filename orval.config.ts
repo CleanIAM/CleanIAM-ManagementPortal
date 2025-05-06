@@ -6,12 +6,12 @@ export default defineConfig({
 			mode: 'tags-split', // or 'single'
 			target: 'src/lib/api/generated/',
 			client: 'react-query', // THIS is for TanStack Query v4/v5
-			httpClient: 'fetch',
+			httpClient: 'axios',
 			prettier: true,
 			override: {
 				mutator: {
-					path: 'src/lib/api/custom-fetch.ts',
-					name: 'customFetch'
+					path: 'src/lib/api/axios/custom-axios.ts',
+					name: 'customAxiosRequest'
 				}
 			}
 		},
