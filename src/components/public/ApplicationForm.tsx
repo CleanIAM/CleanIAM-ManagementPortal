@@ -61,7 +61,6 @@ export const ApplicationForm = ({
 	const [clientSecret, setClientSecret] = useState<string | null>(null);
 	const [showSecretDialog, setShowSecretDialog] = useState(false);
 	const [newAppName, setNewAppName] = useState<string>('');
-	const [secretCopied, setSecretCopied] = useState(false);
 
 	// Initialize the form with react-hook-form and zod resolver
 	const {
@@ -98,31 +97,10 @@ export const ApplicationForm = ({
 		}
 	};
 
-	// Handle copying client secret to clipboard
-	const handleCopySecret = () => {
-		if (clientSecret) {
-			navigator.clipboard
-				.writeText(clientSecret)
-				.then(() => {
-					setSecretCopied(true);
-					toast.success('Client secret copied to clipboard');
-
-					// Reset the copied state after 3 seconds
-					setTimeout(() => {
-						setSecretCopied(false);
-					}, 3000);
-				})
-				.catch(() => {
-					toast.error('Failed to copy secret to clipboard');
-				});
-		}
-	};
-
 	// Close secret dialog and notify parent
 	const handleCloseSecretDialog = () => {
 		setShowSecretDialog(false);
 		setClientSecret(null);
-		setSecretCopied(false);
 		if (onSuccess) onSuccess();
 	};
 
@@ -141,11 +119,6 @@ export const ApplicationForm = ({
 	const createApplicationMutation = usePostApiApplications({
 		mutation: {
 			onSuccess: data => {
-				if (data.status !== 200) {
-					toast.error(data.data.message);
-					return;
-				}
-
 				// Save client secret and app name for dialog
 				const createdApp = data.data as OpenIdApplicationCreated;
 				if (createdApp.clientSecret) {
@@ -157,6 +130,9 @@ export const ApplicationForm = ({
 					reset();
 					if (onSuccess) onSuccess();
 				}
+			},
+			onError: error => {
+				toast.error(`Failed to create application: ${error.message}`);
 			}
 		}
 	});
@@ -164,14 +140,13 @@ export const ApplicationForm = ({
 	// Update application mutation
 	const updateApplicationMutation = usePutApiApplicationsId({
 		mutation: {
-			onSuccess: data => {
-				if (data.status !== 200) {
-					toast.error(data.data.message);
-					return;
-				}
+			onSuccess: () => {
 				toast.success('Application updated successfully');
 				reset();
 				if (onSuccess) onSuccess();
+			},
+			onError: error => {
+				toast.error(`Failed to update application: ${error.message}`);
 			}
 		}
 	});

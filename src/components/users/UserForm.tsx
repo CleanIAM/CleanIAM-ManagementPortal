@@ -190,15 +190,15 @@ export const UserForm: React.FC<UserFormProps> = ({
 				>
 					{isSubmitting || createUserMutation.isPending || updateUserMutation.isPending ? (
 						user ? (
-							<p className="flex">
+							<div className="flex">
 								<Loader className="mr-1 h-4 w-4" />
 								Updating...
-							</p>
+							</div>
 						) : (
-							<p className="flex">
+							<div className="flex">
 								<Loader className="mr-1 h-4 w-4" />
 								Creating...
-							</p>
+							</div>
 						)
 					) : user ? (
 						'Update User'

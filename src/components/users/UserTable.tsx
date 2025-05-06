@@ -3,7 +3,7 @@ import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { UserRoleBadges } from './UserRoleBadges';
 import { UserStatus } from './UserStatus';
 import { UserActions } from './UserActions';
-import { UserDialog } from './UserDialog';
+import { UserInfoDialog } from './UserInfoDialog';
 
 interface UserTableProps {
 	users: ApiUserModel[];
@@ -100,7 +100,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 				</tbody>
 			</table>
 			{/* User Dialog */}
-			<UserDialog user={selectedUser} isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
+			<UserInfoDialog user={selectedUser} isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
 		</div>
 	);
 };

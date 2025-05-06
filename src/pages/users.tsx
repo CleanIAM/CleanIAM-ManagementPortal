@@ -8,8 +8,9 @@ import {
 	DialogHeader,
 	DialogTitle
 } from '../components/ui/dialog';
-import { UserTable, UserForm } from '@/components/users';
 import { Loader } from '@/components/public/Loader';
+import { UserForm } from '@/components/users/UserForm';
+import { UserTable } from '@/components/users/UserTable';
 
 export const UsersPage = () => {
 	const [isAddModalOpen, setIsAddModalOpen] = useState(false);

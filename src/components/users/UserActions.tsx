@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
 	useDeleteApiUsersId,
 	useGetApiUsers,
@@ -17,13 +17,16 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { Settings, Send, Power, Trash2 } from 'lucide-react';
+import { Settings, Send, Power, Trash2, Edit } from 'lucide-react';
+import { UserEditDialog } from './UserEditDialogue';
 
 interface UserActionsProps {
 	user: ApiUserModel;
 }
 
 export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
+	// State for edit dialog
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	const { refetch } = useGetApiUsers();
 
 	// Disable user mutation
@@ -103,55 +106,69 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 	};
 
 	return (
-		<DropdownMenu>
-			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="h-8 w-8 p-0">
-					<span className="sr-only">User actions</span>
-					<Settings className="h-4 w-4" />
-				</Button>
-			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
-				{user.isInvitePending && (
-					<>
-						<DropdownMenuItem
-							onClick={handleResendInvitation}
-							disabled={resendInvitationMutation.isPending}
-						>
-							{resendInvitationMutation.isPending ? (
-								<Loader className="mr-2 h-4 w-4" />
-							) : (
-								<Send className="mr-2 h-4 w-4" strokeWidth={2} />
-							)}
-							<span>Resend Invitation</span>
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-					</>
-				)}
-				<DropdownMenuItem
-					onClick={handleToggleUserStatus}
-					disabled={disableUserMutation.isPending || enableUserMutation.isPending}
-				>
-					{disableUserMutation.isPending || enableUserMutation.isPending ? (
-						<Loader className="mr-2 h-4 w-4" />
-					) : (
-						<Power className="mr-2 h-4 w-4" strokeWidth={2} />
+		<>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost" className="h-8 w-8 p-0">
+						<span className="sr-only">User actions</span>
+						<Settings className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					{user.isInvitePending && (
+						<>
+							<DropdownMenuItem
+								onClick={handleResendInvitation}
+								disabled={resendInvitationMutation.isPending}
+							>
+								{resendInvitationMutation.isPending ? (
+									<Loader className="mr-2 h-4 w-4" />
+								) : (
+									<Send className="mr-2 h-4 w-4" strokeWidth={2} />
+								)}
+								<span>Resend Invitation</span>
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+						</>
 					)}
-					<span>{user.isDisabled ? 'Enable' : 'Disable'}</span>
-				</DropdownMenuItem>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem
-					onClick={handleDeleteUser}
-					disabled={deleteUserMutation.isPending}
-					className="text-red-600 focus:text-red-600"
-				>
-					{deleteUserMutation.isPending ? (
-						<Loader className="mr-2 h-4 w-4" />
-					) : (
-						<Trash2 className="mr-2 h-4 w-4" strokeWidth={2} />
-					)}
-					<span>Delete</span>
-				</DropdownMenuItem>
-			</DropdownMenuContent>
-		</DropdownMenu>
+					<DropdownMenuItem
+						onClick={handleToggleUserStatus}
+						disabled={disableUserMutation.isPending || enableUserMutation.isPending}
+					>
+						{disableUserMutation.isPending || enableUserMutation.isPending ? (
+							<Loader className="mr-2 h-4 w-4" />
+						) : (
+							<Power className="mr-2 h-4 w-4" strokeWidth={2} />
+						)}
+						<span>{user.isDisabled ? 'Enable' : 'Disable'}</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						onClick={e => {
+							e.stopPropagation();
+							setIsEditDialogOpen(true);
+						}}
+					>
+						<Edit className="mr-2 h-4 w-4" strokeWidth={2} />
+						<span>Edit User</span>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={handleDeleteUser}
+						disabled={deleteUserMutation.isPending}
+						className="text-red-600 focus:text-red-600"
+					>
+						{deleteUserMutation.isPending ? (
+							<Loader className="mr-2 h-4 w-4" />
+						) : (
+							<Trash2 className="mr-2 h-4 w-4" strokeWidth={2} />
+						)}
+						<span>Delete</span>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+
+			{/* Edit User Dialog */}
+			<UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} />
+		</>
 	);
 };

@@ -7,25 +7,30 @@ import {
 	DialogTitle
 } from '@/components/ui/dialog';
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
-import { UserForm } from '../UserForm';
+import { UserForm } from './UserForm';
 import { FormButton } from '@/components/form';
-import { UserRoleBadges } from '../UserRoleBadges';
-import { UserStatus } from '../UserStatus';
+import { UserRoleBadges } from './UserRoleBadges';
+import { UserStatus } from './UserStatus';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
 import { Badge } from '@/components/public/Badge';
 
-interface UserDialogProps {
+interface UserInfoDialogProps {
 	user: ApiUserModel | null;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 }
 
-export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChange }) => {
+export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, onOpenChange }) => {
 	const [isEditing, setIsEditing] = useState(false);
 
 	// Handle edit success
 	const handleEditSuccess = () => {
 		setIsEditing(false);
+		onOpenChange(false);
+	};
+	const handleOpenChange = (open: boolean) => {
+		setIsEditing(false);
+		onOpenChange(open);
 	};
 
 	if (!user) {
@@ -33,7 +38,7 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 	}
 
 	return (
-		<Dialog open={isOpen} onOpenChange={onOpenChange}>
+		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
 			<DialogContent className="max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>{isEditing ? 'Edit User' : 'User Details'}</DialogTitle>
