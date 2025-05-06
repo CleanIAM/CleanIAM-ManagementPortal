@@ -10,13 +10,21 @@ import {
 import { toast } from 'react-toastify';
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { Loader } from '../public/Loader';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Send, Power, Trash2 } from 'lucide-react';
 
-interface UserActionsProps {
+type UserActionsProps = {
 	user: ApiUserModel;
-}
+};
 
-export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
+export const UserActions = ({ user }: UserActionsProps) => {
 	const { refetch } = useGetApiUsers();
 
 	// Disable user mutation
@@ -72,53 +80,78 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 	});
 
 	// Handle delete user
-	const handleDeleteUser = () => {
+	const handleDeleteUser = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (confirm('Are you sure you want to delete this user?')) {
 			deleteUserMutation.mutate({ id: user.id });
 		}
 	};
 
 	// Handle resend invitation
-	const handleResendInvitation = () => {
+	const handleResendInvitation = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		resendInvitationMutation.mutate({ id: user.id });
 	};
 
 	// Handle toggle user status (enable/disable)
-	const handleToggleUserStatus = () => {
+	const handleToggleUserStatus = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (user.isDisabled) {
 			enableUserMutation.mutate({ id: user.id });
 		} else {
 			disableUserMutation.mutate({ id: user.id });
 		}
 	};
-
 	return (
-		<div className="flex justify-end gap-2">
-			{user.isInvitePending && (
-				<FormButton
-					onClick={handleResendInvitation}
-					variant="secondary"
-					className="w-fit py-1 text-sm"
-				>
-					{resendInvitationMutation.isPending ? <Loader /> : 'Resend Invitation'}
-				</FormButton>
-			)}
-			<FormButton
-				onClick={handleToggleUserStatus}
-				variant="secondary"
-				className={cn('w-20 py-1 text-sm')}
-			>
-				{disableUserMutation.isPending || enableUserMutation.isPending ? (
-					<Loader />
-				) : user.isDisabled ? (
-					'Enable'
-				) : (
-					'Disable'
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant="ghost" className="h-8 w-8 p-0">
+					<span className="sr-only">Open menu</span>
+					<MoreHorizontal className="h-4 w-4" />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="end">
+				{user.isInvitePending && (
+					<>
+						<DropdownMenuItem
+							onClick={handleResendInvitation}
+							disabled={resendInvitationMutation.isPending}
+						>
+							{resendInvitationMutation.isPending ? (
+								<Loader className="mr-2 h-4 w-4" />
+							) : (
+								<Send className="mr-2 h-4 w-4" />
+							)}
+							<span>Resend Invitation</span>
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+					</>
 				)}
-			</FormButton>
-			<FormButton onClick={handleDeleteUser} variant="danger" className="w-20 py-1 text-sm">
-				{deleteUserMutation.isPending ? <Loader /> : 'Delete'}
-			</FormButton>
-		</div>
+				<DropdownMenuItem
+					onClick={handleToggleUserStatus}
+					disabled={disableUserMutation.isPending || enableUserMutation.isPending}
+				>
+					{disableUserMutation.isPending || enableUserMutation.isPending ? (
+						<Loader className="mr-2 h-4 w-4" />
+					) : (
+						<Power className="mr-2 h-4 w-4" />
+					)}
+					<span>{user.isDisabled ? 'Enable' : 'Disable'}</span>
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onClick={handleDeleteUser}
+					disabled={deleteUserMutation.isPending}
+					className="text-red-600 focus:text-red-600"
+				>
+					{deleteUserMutation.isPending ? (
+						<Loader className="mr-2 h-4 w-4" />
+					) : (
+						<Trash2 className="mr-2 h-4 w-4" />
+					)}
+					<span>Delete</span>
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
