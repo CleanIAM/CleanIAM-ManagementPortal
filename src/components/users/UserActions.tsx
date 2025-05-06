@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormButton } from '@/components/form';
 import {
 	useDeleteApiUsersId,
 	useGetApiUsers,
@@ -18,13 +17,13 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Send, Power, Trash2 } from 'lucide-react';
+import { Settings, Send, Power, Trash2 } from 'lucide-react';
 
-type UserActionsProps = {
+interface UserActionsProps {
 	user: ApiUserModel;
-};
+}
 
-export const UserActions = ({ user }: UserActionsProps) => {
+export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 	const { refetch } = useGetApiUsers();
 
 	// Disable user mutation
@@ -102,12 +101,13 @@ export const UserActions = ({ user }: UserActionsProps) => {
 			disableUserMutation.mutate({ id: user.id });
 		}
 	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant="ghost" className="h-8 w-8 p-0">
-					<span className="sr-only">Open menu</span>
-					<MoreHorizontal className="h-4 w-4" />
+					<span className="sr-only">User actions</span>
+					<Settings className="h-4 w-4" />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
@@ -120,7 +120,7 @@ export const UserActions = ({ user }: UserActionsProps) => {
 							{resendInvitationMutation.isPending ? (
 								<Loader className="mr-2 h-4 w-4" />
 							) : (
-								<Send className="mr-2 h-4 w-4" />
+								<Send className="mr-2 h-4 w-4" strokeWidth={2} />
 							)}
 							<span>Resend Invitation</span>
 						</DropdownMenuItem>
@@ -134,7 +134,7 @@ export const UserActions = ({ user }: UserActionsProps) => {
 					{disableUserMutation.isPending || enableUserMutation.isPending ? (
 						<Loader className="mr-2 h-4 w-4" />
 					) : (
-						<Power className="mr-2 h-4 w-4" />
+						<Power className="mr-2 h-4 w-4" strokeWidth={2} />
 					)}
 					<span>{user.isDisabled ? 'Enable' : 'Disable'}</span>
 				</DropdownMenuItem>
@@ -147,7 +147,7 @@ export const UserActions = ({ user }: UserActionsProps) => {
 					{deleteUserMutation.isPending ? (
 						<Loader className="mr-2 h-4 w-4" />
 					) : (
-						<Trash2 className="mr-2 h-4 w-4" />
+						<Trash2 className="mr-2 h-4 w-4" strokeWidth={2} />
 					)}
 					<span>Delete</span>
 				</DropdownMenuItem>
