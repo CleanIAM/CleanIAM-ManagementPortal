@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Error } from '../generated/cleanIAM.schemas';
 
 // Create the axios instance
 const axiosInstance = axios.create({
@@ -23,16 +24,12 @@ export const customAxiosRequest = async <T>(
 	} catch (error) {
 		const axiosError = error as AxiosError;
 
-		// Handle errors appropriately
-		if (axiosError.response) {
-			return {
-				data: axiosError.response.data as T,
-				status: axiosError.response.status,
-				headers: axiosError.response.headers
-			};
-		}
-
-		throw error;
+		throw (
+			(axiosError.response?.data as Error) || {
+				message: axiosError.message,
+				code: axiosError.code
+			}
+		);
 	}
 };
 

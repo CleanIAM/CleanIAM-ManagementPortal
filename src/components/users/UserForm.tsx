@@ -57,7 +57,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess, onCancel }) => {
 				onSuccess();
 			},
 			onError: error => {
-				toast.error(`Failed to create user: ${error.message}`);
+				toast.error(error.message);
 			}
 		}
 	});
