@@ -24,12 +24,8 @@ import {
 	DialogTitle,
 	DialogFooter
 } from '../ui/dialog';
-import {
-	AlertCircleIcon,
-	CheckmarkSquare01Icon,
-	Copy01Icon,
-	InformationCircleIcon
-} from 'hugeicons-react';
+import { AlertCircleIcon, InformationCircleIcon } from 'hugeicons-react';
+import { TextWithCopy } from './TextWithCopy';
 
 // Define the validation schema with Zod
 const applicationSchema = z.object({
@@ -360,35 +356,11 @@ export const ApplicationForm = ({
 					<div className="my-6 space-y-4">
 						{/* TODO: use <TextWithCopy/> */}
 						{/* Secret display box with gradient border */}
-						<div className="relative rounded-lg border border-gray-200 bg-gray-50 p-1">
-							<div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 opacity-30"></div>
-							<div className="relative rounded-md bg-white p-4">
-								<code className="block w-full break-all font-mono text-sm">{clientSecret}</code>
-							</div>
-						</div>
-
-						{/* Copy button */}
-						<div className="flex justify-center">
-							<button
-								onClick={handleCopySecret}
-								className={`flex items-center justify-center gap-2 rounded-md ${
-									secretCopied ? 'bg-green-100 text-green-700' : 'bg-blue-600 text-white'
-								} px-4 py-2 text-sm font-medium transition-colors hover:${
-									secretCopied ? 'bg-green-200' : 'bg-blue-700'
-								}`}
-							>
-								{secretCopied ? (
-									<>
-										<CheckmarkSquare01Icon size={20} />
-										Copied!
-									</>
-								) : (
-									<>
-										<Copy01Icon size={20} />
-										Copy to Clipboard
-									</>
-								)}
-							</button>
+						<div className="relative rounded-md border border-black bg-white p-4">
+							<TextWithCopy
+								className="w-full break-all font-mono text-sm"
+								value={clientSecret ?? ''}
+							/>
 						</div>
 
 						{/* Warning message */}

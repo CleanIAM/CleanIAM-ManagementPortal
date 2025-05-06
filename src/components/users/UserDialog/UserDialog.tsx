@@ -54,7 +54,7 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 						<div className="space-y-6">
 							<div>
 								<p className="text-sm font-medium text-gray-500">User Id</p>
-								<TextWithCopy text={user.id} className="text-md font-medium" />
+								<TextWithCopy value={user.id} className="text-md justify-start gap-2 font-mono" />
 							</div>
 							<div>
 								<h3 className="mb-2 text-sm font-medium text-gray-500">Personal Information</h3>
