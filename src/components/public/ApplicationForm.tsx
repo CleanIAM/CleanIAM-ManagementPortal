@@ -358,6 +358,7 @@ export const ApplicationForm = ({
 					</DialogHeader>
 
 					<div className="my-6 space-y-4">
+						{/* TODO: use <TextWithCopy/> */}
 						{/* Secret display box with gradient border */}
 						<div className="relative rounded-lg border border-gray-200 bg-gray-50 p-1">
 							<div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 opacity-30"></div>

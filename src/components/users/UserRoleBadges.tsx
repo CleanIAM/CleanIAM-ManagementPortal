@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserRole } from '@/lib/api/generated/cleanIAM.schemas';
+import { Badge } from '../public/Badge';
 
 interface UserRoleBadgesProps {
 	roles: UserRole[];
@@ -19,9 +20,7 @@ export const UserRoleBadges: React.FC<UserRoleBadgesProps> = ({ roles }) => {
 	return (
 		<div className="flex flex-wrap gap-1">
 			{roles.map(role => (
-				<span key={role} className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
-					{getRoleName(role)}
-				</span>
+				<Badge key={role} className="bg-blue-100 text-blue-800" value={getRoleName(role)} />
 			))}
 		</div>
 	);

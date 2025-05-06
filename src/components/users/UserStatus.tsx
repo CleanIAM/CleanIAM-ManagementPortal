@@ -1,27 +1,22 @@
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
+import { Badge } from '../public/Badge';
 
 interface UserStatusProps {
 	user: ApiUserModel;
 }
 
 export const UserStatus = ({ user }: UserStatusProps) => {
-	// if(user.inInvitation){
-	//   return (
-	//   	<span className="rounded-full bg-red-100 px-2 py-1 text-xs text-neutral-600">Invited</span>
-	//   );
-	// }
-
 	if (user.isDisabled) {
-		return <span className="rounded-full bg-red-100 px-2 py-1 text-xs text-red-800">Inactive</span>;
+		return <Badge className="bg-gray-100 text-gray-800" value="Disabled" />;
+	}
+
+	if (user.isInvitePending) {
+		return <Badge className="bg-yellow-100 text-yellow-800" value="Pending Invite" />;
 	}
 
 	if (!user.emailVerified) {
-		return (
-			<span className="rounded-full bg-red-100 px-2 py-1 text-xs text-orange-800">
-				Unverified Email
-			</span>
-		);
+		return <Badge className="bg-red-100 text-red-800" value="Unverified Email" />;
 	}
 
-	return <span className="rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">Active</span>;
+	return <Badge className="bg-green-100 text-green-800" value="Active" />;
 };

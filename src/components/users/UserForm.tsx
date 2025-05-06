@@ -111,7 +111,7 @@ export const UserForm: React.FC<UserFormProps> = ({
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 			{/* User Email */}
 			<div>
-				<label className="mb-1 block text-sm font-medium text-gray-700">Email *</label>
+				<label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
 				<input
 					type="email"
 					{...register('email')}
@@ -125,7 +125,7 @@ export const UserForm: React.FC<UserFormProps> = ({
 
 			{/* First name */}
 			<div>
-				<label className="mb-1 block text-sm font-medium text-gray-700">First Name *</label>
+				<label className="mb-1 block text-sm font-medium text-gray-700">First Name</label>
 				<input
 					type="text"
 					{...register('firstName')}
@@ -140,7 +140,7 @@ export const UserForm: React.FC<UserFormProps> = ({
 
 			{/* Last Name */}
 			<div>
-				<label className="mb-1 block text-sm font-medium text-gray-700">Last Name *</label>
+				<label className="mb-1 block text-sm font-medium text-gray-700">Last Name</label>
 				<input
 					type="text"
 					{...register('lastName')}

@@ -6,50 +6,26 @@ import {
 	DialogHeader,
 	DialogTitle
 } from '@/components/ui/dialog';
-import { ApiUserModel, UserRole } from '@/lib/api/generated/cleanIAM.schemas';
+import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { UserForm } from '../UserForm';
 import { FormButton } from '@/components/form';
 import { UserRoleBadges } from '../UserRoleBadges';
 import { UserStatus } from '../UserStatus';
-import { usePutApiUsersId, useGetApiUsers } from '@/lib/api/generated/users-api/users-api';
-import { toast } from 'react-toastify';
+import { TextWithCopy } from '@/components/public/TextWithCopy';
+import { Badge } from '@/components/public/Badge';
 
 interface UserDialogProps {
 	user: ApiUserModel | null;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	onSuccess?: () => void;
 }
 
-export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChange, onSuccess }) => {
+export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChange }) => {
 	const [isEditing, setIsEditing] = useState(false);
-	const { refetch } = useGetApiUsers();
-
-	// Update user mutation
-	const updateUserMutation = usePutApiUsersId({
-		mutation: {
-			onSuccess: () => {
-				toast.success('User updated successfully');
-				refetch();
-				if (onSuccess) {
-					onSuccess();
-				}
-			},
-			onError: error => {
-				toast.error(`Failed to update user: ${error.message}`);
-			}
-		}
-	});
 
 	// Handle edit success
 	const handleEditSuccess = () => {
 		setIsEditing(false);
-	};
-
-	// Handle dialog close
-	const handleDialogClose = () => {
-		setIsEditing(false);
-		onOpenChange(false);
 	};
 
 	if (!user) {
@@ -66,7 +42,7 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 					</DialogDescription>
 				</DialogHeader>
 
-				<div className="py-4">
+				<div className="pb-4">
 					{isEditing ? (
 						<UserForm
 							user={user}
@@ -76,6 +52,10 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 						/>
 					) : (
 						<div className="space-y-6">
+							<div>
+								<p className="text-sm font-medium text-gray-500">User Id</p>
+								<TextWithCopy text={user.id} className="text-md font-medium" />
+							</div>
 							<div>
 								<h3 className="mb-2 text-sm font-medium text-gray-500">Personal Information</h3>
 								<div className="grid gap-4 md:grid-cols-2">
@@ -111,9 +91,9 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 										<p className="text-sm font-medium text-gray-500">Email Verified</p>
 										<p className="mt-1 font-medium">
 											{user.emailVerified ? (
-												<span className="text-green-600">Yes</span>
+												<Badge className="bg-green-100 text-green-800" value="Yes" />
 											) : (
-												<span className="text-amber-600">No</span>
+												<Badge className="bg-red-100 text-red-800" value="No" />
 											)}
 										</p>
 									</div>
@@ -121,9 +101,9 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 										<p className="text-sm font-medium text-gray-500">MFA Enabled</p>
 										<p className="mt-1 font-medium">
 											{user.isMFAEnabled ? (
-												<span className="text-green-600">Yes</span>
+												<Badge className="bg-green-100 text-green-800" value="Yes" />
 											) : (
-												<span className="text-gray-600">No</span>
+												<Badge className="bg-gray-100 text-gray-800" value="No" />
 											)}
 										</p>
 									</div>
@@ -131,11 +111,7 @@ export const UserDialog: React.FC<UserDialogProps> = ({ user, isOpen, onOpenChan
 							</div>
 
 							<div className="flex justify-end">
-								<FormButton
-									variant="primary"
-									onClick={() => setIsEditing(true)}
-									className="ml-2"
-								>
+								<FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
 									Edit User
 								</FormButton>
 							</div>
