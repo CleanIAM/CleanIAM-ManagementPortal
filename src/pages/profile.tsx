@@ -4,7 +4,6 @@ import {
 	usePutApiUser,
 	usePutApiUserMfaEnabled
 } from '../lib/api/generated/user-api-endpoint/user-api-endpoint';
-import { UpdateMfaRequest } from '../lib/api/generated/cleanIAM.schemas';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileInformation } from '@/components/profile/ProfileInformation';
 import { ProfileSecuritySettings } from '@/components/profile/ProfileSecuritySettings';
@@ -12,6 +11,7 @@ import { ProfileFormValues } from '@/components/profile/profileSchema';
 import { toast } from 'react-toastify';
 import { FormButton } from '@/components/form';
 import { Loader } from '@/components/public/Loader';
+import { EnableMfaRequest } from '@/lib/api/generated/cleanIAM.schemas';
 
 export const ProfilePage = () => {
 	const [isEditing, setIsEditing] = useState(false);
@@ -35,15 +35,17 @@ export const ProfilePage = () => {
 
 	const updateMfaMutation = usePutApiUserMfaEnabled({
 		mutation: {
-			onSuccess: (_, variables) => {
+			onSuccess: response => {
 				refetch();
 				toast.success(
-					`Two-factor authentication ${variables.data.enabled ? 'enabled' : 'disabled'}`
+					`Two-factor authentication ${response.data.mfaEnabled ? 'enabled' : 'disabled'}`
 				);
 			},
 			onError: error => {
 				toast.error(
-					`Failed to update MFA settings: ${error instanceof Error ? error.message : 'Unknown error'}`
+					<p>
+						Failed to update MFA settings: <br /> {error.message || 'Unknown error'}
+					</p>
 				);
 			}
 		}
@@ -60,8 +62,8 @@ export const ProfilePage = () => {
 	};
 
 	// Handle MFA toggle
-	const handleMfaToggle = (enabled: boolean) => {
-		const mfaRequest: UpdateMfaRequest = { enabled };
+	const handleMfaToggle = (enable: boolean) => {
+		const mfaRequest: EnableMfaRequest = { enable };
 		updateMfaMutation.mutate({
 			data: mfaRequest
 		});
