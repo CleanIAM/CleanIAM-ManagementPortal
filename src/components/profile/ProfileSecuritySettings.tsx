@@ -3,6 +3,7 @@ import { Toggle } from './Toggle';
 import { MfaConfigDialog } from './mfa/MfaConfigDialog';
 import { MfaResetConfirmDialog } from './mfa/MfaResetConfirmDialog';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface ProfileSecuritySettingsProps {
 	isMFAEnabled: boolean;
@@ -41,52 +42,91 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 						)}
 					</div>
 					<div className="flex items-center space-x-4">
-					{!isMFAConfigured && (
-					<Button
-					variant="outline"
-					size="sm"
-					onClick={() => setIsConfigDialogOpen(true)}
-					disabled={isMfaUpdating || isMfaResetting}
-					>
-					Configure
-					</Button>
-					)}
-					{isMFAConfigured && (
-					<Button
-					 variant="outline"
-					 size="sm"
-					 onClick={() => setIsResetDialogOpen(true)}
-					  disabled={isMfaUpdating || isMfaResetting}
-					  >
-							Reset MFA
-						</Button>
-					)}
-					<Toggle
-						isChecked={isMFAEnabled}
-						onChange={onMfaToggle}
-						disabled={isMfaUpdating || isMfaResetting || !isMFAConfigured}
-						id="mfa-toggle"
-					/>
-				</div>
+						{!isMFAConfigured && (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div>
+										{' '}
+										{/* Wrapper div needed for disabled button in tooltip */}
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => setIsConfigDialogOpen(true)}
+											disabled={isMfaUpdating || isMfaResetting}
+										>
+											Configure
+										</Button>
+									</div>
+								</TooltipTrigger>
+								{(isMfaUpdating || isMfaResetting) && (
+									<TooltipContent side="bottom">
+										{isMfaUpdating
+											? 'MFA settings are being updated...'
+											: 'MFA configuration is being reset...'}
+									</TooltipContent>
+								)}
+							</Tooltip>
+						)}
+						{isMFAConfigured && (
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<div>
+										{' '}
+										{/* Wrapper div needed for disabled button in tooltip */}
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => setIsResetDialogOpen(true)}
+											disabled={isMfaUpdating || isMfaResetting}
+										>
+											Reset MFA
+										</Button>
+									</div>
+								</TooltipTrigger>
+								{(isMfaUpdating || isMfaResetting) && (
+									<TooltipContent side="bottom">
+										{isMfaUpdating
+											? 'MFA settings are being updated...'
+											: 'MFA configuration is being reset...'}
+									</TooltipContent>
+								)}
+							</Tooltip>
+						)}
+						<Toggle
+							isChecked={isMFAEnabled}
+							onChange={onMfaToggle}
+							disabled={isMfaUpdating || isMfaResetting || !isMFAConfigured}
+							id="mfa-toggle"
+							tooltip={
+								!isMFAConfigured
+									? 'You need to configure MFA before you can enable it'
+									: isMfaUpdating
+										? 'MFA settings are being updated...'
+										: isMfaResetting
+											? 'MFA configuration is being reset...'
+											: undefined
+							}
+						/>
+					</div>
 				</div>
 			</div>
 			{/* MFA Configuration Dialog */}
 			<MfaConfigDialog
-			isOpen={isConfigDialogOpen}
-			onClose={() => setIsConfigDialogOpen(false)}
-			onConfigured={onMfaConfigured}
+				isOpen={isConfigDialogOpen}
+				onClose={() => setIsConfigDialogOpen(false)}
+				onConfigured={onMfaConfigured}
 			/>
 
-		{/* MFA Reset Confirmation Dialog */}
-		<MfaResetConfirmDialog
-			isOpen={isResetDialogOpen}
-			onClose={() => setIsResetDialogOpen(false)}
-			onConfirm={() => {
-				onMfaReset();
-				setIsResetDialogOpen(false);
-			}}
-			isDeleting={isMfaResetting}
-		/>
+			{/* MFA Reset Confirmation Dialog */}
+			<MfaResetConfirmDialog
+				isOpen={isResetDialogOpen}
+				onClose={() => setIsResetDialogOpen(false)}
+				onConfirm={() => {
+					onMfaReset();
+					setIsResetDialogOpen(false);
+				}}
+				isDeleting={isMfaResetting}
+			/>
 		</div>
 	);
 };

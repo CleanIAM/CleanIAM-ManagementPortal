@@ -1,19 +1,22 @@
 import React from 'react';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface ToggleProps {
   isChecked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   id?: string;
+  tooltip?: string;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({ 
   isChecked, 
   onChange, 
   disabled = false,
-  id = "toggle" 
+  id = "toggle",
+  tooltip
 }) => {
-  return (
+  const toggleElement = (
     <div className="relative inline-block h-6 w-12">
       <input 
         type="checkbox" 
@@ -36,4 +39,19 @@ export const Toggle: React.FC<ToggleProps> = ({
       ></span>
     </div>
   );
+
+  if (tooltip && disabled) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {toggleElement}
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return toggleElement;
 };
