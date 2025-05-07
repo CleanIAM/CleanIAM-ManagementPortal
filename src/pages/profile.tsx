@@ -2,7 +2,8 @@ import { useState } from 'react';
 import {
 	useGetApiUser,
 	usePutApiUser,
-	usePutApiUserMfaEnabled
+	usePutApiUserMfaEnabled,
+	useDeleteApiUserMfaConfiguration
 } from '../lib/api/generated/user-api-endpoint/user-api-endpoint';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileInformation } from '@/components/profile/ProfileInformation';
@@ -51,6 +52,23 @@ export const ProfilePage = () => {
 		}
 	});
 
+	// Setup mutations for MFA reset
+	const resetMfaMutation = useDeleteApiUserMfaConfiguration({
+		mutation: {
+			onSuccess: () => {
+				refetch();
+				toast.success('MFA configuration has been reset');
+			},
+			onError: error => {
+				toast.error(
+					<p>
+						Failed to reset MFA configuration: <br /> {error.message || 'Unknown error'}
+					</p>
+				);
+			}
+		}
+	});
+
 	// Handle form submission from React Hook Form
 	const handleSubmit = (data: ProfileFormValues) => {
 		updateUserMutation.mutate({
@@ -78,6 +96,11 @@ export const ProfilePage = () => {
 	// Handle MFA configuration completed
 	const handleMfaConfigured = () => {
 		refetch();
+	};
+	
+	// Handle MFA reset
+	const handleMfaReset = () => {
+		resetMfaMutation.mutate();
 	};
 
 	// Handle edit toggle
@@ -120,6 +143,8 @@ export const ProfilePage = () => {
 						onMfaToggle={handleMfaToggle}
 						isMfaUpdating={updateMfaMutation.isPending}
 						onMfaConfigured={handleMfaConfigured}
+						onMfaReset={handleMfaReset}
+						isMfaResetting={resetMfaMutation.isPending}
 					/>
 				</>
 			)}
