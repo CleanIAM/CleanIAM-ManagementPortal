@@ -30,7 +30,14 @@ export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, on
 	};
 	const handleOpenChange = (open: boolean) => {
 		setIsEditing(false);
-		onOpenChange(open);
+		// Use setTimeout to prevent event propagation issues
+		if (!open) {
+			setTimeout(() => {
+				onOpenChange(open);
+			}, 10);
+		} else {
+			onOpenChange(open);
+		}
 	};
 
 	if (!user) {

@@ -10,6 +10,13 @@ interface UserTableProps {
 }
 
 export const UserTable: React.FC<UserTableProps> = ({ users }) => {
+	// Track if an edit dialog is currently open in any row
+	const [isAnyEditDialogOpen, setIsAnyEditDialogOpen] = useState(false);
+
+	// Create a callback function to be passed down to UserActions
+	const handleEditDialogStateChange = (isOpen: boolean) => {
+		setIsAnyEditDialogOpen(isOpen);
+	};
 	// State for managing the selected user and dialog visibility
 	const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
 	const [isInfoDialogOpen, setInfoIsDialogOpen] = useState(false);
@@ -70,9 +77,9 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 							key={user.id}
 							className="cursor-pointer hover:bg-gray-50"
 							onClick={e => {
-								// Prevent row click when clicking on the actions column
-								if ((e.target as HTMLElement).closest('.actions-column')) {
-									return;
+								// Prevent row click when clicking on the actions column or when any edit dialog is open
+								if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
+								return;
 								}
 								handleRowClick(user);
 							}}
@@ -93,7 +100,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 								<UserStatus user={user} />
 							</td>
 							<td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-								<UserActions user={user} />
+								<UserActions user={user} onEditDialogStateChange={handleEditDialogStateChange} />
 							</td>
 						</tr>
 					))}

@@ -22,11 +22,20 @@ import { UserEditDialog } from './UserEditDialogue';
 
 interface UserActionsProps {
 	user: ApiUserModel;
+	onEditDialogStateChange?: (isOpen: boolean) => void;
 }
 
-export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
+export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStateChange }) => {
 	// State for edit dialog
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+	// Update parent component when edit dialog state changes
+	const handleEditDialogOpen = (isOpen: boolean) => {
+		setIsEditDialogOpen(isOpen);
+		if (onEditDialogStateChange) {
+			onEditDialogStateChange(isOpen);
+		}
+	};
 	const { refetch } = useGetApiUsers();
 
 	// Disable user mutation
@@ -145,7 +154,8 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 					<DropdownMenuItem
 						onClick={e => {
 							e.stopPropagation();
-							setIsEditDialogOpen(true);
+							e.preventDefault();
+							handleEditDialogOpen(true);
 						}}
 					>
 						<Edit className="mr-2 h-4 w-4" strokeWidth={2} />
@@ -168,7 +178,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 			</DropdownMenu>
 
 			{/* Edit User Dialog */}
-			<UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} />
+			<UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={handleEditDialogOpen} />
 		</>
 	);
 };

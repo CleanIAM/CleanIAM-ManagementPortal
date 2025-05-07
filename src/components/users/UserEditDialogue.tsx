@@ -15,8 +15,19 @@ interface UserEditDialogProps {
 }
 
 export const UserEditDialog = ({ user, isOpen, onOpenChange }: UserEditDialogProps) => {
+	// Handle dialog open change to prevent event propagation
+	const handleOpenChange = (open: boolean) => {
+		// Prevent the event from bubbling up when dialog is closed
+		if (!open) {
+			setTimeout(() => {
+				onOpenChange(open);
+			}, 10);
+		} else {
+			onOpenChange(open);
+		}
+	};
 	return (
-		<Dialog open={isOpen} onOpenChange={onOpenChange}>
+		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
 			<DialogContent className="max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>Edit User</DialogTitle>

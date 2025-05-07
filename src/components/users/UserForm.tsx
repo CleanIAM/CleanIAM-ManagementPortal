@@ -91,8 +91,11 @@ export const UserForm: React.FC<UserFormProps> = ({
 		}
 	});
 
-	// Form submission handler
-	const onSubmit = (data: UserFormValues) => {
+	// Form submission handler with event prevention
+	const onSubmit = (data: UserFormValues, event?: React.BaseSyntheticEvent) => {
+		// Prevent default form submission behavior
+		event?.preventDefault();
+		event?.stopPropagation();
 		if (user) {
 			// Update existing user
 			updateUserMutation.mutate({
