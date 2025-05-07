@@ -10,9 +10,8 @@ import { ProfileInformation } from '@/components/profile/ProfileInformation';
 import { ProfileSecuritySettings } from '@/components/profile/ProfileSecuritySettings';
 import { ProfileFormValues } from '@/components/profile/profileSchema';
 import { toast } from 'react-toastify';
-import { Loader } from 'lucide-react';
 import { FormButton } from '@/components/form';
-import { MfaQrCode } from '@/components/profile/MfaQrCode';
+import { Loader } from '@/components/public/Loader';
 
 export const ProfilePage = () => {
 	const [isEditing, setIsEditing] = useState(false);
