@@ -10,6 +10,16 @@ import { ApiTenantModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { TenantForm } from './TenantForm';
 import { FormButton } from '@/components/form';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
+import { Badge } from '@/components/public/Badge';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
+import { InfoIcon } from 'lucide-react';
+
+// Pattern for empty GUID (all zeros)
+const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
 
 interface TenantInfoDialogProps {
   tenant: ApiTenantModel | null;
@@ -23,6 +33,11 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
   onOpenChange 
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  // Function to check if tenant is the default tenant
+  const isDefaultTenant = (tenant: ApiTenantModel) => {
+    return tenant.id === EMPTY_GUID;
+  };
 
   // Handle edit success
   const handleEditSuccess = () => {
@@ -75,19 +90,54 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Name</p>
-                    <p className="text-lg font-medium">{tenant.name}</p>
+                    <div className="flex items-center">
+                      <p className="text-lg font-medium">{tenant.name}</p>
+                      {isDefaultTenant(tenant) && (
+                        <div className="ml-2 flex items-center">
+                          <Badge className="bg-blue-100 text-blue-800" value="Default" />
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <InfoIcon className="ml-1 h-4 w-4 text-blue-500" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Default tenant cannot be modified</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-end">
-                <FormButton 
-                  variant="primary" 
-                  onClick={() => setIsEditing(true)} 
-                  className="ml-2"
-                >
-                  Edit Tenant
-                </FormButton>
+                {!isDefaultTenant(tenant) && (
+                  <FormButton 
+                    variant="primary" 
+                    onClick={() => setIsEditing(true)} 
+                    className="ml-2"
+                  >
+                    Edit Tenant
+                  </FormButton>
+                )}
+                {isDefaultTenant(tenant) && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span>
+                        <FormButton 
+                          variant="primary" 
+                          disabled={true}
+                          className="ml-2 cursor-not-allowed opacity-50"
+                        >
+                          Edit Tenant
+                        </FormButton>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Default tenant cannot be modified</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
               </div>
             </div>
           )}
