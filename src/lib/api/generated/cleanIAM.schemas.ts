@@ -57,8 +57,10 @@ export interface ApiUserModel {
 	roles: UserRole[];
 	/** Indicates whether the user account is disabled. */
 	isDisabled: boolean;
-	/** Indicates whether the user has enabled multi-factor authentication (MFA). */
+	/** Indicates whether the user has enabled multifactor authentication (MFA). */
 	isMFAEnabled: boolean;
+	/** Indicates whether the user has configured multifactor authentication (MFA). */
+	isMFAConfigured: boolean;
 	/** Indicates whether the user has a pending invite or the profile is already set up. */
 	isInvitePending: boolean;
 }
@@ -78,6 +80,16 @@ export const ClientType = {
 	Public: 'Public',
 	Confidential: 'Confidential'
 } as const;
+
+/**
+ * Request model for configuring MFA
+ */
+export interface ConfigureMfaRequest {
+	/** Totp code to verify the user has successfully connected to some authenticator app */
+	totp: string;
+	/** Enable or disable MFA of the totp code is successfully verified */
+	enableMfa: boolean;
+}
 
 export type ConsentType = (typeof ConsentType)[keyof typeof ConsentType];
 
@@ -122,6 +134,14 @@ export interface CreateNewTenantRequest {
 	name: string;
 }
 
+/**
+ * Response model for enabling/disabling MFA
+ */
+export interface EnableMfaRequest {
+	/** Enable or disable MFA */
+	enable: boolean;
+}
+
 export interface Error {
 	message: string;
 	code: number;
@@ -159,6 +179,23 @@ export const JsonValueKind = {
 	NUMBER_6: 6,
 	NUMBER_7: 7
 } as const;
+
+/**
+ * Response model for MFA configuration flow
+ */
+export interface MfaConfigurationResponse {
+	/** QrCode with totp configuration string
+Represents PNG image in Base64 format */
+	qrCode: string;
+}
+
+/**
+ * Response model for enabling/disabling MFA
+ */
+export interface MfaUpdatedResponse {
+	/** Indicates whether MFA is enabled or not */
+	mfaEnabled: boolean;
+}
 
 /**
  * Event that is raised when a new tenant is created
@@ -263,11 +300,6 @@ export interface UpdateApplicationRequest {
 	postLogoutRedirectUris: string[];
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
-}
-
-export interface UpdateMfaRequest {
-	/** Enable or disable MFA */
-	enabled: boolean;
 }
 
 /**
