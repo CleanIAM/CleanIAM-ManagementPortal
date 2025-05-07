@@ -1,61 +1,81 @@
 import React, { useState } from 'react';
 import { ApiTenantModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { Button } from '@/components/ui/button';
-import { EditIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { TenantForm } from './TenantForm';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
+import { Settings, Edit, Trash2 } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { TenantEditDialog } from './TenantEditDialog';
+import { useGetApiTenants } from '@/lib/api/generated/tenants/tenants';
 
 interface TenantActionsProps {
-  tenant: ApiTenantModel;
-  onEditDialogStateChange: (isOpen: boolean) => void;
+	tenant: ApiTenantModel;
+	onEditDialogStateChange: (isOpen: boolean) => void;
 }
 
-export const TenantActions: React.FC<TenantActionsProps> = ({ 
-  tenant, 
-  onEditDialogStateChange 
+export const TenantActions: React.FC<TenantActionsProps> = ({
+	tenant,
+	onEditDialogStateChange
 }) => {
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+	// State for edit dialog
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+	const { refetch } = useGetApiTenants();
 
-  // Handle the edit button click
-  const handleEditClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditDialogOpen(true);
-    onEditDialogStateChange(true);
-  };
+	// Update parent component when edit dialog state changes
+	const handleEditDialogOpen = (isOpen: boolean) => {
+		refetch();
+		setIsEditDialogOpen(isOpen);
+		onEditDialogStateChange(isOpen);
+	};
 
-  // Handle closing the edit dialog
-  const handleCloseEditDialog = () => {
-    setIsEditDialogOpen(false);
-    onEditDialogStateChange(false);
-  };
+	// Handle delete tenant action
+	const handleDeleteTenant = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		toast.info('Delete tenant functionality available soon');
+	};
 
-  return (
-    <>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={handleEditClick}
-        className="text-blue-600 hover:text-blue-800"
-      >
-        <EditIcon className="h-4 w-4 mr-1" />
-        Edit
-      </Button>
+	return (
+		<>
+			<DropdownMenu modal={false}>
+				<DropdownMenuTrigger asChild>
+					<Button variant="ghost" className="h-8 w-8 p-0">
+						<span className="sr-only">Tenant actions</span>
+						<Settings className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuItem
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+							handleEditDialogOpen(true);
+						}}
+					>
+						<Edit className="mr-2 h-4 w-4" strokeWidth={2} />
+						<span>Edit Tenant</span>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem
+						onClick={handleDeleteTenant}
+						className="text-red-600 focus:text-red-600"
+					>
+						<Trash2 className="mr-2 h-4 w-4" strokeWidth={2} />
+						<span>Delete</span>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
 
-      {/* Edit dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Edit Tenant</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <TenantForm 
-              tenant={tenant}
-              onSuccess={handleCloseEditDialog}
-              onCancel={handleCloseEditDialog}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+			{/* Edit Tenant Dialog */}
+			<TenantEditDialog
+				tenant={tenant}
+				isOpen={isEditDialogOpen}
+				onOpenChange={handleEditDialogOpen}
+			/>
+		</>
+	);
 };
