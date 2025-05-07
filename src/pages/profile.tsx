@@ -63,10 +63,21 @@ export const ProfilePage = () => {
 
 	// Handle MFA toggle
 	const handleMfaToggle = (enable: boolean) => {
+		// Only allow toggling if MFA is configured
+		if (!user?.data.isMFAConfigured && enable) {
+			toast.error('Please configure MFA before enabling it.');
+			return;
+		}
+
 		const mfaRequest: EnableMfaRequest = { enable };
 		updateMfaMutation.mutate({
 			data: mfaRequest
 		});
+	};
+
+	// Handle MFA configuration completed
+	const handleMfaConfigured = () => {
+		refetch();
 	};
 
 	// Handle edit toggle
@@ -105,8 +116,10 @@ export const ProfilePage = () => {
 
 					<ProfileSecuritySettings
 						isMFAEnabled={user!.data.isMFAEnabled}
+						isMFAConfigured={user!.data.isMFAConfigured}
 						onMfaToggle={handleMfaToggle}
 						isMfaUpdating={updateMfaMutation.isPending}
+						onMfaConfigured={handleMfaConfigured}
 					/>
 				</>
 			)}
