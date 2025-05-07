@@ -107,7 +107,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user }) => {
 
 	return (
 		<>
-			<DropdownMenu>
+			<DropdownMenu modal={false}>
 				<DropdownMenuTrigger asChild>
 					<Button variant="ghost" className="h-8 w-8 p-0">
 						<span className="sr-only">User actions</span>

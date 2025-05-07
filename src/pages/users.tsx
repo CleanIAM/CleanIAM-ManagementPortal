@@ -62,7 +62,7 @@ export const UsersPage = () => {
 			)}
 
 			{/* Invite Form Dialog */}
-			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen} modal={false}>
+			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
 				<DialogContent className="max-w-2xl">
 					<DialogHeader>
 						<DialogTitle>Invite New User</DialogTitle>

@@ -4,10 +4,32 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Custom hook to manage body style for dialog
+const useBodyPointerEvents = (open: boolean) => {
+  React.useEffect(() => {
+    // If dialog was closed, make sure body can receive pointer events
+    if (!open && document.body.style.pointerEvents === 'none') {
+      document.body.style.removeProperty('pointer-events');
+    }
+    
+    // Cleanup function
+    return () => {
+      // Ensure body can receive pointer events when component unmounts
+      if (document.body.style.pointerEvents === 'none') {
+        document.body.style.removeProperty('pointer-events');
+      }
+    };
+  }, [open]);
+};
+
 function Dialog({
+  open,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+  // Use the custom hook to manage body style
+  useBodyPointerEvents(open);
+  
+  return <DialogPrimitive.Root data-slot="dialog" open={open} {...props} />
 }
 
 function DialogTrigger({
@@ -49,6 +71,15 @@ function DialogContent({
   children,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
+  // Reference to close button for custom handling
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  
+  // Handle close button click to explicitly clean up
+  const handleCloseClick = () => {
+    // Reset pointer-events on body
+    document.body.style.removeProperty('pointer-events');
+  };
+  
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -58,10 +89,25 @@ function DialogContent({
           "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
           className
         )}
+        // Add onCloseAutoFocus to fix focus issues after closing
+        onCloseAutoFocus={(event) => {
+          // Prevent default focus behavior
+          event.preventDefault();
+          // Reset pointer-events on body
+          document.body.style.removeProperty('pointer-events');
+        }}
+        onEscapeKeyDown={() => {
+          // Reset pointer-events on body when Escape key is pressed
+          document.body.style.removeProperty('pointer-events');
+        }}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
+        <DialogPrimitive.Close 
+          ref={closeButtonRef}
+          onClick={handleCloseClick}
+          className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+        >
           <XIcon />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
