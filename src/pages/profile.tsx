@@ -1,7 +1,106 @@
 import { useState } from 'react';
+import {
+	useGetApiUser,
+	usePutApiUser,
+	usePutApiUserMfaEnabled
+} from '../lib/api/generated/user-api-endpoint/user-api-endpoint';
+import { UpdateMfaRequest, UpdateUserSimpleRequest } from '../lib/api/generated/cleanIAM.schemas';
 
 export const ProfilePage = () => {
 	const [isEditing, setIsEditing] = useState(false);
+
+	// Fetch current user data
+	const { data: user, isLoading, error, refetch } = useGetApiUser();
+
+	// Setup mutations
+	const updateUserMutation = usePutApiUser({
+		mutation: {
+			onSuccess: () => {
+				refetch();
+				setIsEditing(false);
+			}
+		}
+	});
+
+	const updateMfaMutation = usePutApiUserMfaEnabled({
+		mutation: {
+			onSuccess: () => {
+				refetch();
+			}
+		}
+	});
+
+	// Form state
+	const [formData, setFormData] = useState<UpdateUserSimpleRequest>({
+		firstName: '',
+		lastName: ''
+	});
+
+	// Update form data when user data is loaded
+	useState(() => {
+		if (user) {
+			setFormData({
+				firstName: user.data.firstName,
+				lastName: user.data.lastName
+			});
+		}
+	});
+
+	// Handle form input changes
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFormData(prev => ({
+			...prev,
+			[name]: value
+		}));
+	};
+
+	// Handle form submission
+	const handleSubmit = () => {
+		updateUserMutation.mutate({
+			data: formData
+		});
+	};
+
+	// Handle MFA toggle
+	const handleMfaToggle = (enabled: boolean) => {
+		const mfaRequest: UpdateMfaRequest = { enabled };
+		updateMfaMutation.mutate({
+			data: mfaRequest
+		});
+	};
+
+	// Loading state
+	if (isLoading) {
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<div className="h-12 w-12 animate-spin rounded-full border-b-2 border-t-2 border-purple-700"></div>
+			</div>
+		);
+	}
+
+	// Error state
+	if (error || !user) {
+		return (
+			<div className="mx-auto max-w-4xl px-4 py-8">
+				<div className="rounded border border-red-400 bg-red-100 p-4 text-red-700">
+					<p>Error loading profile data. Please try again later.</p>
+				</div>
+			</div>
+		);
+	}
+
+	// Get initials for avatar
+	const getInitials = () => {
+		return `${user.data.firstName.charAt(0)}${user.data.lastName.charAt(0)}`;
+	};
+
+	// Get role display name
+	const getRoleDisplay = () => {
+		if (user.data.roles.includes('SuperAdmin')) return 'Super Admin';
+		if (user.data.roles.includes('Admin')) return 'Administrator';
+		return 'User';
+	};
 
 	return (
 		<div className="mx-auto max-w-4xl px-4 py-8">
@@ -14,11 +113,11 @@ export const ProfilePage = () => {
 				<div className="flex items-center justify-between border-b border-purple-100 bg-purple-50 p-6">
 					<div className="flex items-center space-x-4">
 						<div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-200">
-							<span className="text-2xl font-bold text-purple-700">JD</span>
+							<span className="text-2xl font-bold text-purple-700">{getInitials()}</span>
 						</div>
 						<div>
-							<h2 className="text-xl font-semibold text-gray-800">John Doe</h2>
-							<p className="text-gray-500">Administrator</p>
+							<h2 className="text-xl font-semibold text-gray-800">{`${user.data.firstName} ${user.data.lastName}`}</h2>
+							<p className="text-gray-500">{getRoleDisplay()}</p>
 						</div>
 					</div>
 					<button
@@ -36,27 +135,36 @@ export const ProfilePage = () => {
 								<label className="mb-1 block text-sm font-medium text-gray-700">
 									Email Address
 								</label>
+								<p className="text-gray-800">{user.data.email}</p>
+							</div>
+
+							<div>
+								<label className="mb-1 block text-sm font-medium text-gray-700">First Name</label>
 								{isEditing ? (
 									<input
-										type="email"
+										type="text"
+										name="firstName"
 										className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-										defaultValue="john.doe@example.com"
+										value={formData.firstName}
+										onChange={handleInputChange}
 									/>
 								) : (
-									<p className="text-gray-800">john.doe@example.com</p>
+									<p className="text-gray-800">{user.data.firstName}</p>
 								)}
 							</div>
 
 							<div>
-								<label className="mb-1 block text-sm font-medium text-gray-700">Username</label>
+								<label className="mb-1 block text-sm font-medium text-gray-700">Last Name</label>
 								{isEditing ? (
 									<input
 										type="text"
+										name="lastName"
 										className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-										defaultValue="johndoe"
+										value={formData.lastName}
+										onChange={handleInputChange}
 									/>
 								) : (
-									<p className="text-gray-800">johndoe</p>
+									<p className="text-gray-800">{user.data.lastName}</p>
 								)}
 							</div>
 						</div>
@@ -64,20 +172,31 @@ export const ProfilePage = () => {
 						<div className="space-y-4">
 							<div>
 								<label className="mb-1 block text-sm font-medium text-gray-700">Role</label>
-								{isEditing ? (
-									<select className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
-										<option>Administrator</option>
-										<option>Manager</option>
-										<option>User</option>
-									</select>
-								) : (
-									<p className="text-gray-800">Administrator</p>
-								)}
+								<p className="text-gray-800">{getRoleDisplay()}</p>
 							</div>
 
 							<div>
-								<label className="mb-1 block text-sm font-medium text-gray-700">Last Login</label>
-								<p className="text-gray-800">April 26, 2025, 10:30 AM</p>
+								<label className="mb-1 block text-sm font-medium text-gray-700">Email Status</label>
+								<p className="text-gray-800">
+									{user.data.emailVerified ? (
+										<span className="text-green-600">Verified</span>
+									) : (
+										<span className="text-yellow-600">Not Verified</span>
+									)}
+								</p>
+							</div>
+
+							<div>
+								<label className="mb-1 block text-sm font-medium text-gray-700">
+									Account Status
+								</label>
+								<p className="text-gray-800">
+									{user.data.isDisabled ? (
+										<span className="text-red-600">Disabled</span>
+									) : (
+										<span className="text-green-600">Active</span>
+									)}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -85,10 +204,11 @@ export const ProfilePage = () => {
 					{isEditing && (
 						<div className="mt-6 flex justify-end">
 							<button
-								onClick={() => setIsEditing(false)}
-								className="rounded bg-purple-600 px-4 py-2 font-medium text-white transition-colors hover:bg-purple-700"
+								onClick={handleSubmit}
+								disabled={updateUserMutation.isPending}
+								className="rounded bg-purple-600 px-4 py-2 font-medium text-white transition-colors hover:bg-purple-700 disabled:bg-purple-400"
 							>
-								Save Changes
+								{updateUserMutation.isPending ? 'Saving...' : 'Save Changes'}
 							</button>
 						</div>
 					)}
@@ -106,12 +226,25 @@ export const ProfilePage = () => {
 								</p>
 							</div>
 							<div className="relative inline-block h-6 w-12">
-								<input type="checkbox" id="toggle" className="sr-only" defaultChecked />
+								<input
+									type="checkbox"
+									id="toggle"
+									className="sr-only"
+									checked={user.data.isMFAEnabled}
+									onChange={e => handleMfaToggle(e.target.checked)}
+									disabled={updateMfaMutation.isPending}
+								/>
 								<label
 									htmlFor="toggle"
-									className="block h-6 w-12 cursor-pointer rounded-full bg-green-500 transition-colors"
+									className={`block h-6 w-12 cursor-pointer rounded-full transition-colors ${
+										user.data.isMFAEnabled ? 'bg-green-500' : 'bg-gray-300'
+									}`}
 								></label>
-								<span className="absolute left-1 top-1 h-4 w-4 translate-x-6 transform rounded-full bg-white transition-transform"></span>
+								<span
+									className={`absolute left-1 top-1 h-4 w-4 transform rounded-full bg-white transition-transform ${
+										user.data.isMFAEnabled ? 'translate-x-6' : ''
+									}`}
+								></span>
 							</div>
 						</div>
 
@@ -135,3 +268,5 @@ export const ProfilePage = () => {
 		</div>
 	);
 };
+
+export default ProfilePage;
