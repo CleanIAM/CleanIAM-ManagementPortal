@@ -267,3 +267,113 @@ export const usePutApiUserMfaEnabled = <TError = unknown, TContext = unknown>(
 
 	return useMutation(mutationOptions, queryClient);
 };
+/**
+ * @summary Generate a QR code for MFA connection
+ */
+export const getApiUserMfaQrcode = (signal?: AbortSignal) => {
+	return customAxiosRequest<string>({ url: `/api/user/mfa/qrcode`, method: 'GET', signal });
+};
+
+export const getGetApiUserMfaQrcodeQueryKey = () => {
+	return [`/api/user/mfa/qrcode`] as const;
+};
+
+export const getGetApiUserMfaQrcodeQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+	TError = Error
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUserMfaQrcode>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetApiUserMfaQrcodeQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUserMfaQrcode>>> = ({ signal }) =>
+		getApiUserMfaQrcode(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiUserMfaQrcodeQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getApiUserMfaQrcode>>
+>;
+export type GetApiUserMfaQrcodeQueryError = Error;
+
+export function useGetApiUserMfaQrcode<
+	TData = Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+	TError = Error
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiUserMfaQrcode>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+					TError,
+					Awaited<ReturnType<typeof getApiUserMfaQrcode>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiUserMfaQrcode<
+	TData = Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiUserMfaQrcode>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+					TError,
+					Awaited<ReturnType<typeof getApiUserMfaQrcode>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiUserMfaQrcode<
+	TData = Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiUserMfaQrcode>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Generate a QR code for MFA connection
+ */
+
+export function useGetApiUserMfaQrcode<
+	TData = Awaited<ReturnType<typeof getApiUserMfaQrcode>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiUserMfaQrcode>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetApiUserMfaQrcodeQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
