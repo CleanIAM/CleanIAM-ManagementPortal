@@ -468,3 +468,72 @@ export const usePostApiUserMfaConfiguration = <TError = Error, TContext = unknow
 
 	return useMutation(mutationOptions, queryClient);
 };
+/**
+ * @summary Remove mfa configuration command for user and disable mfa.
+ */
+export const deleteApiUserMfaConfiguration = () => {
+	return customAxiosRequest<void>({ url: `/api/user/mfa/configuration`, method: 'DELETE' });
+};
+
+export const getDeleteApiUserMfaConfigurationMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>,
+		TError,
+		void,
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationKey = ['deleteApiUserMfaConfiguration'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>,
+		void
+	> = () => {
+		return deleteApiUserMfaConfiguration();
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteApiUserMfaConfigurationMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>
+>;
+
+export type DeleteApiUserMfaConfigurationMutationError = Error;
+
+/**
+ * @summary Remove mfa configuration command for user and disable mfa.
+ */
+export const useDeleteApiUserMfaConfiguration = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>,
+			TError,
+			void,
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof deleteApiUserMfaConfiguration>>,
+	TError,
+	void,
+	TContext
+> => {
+	const mutationOptions = getDeleteApiUserMfaConfigurationMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};

@@ -25,6 +25,7 @@ import type {
 	ApiUserModel,
 	Error,
 	InviteUserRequest,
+	MfaDisabledForUser,
 	PostApiUsersIdInvitationEmailParams,
 	PostApiUsersInvitedParams,
 	UpdateUserRequest,
@@ -661,6 +662,81 @@ export const usePostApiUsersIdInvitationEmail = <TError = Error, TContext = unkn
 	TContext
 > => {
 	const mutationOptions = getPostApiUsersIdInvitationEmailMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Disable MFA for user
+ */
+export const postApiUsersIdMfaDisabled = (id: string, signal?: AbortSignal) => {
+	return customAxiosRequest<MfaDisabledForUser>({
+		url: `/api/users/${id}/mfa/disabled`,
+		method: 'POST',
+		signal
+	});
+};
+
+export const getPostApiUsersIdMfaDisabledMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+		TError,
+		{ id: string },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+	TError,
+	{ id: string },
+	TContext
+> => {
+	const mutationKey = ['postApiUsersIdMfaDisabled'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+		{ id: string }
+	> = props => {
+		const { id } = props ?? {};
+
+		return postApiUsersIdMfaDisabled(id);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiUsersIdMfaDisabledMutationResult = NonNullable<
+	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>
+>;
+
+export type PostApiUsersIdMfaDisabledMutationError = Error;
+
+/**
+ * @summary Disable MFA for user
+ */
+export const usePostApiUsersIdMfaDisabled = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+			TError,
+			{ id: string },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+	TError,
+	{ id: string },
+	TContext
+> => {
+	const mutationOptions = getPostApiUsersIdMfaDisabledMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

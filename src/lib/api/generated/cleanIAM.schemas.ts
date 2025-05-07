@@ -190,6 +190,14 @@ Represents PNG image in Base64 format */
 }
 
 /**
+ * Represents the event of user disabling multifactor authentication (MFA).
+ */
+export interface MfaDisabledForUser {
+	/** Id of user */
+	id: string;
+}
+
+/**
  * Response model for enabling/disabling MFA
  */
 export interface MfaUpdatedResponse {
@@ -381,6 +389,8 @@ export interface UserInvited {
 	firstName: string;
 	/** Last name of the invited user */
 	lastName: string;
+	/** Roles of the invited user */
+	roles: UserRole[];
 }
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
