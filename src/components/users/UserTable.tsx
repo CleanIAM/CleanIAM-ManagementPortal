@@ -12,12 +12,12 @@ interface UserTableProps {
 export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 	// State for managing the selected user and dialog visibility
 	const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
-	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [isInfoDialogOpen, setInfoIsDialogOpen] = useState(false);
 
 	// Handle row click
 	const handleRowClick = (user: ApiUserModel) => {
 		setSelectedUser(user);
-		setIsDialogOpen(true);
+		setInfoIsDialogOpen(true);
 	};
 	if (users.length === 0) {
 		return (
@@ -100,7 +100,11 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
 				</tbody>
 			</table>
 			{/* User Dialog */}
-			<UserInfoDialog user={selectedUser} isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
+			<UserInfoDialog
+				user={selectedUser}
+				isOpen={isInfoDialogOpen}
+				onOpenChange={setInfoIsDialogOpen}
+			/>
 		</div>
 	);
 };

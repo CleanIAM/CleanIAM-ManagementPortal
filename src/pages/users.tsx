@@ -13,7 +13,7 @@ import { UserForm } from '@/components/users/UserForm';
 import { UserTable } from '@/components/users/UserTable';
 
 export const UsersPage = () => {
-	const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+	const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
 
 	// Fetch users data
 	const { data: usersResponse, isLoading, isError, error, refetch } = useGetApiUsers();
@@ -29,8 +29,8 @@ export const UsersPage = () => {
 	}, [isError, isLoading, usersResponse?.data, usersResponse?.status]);
 
 	// Handle closing the user form dialog
-	const handleCloseUserDialog = () => {
-		setIsAddModalOpen(false);
+	const handleCloseEditUserDialog = () => {
+		setIsInviteDialogOpen(false);
 	};
 
 	return (
@@ -54,7 +54,7 @@ export const UsersPage = () => {
 			) : (
 				<div className="mb-8 rounded-lg bg-white p-6 shadow-md">
 					<div className="mb-4 flex justify-end">
-						<FormButton onClick={() => setIsAddModalOpen(true)}>Invite User</FormButton>
+						<FormButton onClick={() => setIsInviteDialogOpen(true)}>Invite User</FormButton>
 					</div>
 
 					<UserTable users={users} />
@@ -62,7 +62,7 @@ export const UsersPage = () => {
 			)}
 
 			{/* Invite Form Dialog */}
-			<Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+			<Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
 				<DialogContent className="max-w-2xl">
 					<DialogHeader>
 						<DialogTitle>Invite New User</DialogTitle>
@@ -72,10 +72,10 @@ export const UsersPage = () => {
 					<div className="py-4">
 						<UserForm
 							onSuccess={() => {
-								handleCloseUserDialog();
+								handleCloseEditUserDialog();
 								refetch();
 							}}
-							onCancel={handleCloseUserDialog}
+							onCancel={handleCloseEditUserDialog}
 						/>
 					</div>
 				</DialogContent>
