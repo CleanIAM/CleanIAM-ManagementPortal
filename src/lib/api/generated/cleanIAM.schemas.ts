@@ -201,11 +201,7 @@ Represents PNG image in Base64 format */
   qrCode: string;
 }
 
-/**
- * Represents the event of user disabling multifactor authentication (MFA).
- */
 export interface MfaDisabledForUser {
-  /** Id of user */
   id: string;
 }
 
@@ -490,15 +486,68 @@ export interface UserUpdated {
   roles: UserRole[];
 }
 
+export type GetApiApplicationsParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostApiApplicationsParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiApplicationsIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiApplicationsIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type DeleteApiApplicationsIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
 export type GetConnectAuthorizeParams = {
   /**
    * Indicates whether the user should be prompted with account chooser
    */
   chooseAccount?: boolean;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostConnectAuthorizeParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostConnectAuthorizeBody = {
   newSignIn?: boolean;
+};
+
+export type GetConnectEndsessionParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostConnectEndsessionParams = {
@@ -553,25 +602,121 @@ export type PostConnectEndsessionParams = {
    * Parameters to be passed to the end session endpoint.
    */
   'Parameters'?: StringStringValuesKeyValuePair[];
+  /**
+   * Tenant identifier (UUID)
+   */
+  'tenant'?: string;
+};
+
+export type GetConnectEndsessionSuccessParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetConnectUserinfoParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostConnectUserinfoParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetEmailVerificationParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostEmailVerificationParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostEmailVerificationBody = {
   RequestId?: string;
 };
 
+export type GetEmailVerificationIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
 export type GetErrorParams = {
   error?: string;
   errorDescription?: string;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetErrorErrorCodeParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type GetExternalProvidersRequestProviderParams = {
   request?: string;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetExternalProvidersCallbackProviderParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetInvitationsRequestIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostInvitationsRequestIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostInvitationsRequestIdBody = {
   RequestId: string;
   NewPassword: string;
   ConfirmPassword: string;
+};
+
+export type GetMfaTotpParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostMfaTotpParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostMfaTotpBody = {
@@ -583,8 +728,36 @@ export type PostMfaTotpBody = {
   Totp: string;
 };
 
+export type GetPasswordResetParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostPasswordResetParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
 export type PostPasswordResetBody = {
   Email: string;
+};
+
+export type GetPasswordResetRequestIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostPasswordResetRequestIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostPasswordResetRequestIdBody = {
@@ -593,19 +766,76 @@ export type PostPasswordResetRequestIdBody = {
   ConfirmPassword: string;
 };
 
+export type GetApiScopesParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostApiScopesParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiScopesDefaultParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiScopesScopeNameParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type DeleteApiScopesScopeNameParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
 export type GetSigninParams = {
   request?: string;
   error?: string;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostSigninParams = {
   request?: string;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostSigninBody = {
   Email: string;
   /** @maxLength 128 */
   Password: string;
+};
+
+export type GetSignupParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostSignupParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
 };
 
 export type PostSignupBody = {
@@ -617,9 +847,139 @@ export type PostSignupBody = {
   Password: string;
 };
 
+export type GetApiTenantsParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostApiTenantsParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiTenantsTenantIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiTenantsTenantIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiTenantsTenantIdUsersUserIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetUrlShortnerIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiUserParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiUserParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiUserMfaEnabledParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiUserMfaConfigurationParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PostApiUserMfaConfigurationParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type DeleteApiUserMfaConfigurationParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiUsersParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type GetApiUsersIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiUsersIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type DeleteApiUsersIdParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiUsersIdDisabledParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type PutApiUsersIdEnabledParams = {
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
 export type PostApiUsersInvitedParams = {
   /**
    * custom tenant id if superAdmin wants to invite user to different organization
+   */
+  tenant?: string;
+  /**
+   * Tenant identifier (UUID)
    */
   tenant?: string;
 };
@@ -627,6 +987,17 @@ export type PostApiUsersInvitedParams = {
 export type PostApiUsersIdInvitationEmailParams = {
   /**
    * custom tenant id if superAdmin wants to invite user to different organization
+   */
+  tenant?: string;
+  /**
+   * Tenant identifier (UUID)
+   */
+  tenant?: string;
+};
+
+export type DeleteApiUsersIdMfaEnabledParams = {
+  /**
+   * Tenant identifier (UUID)
    */
   tenant?: string;
 };

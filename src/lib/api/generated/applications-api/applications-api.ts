@@ -24,11 +24,16 @@ import type {
 import type {
   ApiApplicationModel,
   CreateNewApplicationRequest,
+  DeleteApiApplicationsIdParams,
   Error,
+  GetApiApplicationsIdParams,
+  GetApiApplicationsParams,
   OpenIdApplication,
   OpenIdApplicationCreated,
   OpenIdApplicationDeleted,
   OpenIdApplicationUpdated,
+  PostApiApplicationsParams,
+  PutApiApplicationsIdParams,
   UpdateApplicationRequest
 } from '../cleanIAM.schemas';
 
@@ -37,30 +42,34 @@ import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 /**
  * @summary Show the main application page with a list of all applications.
  */
-export const getApiApplications = (signal?: AbortSignal) => {
+export const getApiApplications = (params?: GetApiApplicationsParams, signal?: AbortSignal) => {
   return customAxiosRequest<ApiApplicationModel[]>({
     url: `/api/applications`,
     method: 'GET',
+    params,
     signal
   });
 };
 
-export const getGetApiApplicationsQueryKey = () => {
-  return [`/api/applications`] as const;
+export const getGetApiApplicationsQueryKey = (params?: GetApiApplicationsParams) => {
+  return [`/api/applications`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiApplicationsQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiApplications>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
-}) => {
+>(
+  params?: GetApiApplicationsParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplications>>> = ({ signal }) =>
-    getApiApplications(signal);
+    getApiApplications(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getApiApplications>>,
@@ -78,6 +87,7 @@ export function useGetApiApplications<
   TData = Awaited<ReturnType<typeof getApiApplications>>,
   TError = unknown
 >(
+  params: undefined | GetApiApplicationsParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>> &
       Pick<
@@ -95,6 +105,7 @@ export function useGetApiApplications<
   TData = Awaited<ReturnType<typeof getApiApplications>>,
   TError = unknown
 >(
+  params?: GetApiApplicationsParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>
@@ -114,6 +125,7 @@ export function useGetApiApplications<
   TData = Awaited<ReturnType<typeof getApiApplications>>,
   TError = unknown
 >(
+  params?: GetApiApplicationsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
   },
@@ -127,12 +139,13 @@ export function useGetApiApplications<
   TData = Awaited<ReturnType<typeof getApiApplications>>,
   TError = unknown
 >(
+  params?: GetApiApplicationsParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiApplications>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiApplicationsQueryOptions(options);
+  const queryOptions = getGetApiApplicationsQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -148,6 +161,7 @@ export function useGetApiApplications<
  */
 export const postApiApplications = (
   createNewApplicationRequest: CreateNewApplicationRequest,
+  params?: PostApiApplicationsParams,
   signal?: AbortSignal
 ) => {
   return customAxiosRequest<OpenIdApplicationCreated>({
@@ -155,6 +169,7 @@ export const postApiApplications = (
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     data: createNewApplicationRequest,
+    params,
     signal
   });
 };
@@ -166,13 +181,13 @@ export const getPostApiApplicationsMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postApiApplications>>,
     TError,
-    { data: CreateNewApplicationRequest },
+    { data: CreateNewApplicationRequest; params?: PostApiApplicationsParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postApiApplications>>,
   TError,
-  { data: CreateNewApplicationRequest },
+  { data: CreateNewApplicationRequest; params?: PostApiApplicationsParams },
   TContext
 > => {
   const mutationKey = ['postApiApplications'];
@@ -184,11 +199,11 @@ export const getPostApiApplicationsMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postApiApplications>>,
-    { data: CreateNewApplicationRequest }
+    { data: CreateNewApplicationRequest; params?: PostApiApplicationsParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postApiApplications(data);
+    return postApiApplications(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -208,7 +223,7 @@ export const usePostApiApplications = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postApiApplications>>,
       TError,
-      { data: CreateNewApplicationRequest },
+      { data: CreateNewApplicationRequest; params?: PostApiApplicationsParams },
       TContext
     >;
   },
@@ -216,7 +231,7 @@ export const usePostApiApplications = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postApiApplications>>,
   TError,
-  { data: CreateNewApplicationRequest },
+  { data: CreateNewApplicationRequest; params?: PostApiApplicationsParams },
   TContext
 > => {
   const mutationOptions = getPostApiApplicationsMutationOptions(options);
@@ -226,16 +241,24 @@ export const usePostApiApplications = <TError = Error, TContext = unknown>(
 /**
  * @summary Get the application with the given id.
  */
-export const getApiApplicationsId = (id: string, signal?: AbortSignal) => {
+export const getApiApplicationsId = (
+  id: string,
+  params?: GetApiApplicationsIdParams,
+  signal?: AbortSignal
+) => {
   return customAxiosRequest<OpenIdApplication>({
     url: `/api/applications/${id}`,
     method: 'GET',
+    params,
     signal
   });
 };
 
-export const getGetApiApplicationsIdQueryKey = (id: string) => {
-  return [`/api/applications/${id}`] as const;
+export const getGetApiApplicationsIdQueryKey = (
+  id: string,
+  params?: GetApiApplicationsIdParams
+) => {
+  return [`/api/applications/${id}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiApplicationsIdQueryOptions = <
@@ -243,6 +266,7 @@ export const getGetApiApplicationsIdQueryOptions = <
   TError = Error
 >(
   id: string,
+  params?: GetApiApplicationsIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
@@ -251,10 +275,10 @@ export const getGetApiApplicationsIdQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsIdQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetApiApplicationsIdQueryKey(id, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiApplicationsId>>> = ({ signal }) =>
-    getApiApplicationsId(id, signal);
+    getApiApplicationsId(id, params, signal);
 
   return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getApiApplicationsId>>,
@@ -273,6 +297,7 @@ export function useGetApiApplicationsId<
   TError = Error
 >(
   id: string,
+  params: undefined | GetApiApplicationsIdParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
@@ -293,6 +318,7 @@ export function useGetApiApplicationsId<
   TError = Error
 >(
   id: string,
+  params?: GetApiApplicationsIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
@@ -313,6 +339,7 @@ export function useGetApiApplicationsId<
   TError = Error
 >(
   id: string,
+  params?: GetApiApplicationsIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
@@ -329,6 +356,7 @@ export function useGetApiApplicationsId<
   TError = Error
 >(
   id: string,
+  params?: GetApiApplicationsIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getApiApplicationsId>>, TError, TData>
@@ -336,7 +364,7 @@ export function useGetApiApplicationsId<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiApplicationsIdQueryOptions(id, options);
+  const queryOptions = getGetApiApplicationsIdQueryOptions(id, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -352,13 +380,15 @@ export function useGetApiApplicationsId<
  */
 export const putApiApplicationsId = (
   id: string,
-  updateApplicationRequest: UpdateApplicationRequest
+  updateApplicationRequest: UpdateApplicationRequest,
+  params?: PutApiApplicationsIdParams
 ) => {
   return customAxiosRequest<OpenIdApplicationUpdated>({
     url: `/api/applications/${id}`,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    data: updateApplicationRequest
+    data: updateApplicationRequest,
+    params
   });
 };
 
@@ -369,13 +399,13 @@ export const getPutApiApplicationsIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiApplicationsId>>,
     TError,
-    { id: string; data: UpdateApplicationRequest },
+    { id: string; data: UpdateApplicationRequest; params?: PutApiApplicationsIdParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putApiApplicationsId>>,
   TError,
-  { id: string; data: UpdateApplicationRequest },
+  { id: string; data: UpdateApplicationRequest; params?: PutApiApplicationsIdParams },
   TContext
 > => {
   const mutationKey = ['putApiApplicationsId'];
@@ -387,11 +417,11 @@ export const getPutApiApplicationsIdMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putApiApplicationsId>>,
-    { id: string; data: UpdateApplicationRequest }
+    { id: string; data: UpdateApplicationRequest; params?: PutApiApplicationsIdParams }
   > = props => {
-    const { id, data } = props ?? {};
+    const { id, data, params } = props ?? {};
 
-    return putApiApplicationsId(id, data);
+    return putApiApplicationsId(id, data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -411,7 +441,7 @@ export const usePutApiApplicationsId = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof putApiApplicationsId>>,
       TError,
-      { id: string; data: UpdateApplicationRequest },
+      { id: string; data: UpdateApplicationRequest; params?: PutApiApplicationsIdParams },
       TContext
     >;
   },
@@ -419,7 +449,7 @@ export const usePutApiApplicationsId = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof putApiApplicationsId>>,
   TError,
-  { id: string; data: UpdateApplicationRequest },
+  { id: string; data: UpdateApplicationRequest; params?: PutApiApplicationsIdParams },
   TContext
 > => {
   const mutationOptions = getPutApiApplicationsIdMutationOptions(options);
@@ -429,10 +459,11 @@ export const usePutApiApplicationsId = <TError = Error, TContext = unknown>(
 /**
  * @summary Update the application with the given id.
  */
-export const deleteApiApplicationsId = (id: string) => {
+export const deleteApiApplicationsId = (id: string, params?: DeleteApiApplicationsIdParams) => {
   return customAxiosRequest<OpenIdApplicationDeleted>({
     url: `/api/applications/${id}`,
-    method: 'DELETE'
+    method: 'DELETE',
+    params
   });
 };
 
@@ -443,13 +474,13 @@ export const getDeleteApiApplicationsIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiApplicationsId>>,
     TError,
-    { id: string },
+    { id: string; params?: DeleteApiApplicationsIdParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteApiApplicationsId>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiApplicationsIdParams },
   TContext
 > => {
   const mutationKey = ['deleteApiApplicationsId'];
@@ -461,11 +492,11 @@ export const getDeleteApiApplicationsIdMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteApiApplicationsId>>,
-    { id: string }
+    { id: string; params?: DeleteApiApplicationsIdParams }
   > = props => {
-    const { id } = props ?? {};
+    const { id, params } = props ?? {};
 
-    return deleteApiApplicationsId(id);
+    return deleteApiApplicationsId(id, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -485,7 +516,7 @@ export const useDeleteApiApplicationsId = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteApiApplicationsId>>,
       TError,
-      { id: string },
+      { id: string; params?: DeleteApiApplicationsIdParams },
       TContext
     >;
   },
@@ -493,7 +524,7 @@ export const useDeleteApiApplicationsId = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteApiApplicationsId>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiApplicationsIdParams },
   TContext
 > => {
   const mutationOptions = getDeleteApiApplicationsIdMutationOptions(options);

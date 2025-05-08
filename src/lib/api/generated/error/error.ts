@@ -18,7 +18,7 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetErrorParams } from '../cleanIAM.schemas';
+import type { GetErrorErrorCodeParams, GetErrorParams } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
@@ -112,12 +112,19 @@ export function useGetError<TData = Awaited<ReturnType<typeof getError>>, TError
   return query;
 }
 
-export const getErrorErrorCode = (errorCode: number, signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/error/${errorCode}`, method: 'GET', signal });
+export const getErrorErrorCode = (
+  errorCode: number,
+  params?: GetErrorErrorCodeParams,
+  signal?: AbortSignal
+) => {
+  return customAxiosRequest<void>({ url: `/error/${errorCode}`, method: 'GET', params, signal });
 };
 
-export const getGetErrorErrorCodeQueryKey = (errorCode: number) => {
-  return [`/error/${errorCode}`] as const;
+export const getGetErrorErrorCodeQueryKey = (
+  errorCode: number,
+  params?: GetErrorErrorCodeParams
+) => {
+  return [`/error/${errorCode}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetErrorErrorCodeQueryOptions = <
@@ -125,16 +132,17 @@ export const getGetErrorErrorCodeQueryOptions = <
   TError = unknown
 >(
   errorCode: number,
+  params?: GetErrorErrorCodeParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
   }
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetErrorErrorCodeQueryKey(errorCode);
+  const queryKey = queryOptions?.queryKey ?? getGetErrorErrorCodeQueryKey(errorCode, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getErrorErrorCode>>> = ({ signal }) =>
-    getErrorErrorCode(errorCode, signal);
+    getErrorErrorCode(errorCode, params, signal);
 
   return { queryKey, queryFn, enabled: !!errorCode, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getErrorErrorCode>>,
@@ -153,6 +161,7 @@ export function useGetErrorErrorCode<
   TError = unknown
 >(
   errorCode: number,
+  params: undefined | GetErrorErrorCodeParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> &
       Pick<
@@ -171,6 +180,7 @@ export function useGetErrorErrorCode<
   TError = unknown
 >(
   errorCode: number,
+  params?: GetErrorErrorCodeParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>> &
       Pick<
@@ -189,6 +199,7 @@ export function useGetErrorErrorCode<
   TError = unknown
 >(
   errorCode: number,
+  params?: GetErrorErrorCodeParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
   },
@@ -200,12 +211,13 @@ export function useGetErrorErrorCode<
   TError = unknown
 >(
   errorCode: number,
+  params?: GetErrorErrorCodeParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getErrorErrorCode>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetErrorErrorCodeQueryOptions(errorCode, options);
+  const queryOptions = getGetErrorErrorCodeQueryOptions(errorCode, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

@@ -21,33 +21,43 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostEmailVerificationBody } from '../cleanIAM.schemas';
+import type {
+  GetEmailVerificationIdParams,
+  GetEmailVerificationParams,
+  PostEmailVerificationBody,
+  PostEmailVerificationParams
+} from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Show a page announcing that email verification is required
  */
-export const getEmailVerification = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/email-verification`, method: 'GET', signal });
+export const getEmailVerification = (params?: GetEmailVerificationParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/email-verification`, method: 'GET', params, signal });
 };
 
-export const getGetEmailVerificationQueryKey = () => {
-  return [`/email-verification`] as const;
+export const getGetEmailVerificationQueryKey = (params?: GetEmailVerificationParams) => {
+  return [`/email-verification`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetEmailVerificationQueryOptions = <
   TData = Awaited<ReturnType<typeof getEmailVerification>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>>;
-}) => {
+>(
+  params?: GetEmailVerificationParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
+    >;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerification>>> = ({ signal }) =>
-    getEmailVerification(signal);
+    getEmailVerification(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEmailVerification>>,
@@ -65,6 +75,7 @@ export function useGetEmailVerification<
   TData = Awaited<ReturnType<typeof getEmailVerification>>,
   TError = unknown
 >(
+  params: undefined | GetEmailVerificationParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
@@ -84,6 +95,7 @@ export function useGetEmailVerification<
   TData = Awaited<ReturnType<typeof getEmailVerification>>,
   TError = unknown
 >(
+  params?: GetEmailVerificationParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
@@ -103,6 +115,7 @@ export function useGetEmailVerification<
   TData = Awaited<ReturnType<typeof getEmailVerification>>,
   TError = unknown
 >(
+  params?: GetEmailVerificationParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
@@ -118,6 +131,7 @@ export function useGetEmailVerification<
   TData = Awaited<ReturnType<typeof getEmailVerification>>,
   TError = unknown
 >(
+  params?: GetEmailVerificationParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
@@ -125,7 +139,7 @@ export function useGetEmailVerification<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetEmailVerificationQueryOptions(options);
+  const queryOptions = getGetEmailVerificationQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -141,6 +155,7 @@ export function useGetEmailVerification<
  */
 export const postEmailVerification = (
   postEmailVerificationBody: PostEmailVerificationBody,
+  params?: PostEmailVerificationParams,
   signal?: AbortSignal
 ) => {
   const formData = new FormData();
@@ -153,6 +168,7 @@ export const postEmailVerification = (
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -164,13 +180,13 @@ export const getPostEmailVerificationMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postEmailVerification>>,
     TError,
-    { data: PostEmailVerificationBody },
+    { data: PostEmailVerificationBody; params?: PostEmailVerificationParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postEmailVerification>>,
   TError,
-  { data: PostEmailVerificationBody },
+  { data: PostEmailVerificationBody; params?: PostEmailVerificationParams },
   TContext
 > => {
   const mutationKey = ['postEmailVerification'];
@@ -182,11 +198,11 @@ export const getPostEmailVerificationMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postEmailVerification>>,
-    { data: PostEmailVerificationBody }
+    { data: PostEmailVerificationBody; params?: PostEmailVerificationParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postEmailVerification(data);
+    return postEmailVerification(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -206,7 +222,7 @@ export const usePostEmailVerification = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postEmailVerification>>,
       TError,
-      { data: PostEmailVerificationBody },
+      { data: PostEmailVerificationBody; params?: PostEmailVerificationParams },
       TContext
     >;
   },
@@ -214,7 +230,7 @@ export const usePostEmailVerification = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postEmailVerification>>,
   TError,
-  { data: PostEmailVerificationBody },
+  { data: PostEmailVerificationBody; params?: PostEmailVerificationParams },
   TContext
 > => {
   const mutationOptions = getPostEmailVerificationMutationOptions(options);
@@ -224,12 +240,24 @@ export const usePostEmailVerification = <TError = unknown, TContext = unknown>(
 /**
  * @summary Handle the user clicking on the email verification link
  */
-export const getEmailVerificationId = (id: string, signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/email-verification/${id}`, method: 'GET', signal });
+export const getEmailVerificationId = (
+  id: string,
+  params?: GetEmailVerificationIdParams,
+  signal?: AbortSignal
+) => {
+  return customAxiosRequest<void>({
+    url: `/email-verification/${id}`,
+    method: 'GET',
+    params,
+    signal
+  });
 };
 
-export const getGetEmailVerificationIdQueryKey = (id: string) => {
-  return [`/email-verification/${id}`] as const;
+export const getGetEmailVerificationIdQueryKey = (
+  id: string,
+  params?: GetEmailVerificationIdParams
+) => {
+  return [`/email-verification/${id}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetEmailVerificationIdQueryOptions = <
@@ -237,6 +265,7 @@ export const getGetEmailVerificationIdQueryOptions = <
   TError = unknown
 >(
   id: string,
+  params?: GetEmailVerificationIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
@@ -245,10 +274,10 @@ export const getGetEmailVerificationIdQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationIdQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationIdQueryKey(id, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerificationId>>> = ({ signal }) =>
-    getEmailVerificationId(id, signal);
+    getEmailVerificationId(id, params, signal);
 
   return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getEmailVerificationId>>,
@@ -267,6 +296,7 @@ export function useGetEmailVerificationId<
   TError = unknown
 >(
   id: string,
+  params: undefined | GetEmailVerificationIdParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
@@ -287,6 +317,7 @@ export function useGetEmailVerificationId<
   TError = unknown
 >(
   id: string,
+  params?: GetEmailVerificationIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
@@ -307,6 +338,7 @@ export function useGetEmailVerificationId<
   TError = unknown
 >(
   id: string,
+  params?: GetEmailVerificationIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
@@ -323,6 +355,7 @@ export function useGetEmailVerificationId<
   TError = unknown
 >(
   id: string,
+  params?: GetEmailVerificationIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
@@ -330,7 +363,7 @@ export function useGetEmailVerificationId<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetEmailVerificationIdQueryOptions(id, options);
+  const queryOptions = getGetEmailVerificationIdQueryOptions(id, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

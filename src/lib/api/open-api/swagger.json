@@ -12,6 +12,17 @@
           "ApplicationsApi"
         ],
         "summary": "Show the main application page with a list of all applications.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -49,6 +60,17 @@
           "ApplicationsApi"
         ],
         "summary": "Create a new application",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "New application data",
           "content": {
@@ -149,6 +171,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -225,6 +256,15 @@
             "in": "path",
             "description": "Id of the application to update",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -329,6 +369,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -410,6 +459,15 @@
               "type": "boolean",
               "default": true
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -423,6 +481,17 @@
           "Auth"
         ],
         "summary": "Endpoint handling the OpenId Connect authorization request.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -456,6 +525,17 @@
           "Auth"
         ],
         "summary": "Show the view to confirm the consent of the user to sing out.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -797,6 +877,15 @@
                 "$ref": "#/components/schemas/StringStringValuesKeyValuePair"
               }
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -812,6 +901,17 @@
           "Auth"
         ],
         "summary": "Show the view to confirm the consent of the user to sing out.\r\nJust a fallback in case the client application did not provide a redirect URI.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -825,6 +925,17 @@
           "Auth"
         ],
         "summary": "The main endpoint for OpenId Connect userinfo requests.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -836,6 +947,17 @@
           "Auth"
         ],
         "summary": "The main endpoint for OpenId Connect userinfo requests.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -849,6 +971,17 @@
           "EmailVerification"
         ],
         "summary": "Show a page announcing that email verification is required",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -860,6 +993,17 @@
           "EmailVerification"
         ],
         "summary": "Handle the user requesting email for email verification",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -903,6 +1047,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -931,6 +1084,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -953,6 +1115,15 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -985,6 +1156,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -1007,6 +1187,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1031,6 +1220,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -1048,6 +1246,15 @@
             "name": "requestId",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1113,6 +1320,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -1126,6 +1342,17 @@
           "Mfa"
         ],
         "summary": "Handles the MFA input from the user.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -1164,6 +1391,17 @@
           "PasswordReset"
         ],
         "summary": "Show the form where the user fills in his email, and if the email is valid, a password reset request is sent.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1175,6 +1413,17 @@
           "PasswordReset"
         ],
         "summary": "Handle the form submission with email for the password reset request.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -1222,6 +1471,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -1242,6 +1500,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1295,6 +1562,17 @@
           "ScopesApiEndpoint"
         ],
         "summary": "Get the list of all scopes.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1352,6 +1630,17 @@
           "ScopesApiEndpoint"
         ],
         "summary": "Create a new scope.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1441,6 +1730,17 @@
           "ScopesApiEndpoint"
         ],
         "summary": "Get the list of default scopes.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1508,6 +1808,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1606,6 +1915,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1713,6 +2031,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -1729,6 +2056,15 @@
           {
             "name": "request",
             "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -1778,6 +2114,17 @@
         "tags": [
           "Signup"
         ],
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1787,6 +2134,17 @@
       "post": {
         "tags": [
           "Signup"
+        ],
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "requestBody": {
           "content": {
@@ -1847,6 +2205,17 @@
           "Tenants"
         ],
         "summary": "Get all tenants in the system",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1904,6 +2273,17 @@
           "Tenants"
         ],
         "summary": "Create a new tenant",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2002,6 +2382,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -2078,6 +2467,15 @@
             "in": "path",
             "description": "id of the tenant to update",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -2194,6 +2592,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -2275,6 +2682,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -2290,6 +2706,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Get user info for the current user",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -2358,6 +2785,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Update user info for the current user",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "description": "",
           "content": {
@@ -2468,6 +2906,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Enable or disable MFA for the current user",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2577,6 +3026,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Generate a QR code for MFA connection",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -2665,6 +3125,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Validate Totp and if valid, configure MFA for the user",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2755,6 +3226,17 @@
           "UserApiEndpoint"
         ],
         "summary": "Remove mfa configuration command for user and disable mfa.",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "204": {
             "description": "No Content"
@@ -2828,6 +3310,17 @@
           "UsersApi"
         ],
         "summary": "Get all users",
+        "parameters": [
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -2893,6 +3386,15 @@
             "in": "path",
             "description": "Id of the user to get",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -2973,6 +3475,15 @@
             "in": "path",
             "description": "Id of user to update",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -3097,6 +3608,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -3175,6 +3695,15 @@
             "in": "path",
             "description": "Id of the use to disable",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -3261,6 +3790,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -3338,6 +3876,15 @@
             "name": "tenant",
             "in": "query",
             "description": "custom tenant id if superAdmin wants to invite user to different organization",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -3453,6 +4000,15 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -3531,6 +4087,15 @@
             "in": "path",
             "description": "Id of user to disable mfa for",
             "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tenant",
+            "in": "query",
+            "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
               "format": "uuid"
@@ -4024,12 +4589,10 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "Id of user",
             "format": "uuid"
           }
         },
-        "additionalProperties": false,
-        "description": "Represents the event of user disabling multifactor authentication (MFA)."
+        "additionalProperties": false
       },
       "MfaUpdatedResponse": {
         "required": [

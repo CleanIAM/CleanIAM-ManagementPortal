@@ -21,33 +21,36 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostMfaTotpBody } from '../cleanIAM.schemas';
+import type { GetMfaTotpParams, PostMfaTotpBody, PostMfaTotpParams } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Shows the MFA input from the user.
  */
-export const getMfaTotp = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/mfa/totp`, method: 'GET', signal });
+export const getMfaTotp = (params?: GetMfaTotpParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/mfa/totp`, method: 'GET', params, signal });
 };
 
-export const getGetMfaTotpQueryKey = () => {
-  return [`/mfa/totp`] as const;
+export const getGetMfaTotpQueryKey = (params?: GetMfaTotpParams) => {
+  return [`/mfa/totp`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetMfaTotpQueryOptions = <
   TData = Awaited<ReturnType<typeof getMfaTotp>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
-}) => {
+>(
+  params?: GetMfaTotpParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetMfaTotpQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetMfaTotpQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getMfaTotp>>> = ({ signal }) =>
-    getMfaTotp(signal);
+    getMfaTotp(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getMfaTotp>>,
@@ -60,6 +63,7 @@ export type GetMfaTotpQueryResult = NonNullable<Awaited<ReturnType<typeof getMfa
 export type GetMfaTotpQueryError = unknown;
 
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
+  params: undefined | GetMfaTotpParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
       Pick<
@@ -74,6 +78,7 @@ export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TE
   queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
+  params?: GetMfaTotpParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
       Pick<
@@ -88,6 +93,7 @@ export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TE
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
+  params?: GetMfaTotpParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
   },
@@ -98,12 +104,13 @@ export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TE
  */
 
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
+  params?: GetMfaTotpParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetMfaTotpQueryOptions(options);
+  const queryOptions = getGetMfaTotpQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -117,7 +124,11 @@ export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TE
 /**
  * @summary Handles the MFA input from the user.
  */
-export const postMfaTotp = (postMfaTotpBody: PostMfaTotpBody, signal?: AbortSignal) => {
+export const postMfaTotp = (
+  postMfaTotpBody: PostMfaTotpBody,
+  params?: PostMfaTotpParams,
+  signal?: AbortSignal
+) => {
   const formData = new FormData();
   formData.append('Totp', postMfaTotpBody.Totp);
 
@@ -126,6 +137,7 @@ export const postMfaTotp = (postMfaTotpBody: PostMfaTotpBody, signal?: AbortSign
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -134,13 +146,13 @@ export const getPostMfaTotpMutationOptions = <TError = unknown, TContext = unkno
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postMfaTotp>>,
     TError,
-    { data: PostMfaTotpBody },
+    { data: PostMfaTotpBody; params?: PostMfaTotpParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postMfaTotp>>,
   TError,
-  { data: PostMfaTotpBody },
+  { data: PostMfaTotpBody; params?: PostMfaTotpParams },
   TContext
 > => {
   const mutationKey = ['postMfaTotp'];
@@ -152,11 +164,11 @@ export const getPostMfaTotpMutationOptions = <TError = unknown, TContext = unkno
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postMfaTotp>>,
-    { data: PostMfaTotpBody }
+    { data: PostMfaTotpBody; params?: PostMfaTotpParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postMfaTotp(data);
+    return postMfaTotp(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -174,7 +186,7 @@ export const usePostMfaTotp = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postMfaTotp>>,
       TError,
-      { data: PostMfaTotpBody },
+      { data: PostMfaTotpBody; params?: PostMfaTotpParams },
       TContext
     >;
   },
@@ -182,7 +194,7 @@ export const usePostMfaTotp = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postMfaTotp>>,
   TError,
-  { data: PostMfaTotpBody },
+  { data: PostMfaTotpBody; params?: PostMfaTotpParams },
   TContext
 > => {
   const mutationOptions = getPostMfaTotpMutationOptions(options);

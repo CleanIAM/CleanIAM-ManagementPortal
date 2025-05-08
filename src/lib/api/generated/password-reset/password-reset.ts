@@ -21,33 +21,43 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostPasswordResetBody, PostPasswordResetRequestIdBody } from '../cleanIAM.schemas';
+import type {
+  GetPasswordResetParams,
+  GetPasswordResetRequestIdParams,
+  PostPasswordResetBody,
+  PostPasswordResetParams,
+  PostPasswordResetRequestIdBody,
+  PostPasswordResetRequestIdParams
+} from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
  * @summary Show the form where the user fills in his email, and if the email is valid, a password reset request is sent.
  */
-export const getPasswordReset = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/password-reset`, method: 'GET', signal });
+export const getPasswordReset = (params?: GetPasswordResetParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/password-reset`, method: 'GET', params, signal });
 };
 
-export const getGetPasswordResetQueryKey = () => {
-  return [`/password-reset`] as const;
+export const getGetPasswordResetQueryKey = (params?: GetPasswordResetParams) => {
+  return [`/password-reset`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetPasswordResetQueryOptions = <
   TData = Awaited<ReturnType<typeof getPasswordReset>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
-}) => {
+>(
+  params?: GetPasswordResetParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetPasswordResetQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetPasswordResetQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordReset>>> = ({ signal }) =>
-    getPasswordReset(signal);
+    getPasswordReset(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getPasswordReset>>,
@@ -63,6 +73,7 @@ export function useGetPasswordReset<
   TData = Awaited<ReturnType<typeof getPasswordReset>>,
   TError = unknown
 >(
+  params: undefined | GetPasswordResetParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> &
       Pick<
@@ -80,6 +91,7 @@ export function useGetPasswordReset<
   TData = Awaited<ReturnType<typeof getPasswordReset>>,
   TError = unknown
 >(
+  params?: GetPasswordResetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>> &
       Pick<
@@ -97,6 +109,7 @@ export function useGetPasswordReset<
   TData = Awaited<ReturnType<typeof getPasswordReset>>,
   TError = unknown
 >(
+  params?: GetPasswordResetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
   },
@@ -110,12 +123,13 @@ export function useGetPasswordReset<
   TData = Awaited<ReturnType<typeof getPasswordReset>>,
   TError = unknown
 >(
+  params?: GetPasswordResetParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPasswordReset>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetPasswordResetQueryOptions(options);
+  const queryOptions = getGetPasswordResetQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -131,6 +145,7 @@ export function useGetPasswordReset<
  */
 export const postPasswordReset = (
   postPasswordResetBody: PostPasswordResetBody,
+  params?: PostPasswordResetParams,
   signal?: AbortSignal
 ) => {
   const formData = new FormData();
@@ -141,6 +156,7 @@ export const postPasswordReset = (
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -152,13 +168,13 @@ export const getPostPasswordResetMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postPasswordReset>>,
     TError,
-    { data: PostPasswordResetBody },
+    { data: PostPasswordResetBody; params?: PostPasswordResetParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postPasswordReset>>,
   TError,
-  { data: PostPasswordResetBody },
+  { data: PostPasswordResetBody; params?: PostPasswordResetParams },
   TContext
 > => {
   const mutationKey = ['postPasswordReset'];
@@ -170,11 +186,11 @@ export const getPostPasswordResetMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postPasswordReset>>,
-    { data: PostPasswordResetBody }
+    { data: PostPasswordResetBody; params?: PostPasswordResetParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postPasswordReset(data);
+    return postPasswordReset(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -194,7 +210,7 @@ export const usePostPasswordReset = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postPasswordReset>>,
       TError,
-      { data: PostPasswordResetBody },
+      { data: PostPasswordResetBody; params?: PostPasswordResetParams },
       TContext
     >;
   },
@@ -202,7 +218,7 @@ export const usePostPasswordReset = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postPasswordReset>>,
   TError,
-  { data: PostPasswordResetBody },
+  { data: PostPasswordResetBody; params?: PostPasswordResetParams },
   TContext
 > => {
   const mutationOptions = getPostPasswordResetMutationOptions(options);
@@ -213,12 +229,24 @@ export const usePostPasswordReset = <TError = unknown, TContext = unknown>(
  * User is redirected to this page via a link in email
  * @summary Show the form where the user can set a new password.
  */
-export const getPasswordResetRequestId = (requestId: string, signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/password-reset/${requestId}`, method: 'GET', signal });
+export const getPasswordResetRequestId = (
+  requestId: string,
+  params?: GetPasswordResetRequestIdParams,
+  signal?: AbortSignal
+) => {
+  return customAxiosRequest<void>({
+    url: `/password-reset/${requestId}`,
+    method: 'GET',
+    params,
+    signal
+  });
 };
 
-export const getGetPasswordResetRequestIdQueryKey = (requestId: string) => {
-  return [`/password-reset/${requestId}`] as const;
+export const getGetPasswordResetRequestIdQueryKey = (
+  requestId: string,
+  params?: GetPasswordResetRequestIdParams
+) => {
+  return [`/password-reset/${requestId}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetPasswordResetRequestIdQueryOptions = <
@@ -226,6 +254,7 @@ export const getGetPasswordResetRequestIdQueryOptions = <
   TError = unknown
 >(
   requestId: string,
+  params?: GetPasswordResetRequestIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
@@ -234,11 +263,12 @@ export const getGetPasswordResetRequestIdQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetPasswordResetRequestIdQueryKey(requestId);
+  const queryKey =
+    queryOptions?.queryKey ?? getGetPasswordResetRequestIdQueryKey(requestId, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getPasswordResetRequestId>>> = ({
     signal
-  }) => getPasswordResetRequestId(requestId, signal);
+  }) => getPasswordResetRequestId(requestId, params, signal);
 
   return { queryKey, queryFn, enabled: !!requestId, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getPasswordResetRequestId>>,
@@ -257,6 +287,7 @@ export function useGetPasswordResetRequestId<
   TError = unknown
 >(
   requestId: string,
+  params: undefined | GetPasswordResetRequestIdParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
@@ -277,6 +308,7 @@ export function useGetPasswordResetRequestId<
   TError = unknown
 >(
   requestId: string,
+  params?: GetPasswordResetRequestIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
@@ -297,6 +329,7 @@ export function useGetPasswordResetRequestId<
   TError = unknown
 >(
   requestId: string,
+  params?: GetPasswordResetRequestIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
@@ -313,6 +346,7 @@ export function useGetPasswordResetRequestId<
   TError = unknown
 >(
   requestId: string,
+  params?: GetPasswordResetRequestIdParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getPasswordResetRequestId>>, TError, TData>
@@ -320,7 +354,7 @@ export function useGetPasswordResetRequestId<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetPasswordResetRequestIdQueryOptions(requestId, options);
+  const queryOptions = getGetPasswordResetRequestIdQueryOptions(requestId, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -337,6 +371,7 @@ export function useGetPasswordResetRequestId<
 export const postPasswordResetRequestId = (
   requestId: string,
   postPasswordResetRequestIdBody: PostPasswordResetRequestIdBody,
+  params?: PostPasswordResetRequestIdParams,
   signal?: AbortSignal
 ) => {
   const formData = new FormData();
@@ -349,6 +384,7 @@ export const postPasswordResetRequestId = (
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -360,13 +396,21 @@ export const getPostPasswordResetRequestIdMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postPasswordResetRequestId>>,
     TError,
-    { requestId: string; data: PostPasswordResetRequestIdBody },
+    {
+      requestId: string;
+      data: PostPasswordResetRequestIdBody;
+      params?: PostPasswordResetRequestIdParams;
+    },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postPasswordResetRequestId>>,
   TError,
-  { requestId: string; data: PostPasswordResetRequestIdBody },
+  {
+    requestId: string;
+    data: PostPasswordResetRequestIdBody;
+    params?: PostPasswordResetRequestIdParams;
+  },
   TContext
 > => {
   const mutationKey = ['postPasswordResetRequestId'];
@@ -378,11 +422,15 @@ export const getPostPasswordResetRequestIdMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postPasswordResetRequestId>>,
-    { requestId: string; data: PostPasswordResetRequestIdBody }
+    {
+      requestId: string;
+      data: PostPasswordResetRequestIdBody;
+      params?: PostPasswordResetRequestIdParams;
+    }
   > = props => {
-    const { requestId, data } = props ?? {};
+    const { requestId, data, params } = props ?? {};
 
-    return postPasswordResetRequestId(requestId, data);
+    return postPasswordResetRequestId(requestId, data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -402,7 +450,11 @@ export const usePostPasswordResetRequestId = <TError = unknown, TContext = unkno
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postPasswordResetRequestId>>,
       TError,
-      { requestId: string; data: PostPasswordResetRequestIdBody },
+      {
+        requestId: string;
+        data: PostPasswordResetRequestIdBody;
+        params?: PostPasswordResetRequestIdParams;
+      },
       TContext
     >;
   },
@@ -410,7 +462,11 @@ export const usePostPasswordResetRequestId = <TError = unknown, TContext = unkno
 ): UseMutationResult<
   Awaited<ReturnType<typeof postPasswordResetRequestId>>,
   TError,
-  { requestId: string; data: PostPasswordResetRequestIdBody },
+  {
+    requestId: string;
+    data: PostPasswordResetRequestIdBody;
+    params?: PostPasswordResetRequestIdParams;
+  },
   TContext
 > => {
   const mutationOptions = getPostPasswordResetRequestIdMutationOptions(options);

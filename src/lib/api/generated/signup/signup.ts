@@ -21,30 +21,33 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { PostSignupBody } from '../cleanIAM.schemas';
+import type { GetSignupParams, PostSignupBody, PostSignupParams } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
-export const getSignup = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/signup`, method: 'GET', signal });
+export const getSignup = (params?: GetSignupParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/signup`, method: 'GET', params, signal });
 };
 
-export const getGetSignupQueryKey = () => {
-  return [`/signup`] as const;
+export const getGetSignupQueryKey = (params?: GetSignupParams) => {
+  return [`/signup`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetSignupQueryOptions = <
   TData = Awaited<ReturnType<typeof getSignup>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
-}) => {
+>(
+  params?: GetSignupParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetSignupQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetSignupQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getSignup>>> = ({ signal }) =>
-    getSignup(signal);
+    getSignup(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getSignup>>,
@@ -57,6 +60,7 @@ export type GetSignupQueryResult = NonNullable<Awaited<ReturnType<typeof getSign
 export type GetSignupQueryError = unknown;
 
 export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  params: undefined | GetSignupParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> &
       Pick<
@@ -71,6 +75,7 @@ export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TErr
   queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  params?: GetSignupParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>> &
       Pick<
@@ -85,6 +90,7 @@ export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TErr
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  params?: GetSignupParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
   },
@@ -92,12 +98,13 @@ export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TErr
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
 export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TError = unknown>(
+  params?: GetSignupParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getSignup>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetSignupQueryOptions(options);
+  const queryOptions = getGetSignupQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -108,7 +115,11 @@ export function useGetSignup<TData = Awaited<ReturnType<typeof getSignup>>, TErr
   return query;
 }
 
-export const postSignup = (postSignupBody: PostSignupBody, signal?: AbortSignal) => {
+export const postSignup = (
+  postSignupBody: PostSignupBody,
+  params?: PostSignupParams,
+  signal?: AbortSignal
+) => {
   const formData = new FormData();
   formData.append('Email', postSignupBody.Email);
   formData.append('FirstName', postSignupBody.FirstName);
@@ -120,6 +131,7 @@ export const postSignup = (postSignupBody: PostSignupBody, signal?: AbortSignal)
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -128,13 +140,13 @@ export const getPostSignupMutationOptions = <TError = unknown, TContext = unknow
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postSignup>>,
     TError,
-    { data: PostSignupBody },
+    { data: PostSignupBody; params?: PostSignupParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postSignup>>,
   TError,
-  { data: PostSignupBody },
+  { data: PostSignupBody; params?: PostSignupParams },
   TContext
 > => {
   const mutationKey = ['postSignup'];
@@ -146,11 +158,11 @@ export const getPostSignupMutationOptions = <TError = unknown, TContext = unknow
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postSignup>>,
-    { data: PostSignupBody }
+    { data: PostSignupBody; params?: PostSignupParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postSignup(data);
+    return postSignup(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -165,7 +177,7 @@ export const usePostSignup = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postSignup>>,
       TError,
-      { data: PostSignupBody },
+      { data: PostSignupBody; params?: PostSignupParams },
       TContext
     >;
   },
@@ -173,7 +185,7 @@ export const usePostSignup = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postSignup>>,
   TError,
-  { data: PostSignupBody },
+  { data: PostSignupBody; params?: PostSignupParams },
   TContext
 > => {
   const mutationOptions = getPostSignupMutationOptions(options);

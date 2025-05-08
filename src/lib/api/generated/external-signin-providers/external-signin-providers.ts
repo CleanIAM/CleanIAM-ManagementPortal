@@ -18,7 +18,10 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type { GetExternalProvidersRequestProviderParams } from '../cleanIAM.schemas';
+import type {
+  GetExternalProvidersCallbackProviderParams,
+  GetExternalProvidersRequestProviderParams
+} from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
@@ -188,16 +191,24 @@ export function useGetExternalProvidersRequestProvider<
 /**
  * @summary Finalizes the authentication process with external signin provider
  */
-export const getExternalProvidersCallbackProvider = (provider: string, signal?: AbortSignal) => {
+export const getExternalProvidersCallbackProvider = (
+  provider: string,
+  params?: GetExternalProvidersCallbackProviderParams,
+  signal?: AbortSignal
+) => {
   return customAxiosRequest<void>({
     url: `/external-providers/callback/${provider}`,
     method: 'GET',
+    params,
     signal
   });
 };
 
-export const getGetExternalProvidersCallbackProviderQueryKey = (provider: string) => {
-  return [`/external-providers/callback/${provider}`] as const;
+export const getGetExternalProvidersCallbackProviderQueryKey = (
+  provider: string,
+  params?: GetExternalProvidersCallbackProviderParams
+) => {
+  return [`/external-providers/callback/${provider}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetExternalProvidersCallbackProviderQueryOptions = <
@@ -205,6 +216,7 @@ export const getGetExternalProvidersCallbackProviderQueryOptions = <
   TError = unknown
 >(
   provider: string,
+  params?: GetExternalProvidersCallbackProviderParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -218,11 +230,11 @@ export const getGetExternalProvidersCallbackProviderQueryOptions = <
   const { query: queryOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getGetExternalProvidersCallbackProviderQueryKey(provider);
+    queryOptions?.queryKey ?? getGetExternalProvidersCallbackProviderQueryKey(provider, params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>
-  > = ({ signal }) => getExternalProvidersCallbackProvider(provider, signal);
+  > = ({ signal }) => getExternalProvidersCallbackProvider(provider, params, signal);
 
   return { queryKey, queryFn, enabled: !!provider, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getExternalProvidersCallbackProvider>>,
@@ -241,6 +253,7 @@ export function useGetExternalProvidersCallbackProvider<
   TError = unknown
 >(
   provider: string,
+  params: undefined | GetExternalProvidersCallbackProviderParams,
   options: {
     query: Partial<
       UseQueryOptions<
@@ -265,6 +278,7 @@ export function useGetExternalProvidersCallbackProvider<
   TError = unknown
 >(
   provider: string,
+  params?: GetExternalProvidersCallbackProviderParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -289,6 +303,7 @@ export function useGetExternalProvidersCallbackProvider<
   TError = unknown
 >(
   provider: string,
+  params?: GetExternalProvidersCallbackProviderParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -309,6 +324,7 @@ export function useGetExternalProvidersCallbackProvider<
   TError = unknown
 >(
   provider: string,
+  params?: GetExternalProvidersCallbackProviderParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -320,7 +336,11 @@ export function useGetExternalProvidersCallbackProvider<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetExternalProvidersCallbackProviderQueryOptions(provider, options);
+  const queryOptions = getGetExternalProvidersCallbackProviderQueryOptions(
+    provider,
+    params,
+    options
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;

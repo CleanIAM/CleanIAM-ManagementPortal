@@ -23,11 +23,18 @@ import type {
 
 import type {
   ApiUserModel,
+  DeleteApiUsersIdMfaEnabledParams,
+  DeleteApiUsersIdParams,
   Error,
+  GetApiUsersIdParams,
+  GetApiUsersParams,
   InviteUserRequest,
   MfaDisabledForUser,
   PostApiUsersIdInvitationEmailParams,
   PostApiUsersInvitedParams,
+  PutApiUsersIdDisabledParams,
+  PutApiUsersIdEnabledParams,
+  PutApiUsersIdParams,
   UpdateUserRequest,
   UserDeleted,
   UserDisabled,
@@ -40,26 +47,29 @@ import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 /**
  * @summary Get all users
  */
-export const getApiUsers = (signal?: AbortSignal) => {
-  return customAxiosRequest<ApiUserModel[]>({ url: `/api/users`, method: 'GET', signal });
+export const getApiUsers = (params?: GetApiUsersParams, signal?: AbortSignal) => {
+  return customAxiosRequest<ApiUserModel[]>({ url: `/api/users`, method: 'GET', params, signal });
 };
 
-export const getGetApiUsersQueryKey = () => {
-  return [`/api/users`] as const;
+export const getGetApiUsersQueryKey = (params?: GetApiUsersParams) => {
+  return [`/api/users`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiUsersQueryOptions = <
   TData = Awaited<ReturnType<typeof getApiUsers>>,
   TError = Error
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
-}) => {
+>(
+  params?: GetApiUsersParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetApiUsersQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetApiUsersQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsers>>> = ({ signal }) =>
-    getApiUsers(signal);
+    getApiUsers(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getApiUsers>>,
@@ -72,6 +82,7 @@ export type GetApiUsersQueryResult = NonNullable<Awaited<ReturnType<typeof getAp
 export type GetApiUsersQueryError = Error;
 
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
+  params: undefined | GetApiUsersParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
       Pick<
@@ -86,6 +97,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
   queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
+  params?: GetApiUsersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>> &
       Pick<
@@ -100,6 +112,7 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
+  params?: GetApiUsersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
   },
@@ -110,12 +123,13 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
  */
 
 export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, TError = Error>(
+  params?: GetApiUsersParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsers>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiUsersQueryOptions(options);
+  const queryOptions = getGetApiUsersQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -129,12 +143,17 @@ export function useGetApiUsers<TData = Awaited<ReturnType<typeof getApiUsers>>, 
 /**
  * @summary Get specific user by its id
  */
-export const getApiUsersId = (id: string, signal?: AbortSignal) => {
-  return customAxiosRequest<ApiUserModel>({ url: `/api/users/${id}`, method: 'GET', signal });
+export const getApiUsersId = (id: string, params?: GetApiUsersIdParams, signal?: AbortSignal) => {
+  return customAxiosRequest<ApiUserModel>({
+    url: `/api/users/${id}`,
+    method: 'GET',
+    params,
+    signal
+  });
 };
 
-export const getGetApiUsersIdQueryKey = (id: string) => {
-  return [`/api/users/${id}`] as const;
+export const getGetApiUsersIdQueryKey = (id: string, params?: GetApiUsersIdParams) => {
+  return [`/api/users/${id}`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetApiUsersIdQueryOptions = <
@@ -142,16 +161,17 @@ export const getGetApiUsersIdQueryOptions = <
   TError = Error
 >(
   id: string,
+  params?: GetApiUsersIdParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
   }
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetApiUsersIdQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetApiUsersIdQueryKey(id, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiUsersId>>> = ({ signal }) =>
-    getApiUsersId(id, signal);
+    getApiUsersId(id, params, signal);
 
   return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getApiUsersId>>,
@@ -165,6 +185,7 @@ export type GetApiUsersIdQueryError = Error;
 
 export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId>>, TError = Error>(
   id: string,
+  params: undefined | GetApiUsersIdParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
       Pick<
@@ -180,6 +201,7 @@ export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId>>, TError = Error>(
   id: string,
+  params?: GetApiUsersIdParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>> &
       Pick<
@@ -195,6 +217,7 @@ export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId>>, TError = Error>(
   id: string,
+  params?: GetApiUsersIdParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
   },
@@ -206,12 +229,13 @@ export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId
 
 export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId>>, TError = Error>(
   id: string,
+  params?: GetApiUsersIdParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiUsersId>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiUsersIdQueryOptions(id, options);
+  const queryOptions = getGetApiUsersIdQueryOptions(id, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -225,12 +249,17 @@ export function useGetApiUsersId<TData = Awaited<ReturnType<typeof getApiUsersId
 /**
  * @summary Update user
  */
-export const putApiUsersId = (id: string, updateUserRequest: UpdateUserRequest) => {
+export const putApiUsersId = (
+  id: string,
+  updateUserRequest: UpdateUserRequest,
+  params?: PutApiUsersIdParams
+) => {
   return customAxiosRequest<UserUpdated>({
     url: `/api/users/${id}`,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    data: updateUserRequest
+    data: updateUserRequest,
+    params
   });
 };
 
@@ -238,13 +267,13 @@ export const getPutApiUsersIdMutationOptions = <TError = Error, TContext = unkno
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiUsersId>>,
     TError,
-    { id: string; data: UpdateUserRequest },
+    { id: string; data: UpdateUserRequest; params?: PutApiUsersIdParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putApiUsersId>>,
   TError,
-  { id: string; data: UpdateUserRequest },
+  { id: string; data: UpdateUserRequest; params?: PutApiUsersIdParams },
   TContext
 > => {
   const mutationKey = ['putApiUsersId'];
@@ -256,11 +285,11 @@ export const getPutApiUsersIdMutationOptions = <TError = Error, TContext = unkno
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putApiUsersId>>,
-    { id: string; data: UpdateUserRequest }
+    { id: string; data: UpdateUserRequest; params?: PutApiUsersIdParams }
   > = props => {
-    const { id, data } = props ?? {};
+    const { id, data, params } = props ?? {};
 
-    return putApiUsersId(id, data);
+    return putApiUsersId(id, data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -278,7 +307,7 @@ export const usePutApiUsersId = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof putApiUsersId>>,
       TError,
-      { id: string; data: UpdateUserRequest },
+      { id: string; data: UpdateUserRequest; params?: PutApiUsersIdParams },
       TContext
     >;
   },
@@ -286,7 +315,7 @@ export const usePutApiUsersId = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof putApiUsersId>>,
   TError,
-  { id: string; data: UpdateUserRequest },
+  { id: string; data: UpdateUserRequest; params?: PutApiUsersIdParams },
   TContext
 > => {
   const mutationOptions = getPutApiUsersIdMutationOptions(options);
@@ -296,21 +325,21 @@ export const usePutApiUsersId = <TError = Error, TContext = unknown>(
 /**
  * @summary Delete user
  */
-export const deleteApiUsersId = (id: string) => {
-  return customAxiosRequest<UserDeleted>({ url: `/api/users/${id}`, method: 'DELETE' });
+export const deleteApiUsersId = (id: string, params?: DeleteApiUsersIdParams) => {
+  return customAxiosRequest<UserDeleted>({ url: `/api/users/${id}`, method: 'DELETE', params });
 };
 
 export const getDeleteApiUsersIdMutationOptions = <TError = Error, TContext = unknown>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiUsersId>>,
     TError,
-    { id: string },
+    { id: string; params?: DeleteApiUsersIdParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteApiUsersId>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiUsersIdParams },
   TContext
 > => {
   const mutationKey = ['deleteApiUsersId'];
@@ -322,11 +351,11 @@ export const getDeleteApiUsersIdMutationOptions = <TError = Error, TContext = un
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteApiUsersId>>,
-    { id: string }
+    { id: string; params?: DeleteApiUsersIdParams }
   > = props => {
-    const { id } = props ?? {};
+    const { id, params } = props ?? {};
 
-    return deleteApiUsersId(id);
+    return deleteApiUsersId(id, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -346,7 +375,7 @@ export const useDeleteApiUsersId = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteApiUsersId>>,
       TError,
-      { id: string },
+      { id: string; params?: DeleteApiUsersIdParams },
       TContext
     >;
   },
@@ -354,7 +383,7 @@ export const useDeleteApiUsersId = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteApiUsersId>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiUsersIdParams },
   TContext
 > => {
   const mutationOptions = getDeleteApiUsersIdMutationOptions(options);
@@ -364,8 +393,12 @@ export const useDeleteApiUsersId = <TError = Error, TContext = unknown>(
 /**
  * @summary Disable user
  */
-export const putApiUsersIdDisabled = (id: string) => {
-  return customAxiosRequest<UserDisabled>({ url: `/api/users/${id}/disabled`, method: 'PUT' });
+export const putApiUsersIdDisabled = (id: string, params?: PutApiUsersIdDisabledParams) => {
+  return customAxiosRequest<UserDisabled>({
+    url: `/api/users/${id}/disabled`,
+    method: 'PUT',
+    params
+  });
 };
 
 export const getPutApiUsersIdDisabledMutationOptions = <
@@ -375,13 +408,13 @@ export const getPutApiUsersIdDisabledMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiUsersIdDisabled>>,
     TError,
-    { id: string },
+    { id: string; params?: PutApiUsersIdDisabledParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putApiUsersIdDisabled>>,
   TError,
-  { id: string },
+  { id: string; params?: PutApiUsersIdDisabledParams },
   TContext
 > => {
   const mutationKey = ['putApiUsersIdDisabled'];
@@ -393,11 +426,11 @@ export const getPutApiUsersIdDisabledMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putApiUsersIdDisabled>>,
-    { id: string }
+    { id: string; params?: PutApiUsersIdDisabledParams }
   > = props => {
-    const { id } = props ?? {};
+    const { id, params } = props ?? {};
 
-    return putApiUsersIdDisabled(id);
+    return putApiUsersIdDisabled(id, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -417,7 +450,7 @@ export const usePutApiUsersIdDisabled = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof putApiUsersIdDisabled>>,
       TError,
-      { id: string },
+      { id: string; params?: PutApiUsersIdDisabledParams },
       TContext
     >;
   },
@@ -425,7 +458,7 @@ export const usePutApiUsersIdDisabled = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof putApiUsersIdDisabled>>,
   TError,
-  { id: string },
+  { id: string; params?: PutApiUsersIdDisabledParams },
   TContext
 > => {
   const mutationOptions = getPutApiUsersIdDisabledMutationOptions(options);
@@ -435,8 +468,12 @@ export const usePutApiUsersIdDisabled = <TError = Error, TContext = unknown>(
 /**
  * @summary Enable user
  */
-export const putApiUsersIdEnabled = (id: string) => {
-  return customAxiosRequest<UserDisabled>({ url: `/api/users/${id}/enabled`, method: 'PUT' });
+export const putApiUsersIdEnabled = (id: string, params?: PutApiUsersIdEnabledParams) => {
+  return customAxiosRequest<UserDisabled>({
+    url: `/api/users/${id}/enabled`,
+    method: 'PUT',
+    params
+  });
 };
 
 export const getPutApiUsersIdEnabledMutationOptions = <
@@ -446,13 +483,13 @@ export const getPutApiUsersIdEnabledMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof putApiUsersIdEnabled>>,
     TError,
-    { id: string },
+    { id: string; params?: PutApiUsersIdEnabledParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof putApiUsersIdEnabled>>,
   TError,
-  { id: string },
+  { id: string; params?: PutApiUsersIdEnabledParams },
   TContext
 > => {
   const mutationKey = ['putApiUsersIdEnabled'];
@@ -464,11 +501,11 @@ export const getPutApiUsersIdEnabledMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof putApiUsersIdEnabled>>,
-    { id: string }
+    { id: string; params?: PutApiUsersIdEnabledParams }
   > = props => {
-    const { id } = props ?? {};
+    const { id, params } = props ?? {};
 
-    return putApiUsersIdEnabled(id);
+    return putApiUsersIdEnabled(id, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -488,7 +525,7 @@ export const usePutApiUsersIdEnabled = <TError = Error, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof putApiUsersIdEnabled>>,
       TError,
-      { id: string },
+      { id: string; params?: PutApiUsersIdEnabledParams },
       TContext
     >;
   },
@@ -496,7 +533,7 @@ export const usePutApiUsersIdEnabled = <TError = Error, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof putApiUsersIdEnabled>>,
   TError,
-  { id: string },
+  { id: string; params?: PutApiUsersIdEnabledParams },
   TContext
 > => {
   const mutationOptions = getPutApiUsersIdEnabledMutationOptions(options);
@@ -668,10 +705,14 @@ export const usePostApiUsersIdInvitationEmail = <TError = Error, TContext = unkn
 /**
  * @summary Disable MFA for user
  */
-export const deleteApiUsersIdMfaEnabled = (id: string) => {
+export const deleteApiUsersIdMfaEnabled = (
+  id: string,
+  params?: DeleteApiUsersIdMfaEnabledParams
+) => {
   return customAxiosRequest<MfaDisabledForUser>({
     url: `/api/users/${id}/mfa/enabled`,
-    method: 'DELETE'
+    method: 'DELETE',
+    params
   });
 };
 
@@ -682,13 +723,13 @@ export const getDeleteApiUsersIdMfaEnabledMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
     TError,
-    { id: string },
+    { id: string; params?: DeleteApiUsersIdMfaEnabledParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiUsersIdMfaEnabledParams },
   TContext
 > => {
   const mutationKey = ['deleteApiUsersIdMfaEnabled'];
@@ -700,11 +741,11 @@ export const getDeleteApiUsersIdMfaEnabledMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
-    { id: string }
+    { id: string; params?: DeleteApiUsersIdMfaEnabledParams }
   > = props => {
-    const { id } = props ?? {};
+    const { id, params } = props ?? {};
 
-    return deleteApiUsersIdMfaEnabled(id);
+    return deleteApiUsersIdMfaEnabled(id, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -724,7 +765,7 @@ export const useDeleteApiUsersIdMfaEnabled = <TError = Error, TContext = unknown
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
       TError,
-      { id: string },
+      { id: string; params?: DeleteApiUsersIdMfaEnabledParams },
       TContext
     >;
   },
@@ -732,7 +773,7 @@ export const useDeleteApiUsersIdMfaEnabled = <TError = Error, TContext = unknown
 ): UseMutationResult<
   Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
   TError,
-  { id: string },
+  { id: string; params?: DeleteApiUsersIdMfaEnabledParams },
   TContext
 > => {
   const mutationOptions = getDeleteApiUsersIdMfaEnabledMutationOptions(options);

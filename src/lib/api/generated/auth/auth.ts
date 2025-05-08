@@ -23,8 +23,13 @@ import type {
 
 import type {
   GetConnectAuthorizeParams,
+  GetConnectEndsessionParams,
+  GetConnectEndsessionSuccessParams,
+  GetConnectUserinfoParams,
   PostConnectAuthorizeBody,
-  PostConnectEndsessionParams
+  PostConnectAuthorizeParams,
+  PostConnectEndsessionParams,
+  PostConnectUserinfoParams
 } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
@@ -158,6 +163,7 @@ export function useGetConnectAuthorize<
  */
 export const postConnectAuthorize = (
   postConnectAuthorizeBody: PostConnectAuthorizeBody,
+  params?: PostConnectAuthorizeParams,
   signal?: AbortSignal
 ) => {
   const formData = new FormData();
@@ -170,6 +176,7 @@ export const postConnectAuthorize = (
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: formData,
+    params,
     signal
   });
 };
@@ -181,13 +188,13 @@ export const getPostConnectAuthorizeMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postConnectAuthorize>>,
     TError,
-    { data: PostConnectAuthorizeBody },
+    { data: PostConnectAuthorizeBody; params?: PostConnectAuthorizeParams },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postConnectAuthorize>>,
   TError,
-  { data: PostConnectAuthorizeBody },
+  { data: PostConnectAuthorizeBody; params?: PostConnectAuthorizeParams },
   TContext
 > => {
   const mutationKey = ['postConnectAuthorize'];
@@ -199,11 +206,11 @@ export const getPostConnectAuthorizeMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postConnectAuthorize>>,
-    { data: PostConnectAuthorizeBody }
+    { data: PostConnectAuthorizeBody; params?: PostConnectAuthorizeParams }
   > = props => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return postConnectAuthorize(data);
+    return postConnectAuthorize(data, params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -223,7 +230,7 @@ export const usePostConnectAuthorize = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postConnectAuthorize>>,
       TError,
-      { data: PostConnectAuthorizeBody },
+      { data: PostConnectAuthorizeBody; params?: PostConnectAuthorizeParams },
       TContext
     >;
   },
@@ -231,7 +238,7 @@ export const usePostConnectAuthorize = <TError = unknown, TContext = unknown>(
 ): UseMutationResult<
   Awaited<ReturnType<typeof postConnectAuthorize>>,
   TError,
-  { data: PostConnectAuthorizeBody },
+  { data: PostConnectAuthorizeBody; params?: PostConnectAuthorizeParams },
   TContext
 > => {
   const mutationOptions = getPostConnectAuthorizeMutationOptions(options);
@@ -241,26 +248,31 @@ export const usePostConnectAuthorize = <TError = unknown, TContext = unknown>(
 /**
  * @summary Show the view to confirm the consent of the user to sing out.
  */
-export const getConnectEndsession = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/connect/endsession`, method: 'GET', signal });
+export const getConnectEndsession = (params?: GetConnectEndsessionParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/connect/endsession`, method: 'GET', params, signal });
 };
 
-export const getGetConnectEndsessionQueryKey = () => {
-  return [`/connect/endsession`] as const;
+export const getGetConnectEndsessionQueryKey = (params?: GetConnectEndsessionParams) => {
+  return [`/connect/endsession`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetConnectEndsessionQueryOptions = <
   TData = Awaited<ReturnType<typeof getConnectEndsession>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>>;
-}) => {
+>(
+  params?: GetConnectEndsessionParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
+    >;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsession>>> = ({ signal }) =>
-    getConnectEndsession(signal);
+    getConnectEndsession(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getConnectEndsession>>,
@@ -278,6 +290,7 @@ export function useGetConnectEndsession<
   TData = Awaited<ReturnType<typeof getConnectEndsession>>,
   TError = unknown
 >(
+  params: undefined | GetConnectEndsessionParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
@@ -297,6 +310,7 @@ export function useGetConnectEndsession<
   TData = Awaited<ReturnType<typeof getConnectEndsession>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
@@ -316,6 +330,7 @@ export function useGetConnectEndsession<
   TData = Awaited<ReturnType<typeof getConnectEndsession>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
@@ -331,6 +346,7 @@ export function useGetConnectEndsession<
   TData = Awaited<ReturnType<typeof getConnectEndsession>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsession>>, TError, TData>
@@ -338,7 +354,7 @@ export function useGetConnectEndsession<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetConnectEndsessionQueryOptions(options);
+  const queryOptions = getGetConnectEndsessionQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -427,29 +443,42 @@ export const usePostConnectEndsession = <TError = unknown, TContext = unknown>(
  * @summary Show the view to confirm the consent of the user to sing out.
 Just a fallback in case the client application did not provide a redirect URI.
  */
-export const getConnectEndsessionSuccess = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/connect/endsession/success`, method: 'GET', signal });
+export const getConnectEndsessionSuccess = (
+  params?: GetConnectEndsessionSuccessParams,
+  signal?: AbortSignal
+) => {
+  return customAxiosRequest<void>({
+    url: `/connect/endsession/success`,
+    method: 'GET',
+    params,
+    signal
+  });
 };
 
-export const getGetConnectEndsessionSuccessQueryKey = () => {
-  return [`/connect/endsession/success`] as const;
+export const getGetConnectEndsessionSuccessQueryKey = (
+  params?: GetConnectEndsessionSuccessParams
+) => {
+  return [`/connect/endsession/success`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetConnectEndsessionSuccessQueryOptions = <
   TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
   TError = unknown
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
-  >;
-}) => {
+>(
+  params?: GetConnectEndsessionSuccessParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
+    >;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionSuccessQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetConnectEndsessionSuccessQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>> = ({
     signal
-  }) => getConnectEndsessionSuccess(signal);
+  }) => getConnectEndsessionSuccess(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
@@ -467,6 +496,7 @@ export function useGetConnectEndsessionSuccess<
   TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
   TError = unknown
 >(
+  params: undefined | GetConnectEndsessionSuccessParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
@@ -486,6 +516,7 @@ export function useGetConnectEndsessionSuccess<
   TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionSuccessParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
@@ -505,6 +536,7 @@ export function useGetConnectEndsessionSuccess<
   TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionSuccessParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
@@ -521,6 +553,7 @@ export function useGetConnectEndsessionSuccess<
   TData = Awaited<ReturnType<typeof getConnectEndsessionSuccess>>,
   TError = unknown
 >(
+  params?: GetConnectEndsessionSuccessParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectEndsessionSuccess>>, TError, TData>
@@ -528,7 +561,7 @@ export function useGetConnectEndsessionSuccess<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetConnectEndsessionSuccessQueryOptions(options);
+  const queryOptions = getGetConnectEndsessionSuccessQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -542,26 +575,29 @@ export function useGetConnectEndsessionSuccess<
 /**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
-export const getConnectUserinfo = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'GET', signal });
+export const getConnectUserinfo = (params?: GetConnectUserinfoParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'GET', params, signal });
 };
 
-export const getGetConnectUserinfoQueryKey = () => {
-  return [`/connect/userinfo`] as const;
+export const getGetConnectUserinfoQueryKey = (params?: GetConnectUserinfoParams) => {
+  return [`/connect/userinfo`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetConnectUserinfoQueryOptions = <
   TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
   TError = unknown
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
-}) => {
+>(
+  params?: GetConnectUserinfoParams,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
+  }
+) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetConnectUserinfoQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetConnectUserinfoQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getConnectUserinfo>>> = ({ signal }) =>
-    getConnectUserinfo(signal);
+    getConnectUserinfo(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getConnectUserinfo>>,
@@ -579,6 +615,7 @@ export function useGetConnectUserinfo<
   TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
   TError = unknown
 >(
+  params: undefined | GetConnectUserinfoParams,
   options: {
     query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>> &
       Pick<
@@ -596,6 +633,7 @@ export function useGetConnectUserinfo<
   TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
   TError = unknown
 >(
+  params?: GetConnectUserinfoParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>
@@ -615,6 +653,7 @@ export function useGetConnectUserinfo<
   TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
   TError = unknown
 >(
+  params?: GetConnectUserinfoParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
   },
@@ -628,12 +667,13 @@ export function useGetConnectUserinfo<
   TData = Awaited<ReturnType<typeof getConnectUserinfo>>,
   TError = unknown
 >(
+  params?: GetConnectUserinfoParams,
   options?: {
     query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getConnectUserinfo>>, TError, TData>>;
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetConnectUserinfoQueryOptions(options);
+  const queryOptions = getGetConnectUserinfoQueryOptions(params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
     queryKey: DataTag<QueryKey, TData, TError>;
@@ -647,8 +687,8 @@ export function useGetConnectUserinfo<
 /**
  * @summary The main endpoint for OpenId Connect userinfo requests.
  */
-export const postConnectUserinfo = (signal?: AbortSignal) => {
-  return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'POST', signal });
+export const postConnectUserinfo = (params?: PostConnectUserinfoParams, signal?: AbortSignal) => {
+  return customAxiosRequest<void>({ url: `/connect/userinfo`, method: 'POST', params, signal });
 };
 
 export const getPostConnectUserinfoMutationOptions = <
@@ -658,10 +698,15 @@ export const getPostConnectUserinfoMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postConnectUserinfo>>,
     TError,
-    void,
+    { params?: PostConnectUserinfoParams },
     TContext
   >;
-}): UseMutationOptions<Awaited<ReturnType<typeof postConnectUserinfo>>, TError, void, TContext> => {
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postConnectUserinfo>>,
+  TError,
+  { params?: PostConnectUserinfoParams },
+  TContext
+> => {
   const mutationKey = ['postConnectUserinfo'];
   const { mutation: mutationOptions } = options
     ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
@@ -671,9 +716,11 @@ export const getPostConnectUserinfoMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postConnectUserinfo>>,
-    void
-  > = () => {
-    return postConnectUserinfo();
+    { params?: PostConnectUserinfoParams }
+  > = props => {
+    const { params } = props ?? {};
+
+    return postConnectUserinfo(params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -693,12 +740,17 @@ export const usePostConnectUserinfo = <TError = unknown, TContext = unknown>(
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof postConnectUserinfo>>,
       TError,
-      void,
+      { params?: PostConnectUserinfoParams },
       TContext
     >;
   },
   queryClient?: QueryClient
-): UseMutationResult<Awaited<ReturnType<typeof postConnectUserinfo>>, TError, void, TContext> => {
+): UseMutationResult<
+  Awaited<ReturnType<typeof postConnectUserinfo>>,
+  TError,
+  { params?: PostConnectUserinfoParams },
+  TContext
+> => {
   const mutationOptions = getPostConnectUserinfoMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
