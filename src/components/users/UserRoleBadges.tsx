@@ -12,7 +12,7 @@ export const UserRoleBadges: React.FC<UserRoleBadgesProps> = ({ roles }) => {
     const roleMap: Record<UserRole, string> = {
       [UserRole.Admin]: UserRole.Admin,
       [UserRole.User]: UserRole.User,
-      [UserRole.SuperAdmin]: UserRole.SuperAdmin
+      [UserRole.MasterAdmin]: UserRole.MasterAdmin
     };
     return roleMap[role] || 'Unknown';
   };
