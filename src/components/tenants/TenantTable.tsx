@@ -3,7 +3,9 @@ import { ApiTenantModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { TenantActions } from './TenantActions';
 import { TenantInfoDialog } from './TenantInfoDialog';
 import { Badge } from '@/components/public/Badge';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LockIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Pattern for empty GUID (all zeros)
 const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
@@ -97,14 +99,21 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
               </td>
               <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
                 {isDefaultTenant(tenant) ? (
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <span className="text-gray-400">Actions disabled</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Default tenant cannot be modified or deleted</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <TooltipProvider>
+                    <Tooltip delayDuration={300}>
+                      <TooltipTrigger asChild>
+                        <div className="flex justify-end">
+                          <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
+                            <span className="sr-only">Tenant actions</span>
+                            <LockIcon className="h-4 w-4 text-gray-400" />
+                          </Button>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="left">
+                        <p>Default tenant cannot be modified or deleted</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 ) : (
                   <TenantActions
                     tenant={tenant}
