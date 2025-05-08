@@ -7,7 +7,7 @@ export const oidcConfig: AuthProviderProps = {
   redirect_uri: 'https://localhost:3001/auth/signin-callback',
   silent_redirect_uri: 'https://localhost:3001/auth/signin-callback',
   response_type: 'code',
-  scope: 'openid profile roles email',
+  scope: 'openid profile roles email offline_access',
   onSigninCallback: (user: User | undefined) => {
     console.log('user', user);
   },
@@ -16,5 +16,7 @@ export const oidcConfig: AuthProviderProps = {
       replace: true
     });
   },
+  refreshTokenAllowedScope: 'offline_access',
+  automaticSilentRenew: true,
   loadUserInfo: true
 };
