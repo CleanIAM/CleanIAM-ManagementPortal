@@ -21,6 +21,7 @@ import {
 import { Settings, Send, Power, Trash2, Edit, ShieldOff } from 'lucide-react';
 import { UserEditDialog } from './UserEditDialogue';
 import { ResetMfaConfirmDialog } from './ResetMfaConfirmDialog';
+import { DeleteUserConfirmDialog } from './DeleteUserConfirmDialog';
 
 interface UserActionsProps {
 	user: ApiUserModel;
@@ -32,6 +33,8 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 	// State for MFA reset confirmation dialog
 	const [isResetMfaDialogOpen, setIsResetMfaDialogOpen] = useState(false);
+	// State for delete confirmation dialog
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
 	// Update parent component when edit dialog state changes
 	const handleEditDialogOpen = (isOpen: boolean) => {
@@ -110,9 +113,13 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 	// Handle delete user
 	const handleDeleteUser = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		if (confirm('Are you sure you want to delete this user?')) {
-			deleteUserMutation.mutate({ id: user.id });
-		}
+		setIsDeleteDialogOpen(true);
+	};
+
+	// Handle confirm delete user
+	const handleConfirmDeleteUser = () => {
+		deleteUserMutation.mutate({ id: user.id });
+		setIsDeleteDialogOpen(false);
 	};
 
 	// Handle resend invitation
@@ -228,6 +235,15 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 				onClose={() => setIsResetMfaDialogOpen(false)}
 				onConfirm={handleConfirmResetMfa}
 				isResetting={resetMfaMutation.isPending}
+				userName={`${user.firstName} ${user.lastName}`}
+			/>
+
+			{/* Delete User Confirmation Dialog */}
+			<DeleteUserConfirmDialog
+				isOpen={isDeleteDialogOpen}
+				onClose={() => setIsDeleteDialogOpen(false)}
+				onConfirm={handleConfirmDeleteUser}
+				isDeleting={deleteUserMutation.isPending}
 				userName={`${user.firstName} ${user.lastName}`}
 			/>
 		</>

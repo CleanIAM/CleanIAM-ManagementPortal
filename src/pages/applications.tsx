@@ -42,9 +42,7 @@ export const ApplicationsPage = () => {
 
 	// Handle delete application
 	const handleDeleteApplication = (id: string) => {
-		if (confirm('Are you sure you want to delete this application?')) {
-			deleteApplicationMutation.mutate({ id });
-		}
+		deleteApplicationMutation.mutate({ id });
 	};
 
 	// Handle closing the application dialog

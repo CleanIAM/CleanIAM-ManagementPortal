@@ -6,6 +6,7 @@ import { DialogHeader } from '../ui/dialog';
 import { ApplicationForm } from './ApplicationForm';
 import { useState } from 'react';
 import { useGetApiApplications } from '@/lib/api/generated/applications-api/applications-api';
+import { DeleteApplicationConfirmDialog } from './DeleteApplicationConfirmDialog';
 type ApplicationBannerProps = {
 	app: ApiApplicationModel;
 	onDelete: (id: string) => void;
@@ -18,6 +19,8 @@ export const ApplicationBanner = ({
 	...props
 }: ApplicationBannerProps) => {
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	const { refetch } = useGetApiApplications();
 
@@ -50,7 +53,7 @@ export const ApplicationBanner = ({
 						<button
 							onClick={e => {
 								e.stopPropagation(); // Prevent banner click
-								onDelete(app.id);
+								setIsDeleteModalOpen(true);
 							}}
 							className="text-red-600 hover:text-red-800"
 							title="Delete Application"
@@ -94,6 +97,20 @@ export const ApplicationBanner = ({
 					</div>
 				</DialogContent>
 			</Dialog>
+
+			{/* Delete Application Confirmation Dialog */}
+			<DeleteApplicationConfirmDialog
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				onConfirm={() => {
+					setIsDeleting(true);
+					onDelete(app.id);
+					setIsDeleting(false);
+					setIsDeleteModalOpen(false);
+				}}
+				isDeleting={isDeleting}
+				applicationName={app.displayName || app.clientId}
+			/>
 		</div>
 	);
 };
