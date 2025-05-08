@@ -7,6 +7,7 @@ import { ApplicationsPage } from './pages/applications';
 import { ProfilePage } from './pages/profile';
 import { UsersPage } from './pages/users';
 import { TenantsPage } from './pages/tenants';
+import { ScopesPage } from './pages/scopes';
 import { SigninCallback } from './pages/auth/signin-callback';
 import { AuthGuard } from './components/layout/AuthGuard';
 import { RootLayout } from './components/layout/RootLayout';
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
 					{ path: '/applications', element: <ApplicationsPage /> },
 					{ path: '/users', element: <UsersPage /> },
 					{ path: '/tenants', element: <TenantsPage /> },
+					{ path: '/scopes', element: <ScopesPage /> },
 					{ path: '/profile', element: <ProfilePage /> }
 				]
 			}
