@@ -11,6 +11,7 @@ export const Footer = () => {
             <a
               href="https://github.com/CleanIAM/CleanIAM"
               className="flex gap-1 text-sm text-gray-500 hover:text-gray-900"
+              target="_blank"
             >
               <Github01Icon size={20} />
               Github
@@ -18,6 +19,7 @@ export const Footer = () => {
             <a
               href="https://discord.gg/849qAGMWUk"
               className="flex gap-1 text-sm text-gray-500 hover:text-gray-900"
+              target="_blank"
             >
               <DiscordIcon size={20} />
               Discord
@@ -25,6 +27,7 @@ export const Footer = () => {
             <a
               href="https://cleaniam.github.io/CleanIAM"
               className="flex gap-1 text-sm text-gray-500 hover:text-gray-900"
+              target="_blank"
             >
               <DocumentValidationIcon size={20} />
               Documentation

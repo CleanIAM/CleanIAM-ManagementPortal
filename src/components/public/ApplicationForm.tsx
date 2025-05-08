@@ -39,7 +39,7 @@ const applicationSchema = z.object({
   consentType: z.nativeEnum(ConsentType),
   redirectUris: z.array(z.string()),
   postLogoutRedirectUris: z.array(z.string()),
-  scopes: z.array(z.string()).min(1, 'At least one scope is required')
+  scopes: z.array(z.string())
 });
 
 type ApplicationFormValues = z.infer<typeof applicationSchema>;
