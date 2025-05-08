@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useGetApiScopes } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+import { useGetApiScopes, useGetApiScopesDefault } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
 import { FormButton } from '@/components/form';
 import {
   Dialog,
@@ -11,20 +11,37 @@ import {
 import { Loader } from '@/components/public/Loader';
 import { ScopeForm } from '@/components/scopes/ScopeForm';
 import { ScopeTable } from '@/components/scopes/ScopeTable';
+import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 
 export const ScopesPage = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  // Fetch scopes data
+  // Fetch all scopes data
   const { data: scopesResponse, isLoading, isError, error, refetch } = useGetApiScopes();
+
+  // Fetch default scopes data
+  const { data: defaultScopesResponse, isLoading: isDefaultScopesLoading } = useGetApiScopesDefault();
+
+  // Get default scope names
+  const defaultScopeNames = useMemo(() => {
+    if (isDefaultScopesLoading || !defaultScopesResponse?.data) {
+      return new Set<string>();
+    }
+    return new Set(defaultScopesResponse.data.map(scope => scope.name));
+  }, [isDefaultScopesLoading, defaultScopesResponse?.data]);
 
   // Get scopes array from response with proper error handling
   const scopes = useMemo(() => {
     if (isLoading || isError || !scopesResponse?.data) {
       return [];
     }
-    return scopesResponse.data;
-  }, [isError, isLoading, scopesResponse?.data]);
+    
+    // Add isDefault flag to each scope
+    return scopesResponse.data.map(scope => ({
+      ...scope,
+      isDefault: defaultScopeNames.has(scope.name)
+    }));
+  }, [isError, isLoading, scopesResponse?.data, defaultScopeNames]);
 
   // Handle closing the scope form dialog
   const handleCloseCreateDialog = () => {

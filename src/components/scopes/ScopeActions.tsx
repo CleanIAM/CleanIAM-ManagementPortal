@@ -11,17 +11,19 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { Settings, Trash2, Edit } from 'lucide-react';
+import { Settings, Trash2, Edit, LockIcon } from 'lucide-react';
 import { DeleteScopeConfirmDialog } from './DeleteScopeConfirmDialog';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScopeForm } from './ScopeForm';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ScopeActionsProps {
   scope: Scope;
+  isDefault?: boolean;
   onEditDialogStateChange?: (isOpen: boolean) => void;
 }
 
-export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, onEditDialogStateChange }) => {
+export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, isDefault, onEditDialogStateChange }) => {
   // State for dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -66,6 +68,27 @@ export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, onEditDialogS
     deleteScopeMutation.mutate({ scopeName: scope.name });
     setIsDeleteDialogOpen(false);
   };
+
+  // If scope is a default scope, show a disabled actions button with a tooltip
+  if (isDefault) {
+    return (
+      <TooltipProvider>
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>
+            <div className="flex justify-end">
+              <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
+                <span className="sr-only">Scope actions</span>
+                <LockIcon className="h-4 w-4 text-gray-400" />
+              </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Default scopes cannot be modified or deleted</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <>

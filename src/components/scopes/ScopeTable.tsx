@@ -3,9 +3,15 @@ import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
+import { Badge } from '@/components/ui/badge';
+
+// Extend the Scope type to include isDefault flag
+interface ExtendedScope extends Scope {
+  isDefault?: boolean;
+}
 
 interface ScopeTableProps {
-  scopes: Scope[];
+  scopes: ExtendedScope[];
 }
 
 export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
@@ -18,11 +24,11 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   };
 
   // State for managing the selected scope and dialog visibility
-  const [selectedScope, setSelectedScope] = useState<Scope | null>(null);
+  const [selectedScope, setSelectedScope] = useState<ExtendedScope | null>(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
 
   // Handle row click
-  const handleRowClick = (scope: Scope) => {
+  const handleRowClick = (scope: ExtendedScope) => {
     setSelectedScope(scope);
     setIsInfoDialogOpen(true);
   };
@@ -42,6 +48,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Display Name</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead className="w-16 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -60,8 +67,19 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
             >
               <TableCell className="font-medium">{scope.name}</TableCell>
               <TableCell>{scope.displayName}</TableCell>
+              <TableCell>
+                {scope.isDefault && (
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                    Default
+                  </Badge>
+                )}
+              </TableCell>
               <TableCell className="text-right" data-actions-column="true">
-                <ScopeActions scope={scope} onEditDialogStateChange={handleEditDialogStateChange} />
+                <ScopeActions 
+                  scope={scope} 
+                  isDefault={scope.isDefault} 
+                  onEditDialogStateChange={handleEditDialogStateChange} 
+                />
               </TableCell>
             </TableRow>
           ))}
@@ -71,6 +89,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
       {/* Scope Info Dialog */}
       <ScopeInfoDialog
         scope={selectedScope}
+        isDefault={selectedScope?.isDefault}
         isOpen={isInfoDialogOpen}
         onOpenChange={setIsInfoDialogOpen}
       />

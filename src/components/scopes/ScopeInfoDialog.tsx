@@ -11,14 +11,17 @@ import { ScopeForm } from './ScopeForm';
 import { FormButton } from '@/components/form';
 import { Badge } from '@/components/ui/badge';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LockIcon } from 'lucide-react';
 
 interface ScopeInfoDialogProps {
   scope: Scope | null;
+  isDefault?: boolean;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isOpen, onOpenChange }) => {
+export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isDefault, isOpen, onOpenChange }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Handle edit success
@@ -47,7 +50,14 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isOpen,
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Scope' : 'Scope Details'}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            {isEditing ? 'Edit Scope' : 'Scope Details'}
+            {isDefault && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                Default
+              </Badge>
+            )}
+          </DialogTitle>
           <DialogDescription>
             {isEditing ? 'Edit scope information' : 'View scope information'}
           </DialogDescription>
@@ -99,9 +109,31 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isOpen,
               </div>
 
               <div className="flex justify-end">
-                <FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
-                  Edit Scope
-                </FormButton>
+                {isDefault ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <FormButton 
+                            variant="primary" 
+                            className="ml-2 opacity-50" 
+                            disabled={true}
+                          >
+                            <LockIcon className="mr-2 h-4 w-4" />
+                            Edit Scope
+                          </FormButton>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Default scopes cannot be modified</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
+                    Edit Scope
+                  </FormButton>
+                )}
               </div>
             </div>
           )}
