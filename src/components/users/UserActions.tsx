@@ -4,7 +4,8 @@ import {
 	useGetApiUsers,
 	usePostApiUsersIdInvitationEmail,
 	usePutApiUsersIdDisabled,
-	usePutApiUsersIdEnabled
+	usePutApiUsersIdEnabled,
+	useDeleteApiUsersIdMfaEnabled
 } from '@/lib/api/generated/users-api/users-api';
 import { toast } from 'react-toastify';
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
@@ -17,8 +18,9 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { Settings, Send, Power, Trash2, Edit } from 'lucide-react';
+import { Settings, Send, Power, Trash2, Edit, ShieldOff } from 'lucide-react';
 import { UserEditDialog } from './UserEditDialogue';
+import { ResetMfaConfirmDialog } from './ResetMfaConfirmDialog';
 
 interface UserActionsProps {
 	user: ApiUserModel;
@@ -28,6 +30,8 @@ interface UserActionsProps {
 export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStateChange }) => {
 	// State for edit dialog
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+	// State for MFA reset confirmation dialog
+	const [isResetMfaDialogOpen, setIsResetMfaDialogOpen] = useState(false);
 
 	// Update parent component when edit dialog state changes
 	const handleEditDialogOpen = (isOpen: boolean) => {
@@ -89,6 +93,19 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 			}
 		}
 	});
+	
+	// Reset MFA mutation
+	const resetMfaMutation = useDeleteApiUsersIdMfaEnabled({
+		mutation: {
+			onSuccess: () => {
+				toast.success(`MFA disabled for ${user.firstName} ${user.lastName}`);
+				refetch();
+			},
+			onError: error => {
+				toast.error(`Failed to disable MFA: ${error.message}`);
+			}
+		}
+	});
 
 	// Handle delete user
 	const handleDeleteUser = (e: React.MouseEvent) => {
@@ -112,6 +129,18 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 		} else {
 			disableUserMutation.mutate({ id: user.id });
 		}
+	};
+	
+	// Handle reset MFA
+	const handleResetMfa = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		setIsResetMfaDialogOpen(true);
+	};
+	
+	// Handle confirm reset MFA
+	const handleConfirmResetMfa = () => {
+		resetMfaMutation.mutate({ id: user.id });
+		setIsResetMfaDialogOpen(false);
 	};
 
 	return (
@@ -151,6 +180,19 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 						)}
 						<span>{user.isDisabled ? 'Enable' : 'Disable'}</span>
 					</DropdownMenuItem>
+					{user.isMFAEnabled && (
+						<DropdownMenuItem
+							onClick={handleResetMfa}
+							disabled={resetMfaMutation.isPending}
+						>
+							{resetMfaMutation.isPending ? (
+								<Loader className="mr-2 h-4 w-4" />
+							) : (
+								<ShieldOff className="mr-2 h-4 w-4" strokeWidth={2} />
+							)}
+							<span>Reset MFA</span>
+						</DropdownMenuItem>
+					)}
 					<DropdownMenuItem
 						onClick={e => {
 							e.stopPropagation();
@@ -179,6 +221,15 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 
 			{/* Edit User Dialog */}
 			<UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={handleEditDialogOpen} />
+
+			{/* Reset MFA Confirmation Dialog */}
+			<ResetMfaConfirmDialog 
+				isOpen={isResetMfaDialogOpen}
+				onClose={() => setIsResetMfaDialogOpen(false)}
+				onConfirm={handleConfirmResetMfa}
+				isResetting={resetMfaMutation.isPending}
+				userName={`${user.firstName} ${user.lastName}`}
+			/>
 		</>
 	);
 };
