@@ -24,17 +24,20 @@ import type {
 import type {
 	CreateNewScopeRequest,
 	Error,
-	ItemWithTooltip,
-	ScopeCreated
+	Scope,
+	ScopeCreated,
+	ScopeDeleted,
+	ScopeUpdated,
+	UpdateScopeRequest
 } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
 /**
- * @summary Get the list of supported scopes.
+ * @summary Get the list of all scopes.
  */
 export const getApiScopes = (signal?: AbortSignal) => {
-	return customAxiosRequest<ItemWithTooltip[]>({ url: `/api/scopes`, method: 'GET', signal });
+	return customAxiosRequest<Scope[]>({ url: `/api/scopes`, method: 'GET', signal });
 };
 
 export const getGetApiScopesQueryKey = () => {
@@ -99,7 +102,7 @@ export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>
 	queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Get the list of supported scopes.
+ * @summary Get the list of all scopes.
  */
 
 export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>, TError = Error>(
@@ -191,6 +194,267 @@ export const usePostApiScopes = <TError = Error, TContext = unknown>(
 	TContext
 > => {
 	const mutationOptions = getPostApiScopesMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Get the list of default scopes.
+ */
+export const getApiScopesDefault = (signal?: AbortSignal) => {
+	return customAxiosRequest<Scope[]>({ url: `/api/scopes/default`, method: 'GET', signal });
+};
+
+export const getGetApiScopesDefaultQueryKey = () => {
+	return [`/api/scopes/default`] as const;
+};
+
+export const getGetApiScopesDefaultQueryOptions = <
+	TData = Awaited<ReturnType<typeof getApiScopesDefault>>,
+	TError = Error
+>(options?: {
+	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiScopesDefault>>, TError, TData>>;
+}) => {
+	const { query: queryOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getGetApiScopesDefaultQueryKey();
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiScopesDefault>>> = ({ signal }) =>
+		getApiScopesDefault(signal);
+
+	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof getApiScopesDefault>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetApiScopesDefaultQueryResult = NonNullable<
+	Awaited<ReturnType<typeof getApiScopesDefault>>
+>;
+export type GetApiScopesDefaultQueryError = Error;
+
+export function useGetApiScopesDefault<
+	TData = Awaited<ReturnType<typeof getApiScopesDefault>>,
+	TError = Error
+>(
+	options: {
+		query: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiScopesDefault>>, TError, TData>
+		> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiScopesDefault>>,
+					TError,
+					Awaited<ReturnType<typeof getApiScopesDefault>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiScopesDefault<
+	TData = Awaited<ReturnType<typeof getApiScopesDefault>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiScopesDefault>>, TError, TData>
+		> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof getApiScopesDefault>>,
+					TError,
+					Awaited<ReturnType<typeof getApiScopesDefault>>
+				>,
+				'initialData'
+			>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetApiScopesDefault<
+	TData = Awaited<ReturnType<typeof getApiScopesDefault>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiScopesDefault>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get the list of default scopes.
+ */
+
+export function useGetApiScopesDefault<
+	TData = Awaited<ReturnType<typeof getApiScopesDefault>>,
+	TError = Error
+>(
+	options?: {
+		query?: Partial<
+			UseQueryOptions<Awaited<ReturnType<typeof getApiScopesDefault>>, TError, TData>
+		>;
+	},
+	queryClient?: QueryClient
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getGetApiScopesDefaultQueryOptions(options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	query.queryKey = queryOptions.queryKey;
+
+	return query;
+}
+
+/**
+ * @summary Update a scope.
+ */
+export const putApiScopesScopeName = (
+	scopeName: string,
+	updateScopeRequest: UpdateScopeRequest
+) => {
+	return customAxiosRequest<ScopeUpdated>({
+		url: `/api/scopes/${scopeName}`,
+		method: 'PUT',
+		headers: { 'Content-Type': 'application/json' },
+		data: updateScopeRequest
+	});
+};
+
+export const getPutApiScopesScopeNameMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof putApiScopesScopeName>>,
+		TError,
+		{ scopeName: string; data: UpdateScopeRequest },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof putApiScopesScopeName>>,
+	TError,
+	{ scopeName: string; data: UpdateScopeRequest },
+	TContext
+> => {
+	const mutationKey = ['putApiScopesScopeName'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof putApiScopesScopeName>>,
+		{ scopeName: string; data: UpdateScopeRequest }
+	> = props => {
+		const { scopeName, data } = props ?? {};
+
+		return putApiScopesScopeName(scopeName, data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PutApiScopesScopeNameMutationResult = NonNullable<
+	Awaited<ReturnType<typeof putApiScopesScopeName>>
+>;
+export type PutApiScopesScopeNameMutationBody = UpdateScopeRequest;
+export type PutApiScopesScopeNameMutationError = Error;
+
+/**
+ * @summary Update a scope.
+ */
+export const usePutApiScopesScopeName = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof putApiScopesScopeName>>,
+			TError,
+			{ scopeName: string; data: UpdateScopeRequest },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof putApiScopesScopeName>>,
+	TError,
+	{ scopeName: string; data: UpdateScopeRequest },
+	TContext
+> => {
+	const mutationOptions = getPutApiScopesScopeNameMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};
+/**
+ * @summary Delete a scope.
+ */
+export const deleteApiScopesScopeName = (scopeName: string) => {
+	return customAxiosRequest<ScopeDeleted>({ url: `/api/scopes/${scopeName}`, method: 'DELETE' });
+};
+
+export const getDeleteApiScopesScopeNameMutationOptions = <
+	TError = Error,
+	TContext = unknown
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof deleteApiScopesScopeName>>,
+		TError,
+		{ scopeName: string },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof deleteApiScopesScopeName>>,
+	TError,
+	{ scopeName: string },
+	TContext
+> => {
+	const mutationKey = ['deleteApiScopesScopeName'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof deleteApiScopesScopeName>>,
+		{ scopeName: string }
+	> = props => {
+		const { scopeName } = props ?? {};
+
+		return deleteApiScopesScopeName(scopeName);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteApiScopesScopeNameMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteApiScopesScopeName>>
+>;
+
+export type DeleteApiScopesScopeNameMutationError = Error;
+
+/**
+ * @summary Delete a scope.
+ */
+export const useDeleteApiScopesScopeName = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof deleteApiScopesScopeName>>,
+			TError,
+			{ scopeName: string },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof deleteApiScopesScopeName>>,
+	TError,
+	{ scopeName: string },
+	TContext
+> => {
+	const mutationOptions = getDeleteApiScopesScopeNameMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

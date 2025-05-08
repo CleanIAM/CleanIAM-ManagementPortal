@@ -178,11 +178,6 @@ export interface InviteUserRequest {
 	roles: UserRole[];
 }
 
-export interface ItemWithTooltip {
-	value: string;
-	tooltip: string;
-}
-
 export type JsonValueKind = (typeof JsonValueKind)[keyof typeof JsonValueKind];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -293,8 +288,57 @@ export interface OpenIdApplicationUpdated {
 	redirectUris: string[];
 }
 
+/**
+ * Represents a scope in the OpenID Connect system.
+ */
+export interface Scope {
+	/** The name of the scope. */
+	name: string;
+	/** The display name of the scope. */
+	displayName: string;
+	/**
+	 * The description of the scope.
+	 * @nullable
+	 */
+	description: string | null;
+	/** The resources the scopes allows access to. */
+	resources: string[];
+}
+
+/**
+ * Event triggered when a new scope is created.
+ */
 export interface ScopeCreated {
-	[key: string]: unknown;
+	/** Name of the new scope */
+	name: string;
+	/** Display name of the new scope */
+	displayName: string;
+	/** Description name of the new scope */
+	description: string;
+	/** Resources the scope allows access to */
+	resources: string[];
+}
+
+/**
+ * Event that is published when a scope is deleted.
+ */
+export interface ScopeDeleted {
+	/** name of the deleted scope */
+	name: string;
+}
+
+/**
+ * Event triggered when a scope is updated.
+ */
+export interface ScopeUpdated {
+	/** Name of the new scope */
+	name: string;
+	/** Display name of the new scope */
+	displayName: string;
+	/** Description name of the new scope */
+	description: string;
+	/** Resources the scope allows access to */
+	resources: string[];
 }
 
 export interface StringStringValuesKeyValuePair {
@@ -329,6 +373,21 @@ export interface UpdateApplicationRequest {
 	postLogoutRedirectUris: string[];
 	/** Gets the redirect URIs associated with the application. */
 	redirectUris: string[];
+}
+
+/**
+ * Request to update a scope.
+ */
+export interface UpdateScopeRequest {
+	/** The display name of the scope. */
+	displayName: string;
+	/**
+	 * The description of the scope.
+	 * @nullable
+	 */
+	description: string | null;
+	/** The resources the scopes allows access to. */
+	resources: string[];
 }
 
 /**

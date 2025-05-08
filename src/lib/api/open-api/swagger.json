@@ -1294,7 +1294,7 @@
         "tags": [
           "ScopesApiEndpoint"
         ],
-        "summary": "Get the list of supported scopes.",
+        "summary": "Get the list of all scopes.",
         "responses": {
           "200": {
             "description": "OK",
@@ -1303,7 +1303,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ItemWithTooltip"
+                    "$ref": "#/components/schemas/Scope"
                   }
                 }
               },
@@ -1311,7 +1311,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ItemWithTooltip"
+                    "$ref": "#/components/schemas/Scope"
                   }
                 }
               },
@@ -1319,7 +1319,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ItemWithTooltip"
+                    "$ref": "#/components/schemas/Scope"
                   }
                 }
               }
@@ -1394,6 +1394,264 @@
           },
           "400": {
             "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scopes/default": {
+      "get": {
+        "tags": [
+          "ScopesApiEndpoint"
+        ],
+        "summary": "Get the list of default scopes.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Scope"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Scope"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Scope"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scopes/{scopeName}": {
+      "put": {
+        "tags": [
+          "ScopesApiEndpoint"
+        ],
+        "summary": "Update a scope.",
+        "parameters": [
+          {
+            "name": "scopeName",
+            "in": "path",
+            "description": "Name of the scope to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScopeRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScopeRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScopeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeUpdated"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeUpdated"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeUpdated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ScopesApiEndpoint"
+        ],
+        "summary": "Delete a scope.",
+        "parameters": [
+          {
+            "name": "scopeName",
+            "in": "path",
+            "description": "Name of the scope to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeDeleted"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeDeleted"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeDeleted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "text/plain": {
                 "schema": {
@@ -3730,22 +3988,6 @@
         "additionalProperties": false,
         "description": "Request model for inviting a user."
       },
-      "ItemWithTooltip": {
-        "required": [
-          "value",
-          "tooltip"
-        ],
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string"
-          },
-          "tooltip": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
       "JsonValueKind": {
         "enum": [
           0,
@@ -4037,9 +4279,116 @@
         },
         "additionalProperties": false
       },
-      "ScopeCreated": {
+      "Scope": {
+        "required": [
+          "name",
+          "displayName",
+          "description",
+          "resources"
+        ],
         "type": "object",
-        "additionalProperties": false
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the scope."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the scope."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the scope.",
+            "nullable": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The resources the scopes allows access to."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a scope in the OpenID Connect system."
+      },
+      "ScopeCreated": {
+        "required": [
+          "name",
+          "displayName",
+          "description",
+          "resources"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the new scope"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Display name of the new scope"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description name of the new scope"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Resources the scope allows access to"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Event triggered when a new scope is created."
+      },
+      "ScopeDeleted": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name of the deleted scope"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Event that is published when a scope is deleted."
+      },
+      "ScopeUpdated": {
+        "required": [
+          "name",
+          "displayName",
+          "description",
+          "resources"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the new scope"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Display name of the new scope"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description name of the new scope"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Resources the scope allows access to"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Event triggered when a scope is updated."
       },
       "StringStringValuesKeyValuePair": {
         "required": [
@@ -4143,6 +4492,34 @@
           }
         },
         "additionalProperties": false
+      },
+      "UpdateScopeRequest": {
+        "required": [
+          "displayName",
+          "description",
+          "resources"
+        ],
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "The display name of the scope."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the scope.",
+            "nullable": true
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The resources the scopes allows access to."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request to update a scope."
       },
       "UpdateTenantRequest": {
         "required": [
