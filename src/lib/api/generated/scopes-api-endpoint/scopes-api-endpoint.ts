@@ -5,20 +5,28 @@
  * CleanIAM API
  * OpenAPI spec version: v1
  */
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
 	DataTag,
 	DefinedInitialDataOptions,
 	DefinedUseQueryResult,
+	MutationFunction,
 	QueryClient,
 	QueryFunction,
 	QueryKey,
 	UndefinedInitialDataOptions,
+	UseMutationOptions,
+	UseMutationResult,
 	UseQueryOptions,
 	UseQueryResult
 } from '@tanstack/react-query';
 
-import type { Error, ItemWithTooltip } from '../cleanIAM.schemas';
+import type {
+	CreateNewScopeRequest,
+	Error,
+	ItemWithTooltip,
+	ScopeCreated
+} from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
@@ -110,3 +118,79 @@ export function useGetApiScopes<TData = Awaited<ReturnType<typeof getApiScopes>>
 
 	return query;
 }
+
+/**
+ * @summary Create a new scope.
+ */
+export const postApiScopes = (
+	createNewScopeRequest: CreateNewScopeRequest,
+	signal?: AbortSignal
+) => {
+	return customAxiosRequest<ScopeCreated>({
+		url: `/api/scopes`,
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		data: createNewScopeRequest,
+		signal
+	});
+};
+
+export const getPostApiScopesMutationOptions = <TError = Error, TContext = unknown>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof postApiScopes>>,
+		TError,
+		{ data: CreateNewScopeRequest },
+		TContext
+	>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof postApiScopes>>,
+	TError,
+	{ data: CreateNewScopeRequest },
+	TContext
+> => {
+	const mutationKey = ['postApiScopes'];
+	const { mutation: mutationOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey } };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof postApiScopes>>,
+		{ data: CreateNewScopeRequest }
+	> = props => {
+		const { data } = props ?? {};
+
+		return postApiScopes(data);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type PostApiScopesMutationResult = NonNullable<Awaited<ReturnType<typeof postApiScopes>>>;
+export type PostApiScopesMutationBody = CreateNewScopeRequest;
+export type PostApiScopesMutationError = Error;
+
+/**
+ * @summary Create a new scope.
+ */
+export const usePostApiScopes = <TError = Error, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof postApiScopes>>,
+			TError,
+			{ data: CreateNewScopeRequest },
+			TContext
+		>;
+	},
+	queryClient?: QueryClient
+): UseMutationResult<
+	Awaited<ReturnType<typeof postApiScopes>>,
+	TError,
+	{ data: CreateNewScopeRequest },
+	TContext
+> => {
+	const mutationOptions = getPostApiScopesMutationOptions(options);
+
+	return useMutation(mutationOptions, queryClient);
+};

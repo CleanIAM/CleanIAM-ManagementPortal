@@ -124,6 +124,23 @@ export interface CreateNewApplicationRequest {
 }
 
 /**
+ * Request to create a new scope.
+ */
+export interface CreateNewScopeRequest {
+	/** The name of the scope. */
+	name: string;
+	/** The display name of the scope. */
+	displayName: string;
+	/**
+	 * The description of the scope.
+	 * @nullable
+	 */
+	description: string | null;
+	/** The resources the scopes allows access to. */
+	resources: string[];
+}
+
+/**
  * Request to create a new tenant
  */
 export interface CreateNewTenantRequest {
@@ -274,6 +291,10 @@ export interface OpenIdApplicationUpdated {
 	scopes: string[];
 	postLogoutRedirectUris: string[];
 	redirectUris: string[];
+}
+
+export interface ScopeCreated {
+	[key: string]: unknown;
 }
 
 export interface StringStringValuesKeyValuePair {
