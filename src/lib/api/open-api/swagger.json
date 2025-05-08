@@ -4981,13 +4981,16 @@
         "properties": {
           "id": {
             "type": "string",
+            "description": "If of the updated tenant",
             "format": "uuid"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "New name of the tenant"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Event that is raised when a tenant is updated"
       },
       "UpdateApplicationRequest": {
         "required": [

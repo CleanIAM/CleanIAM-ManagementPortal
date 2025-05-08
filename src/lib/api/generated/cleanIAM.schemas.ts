@@ -342,8 +342,13 @@ export interface StringStringValuesKeyValuePair {
   value: string[];
 }
 
+/**
+ * Event that is raised when a tenant is updated
+ */
 export interface TenantUpdated {
+  /** If of the updated tenant */
   id: string;
+  /** New name of the tenant */
   name: string;
 }
 
