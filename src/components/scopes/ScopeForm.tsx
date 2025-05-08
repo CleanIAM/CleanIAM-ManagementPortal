@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { FormButton } from '../form';
-import { usePostApiScopes, usePutApiScopesScopeName } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+import {
+  usePostApiScopes,
+  usePutApiScopesScopeName
+} from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
 import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input';
@@ -31,11 +34,11 @@ interface ScopeFormProps {
 }
 
 export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel }) => {
-  // Convert application objects to options for the MultiSelectField
+  // Convert application objects to options for the MultiSelectField with ID included in label
   const applicationOptions = mockApplications.map(app => ({
     value: app.id,
-    label: app.name,
-    tooltip: app.description
+    label: `${app.name}`,
+    tooltip: `[${app.id}] ${app.description ? ` ${app.description}` : ''}`
   }));
 
   // Initialize form with react-hook-form and zod validation
@@ -75,7 +78,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
         toast.success('Scope created successfully');
         onSuccess();
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(`Failed to create scope: ${error.message}`);
       }
     }
@@ -88,7 +91,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
         toast.success('Scope updated successfully');
         onSuccess();
       },
-      onError: (error) => {
+      onError: error => {
         toast.error(`Failed to update scope: ${error.message}`);
       }
     }
@@ -138,7 +141,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
         />
         {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
       </div>
-      
+
       <div>
         <Label htmlFor="displayName">Display Name</Label>
         <Controller
@@ -153,29 +156,26 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
             />
           )}
         />
-        {errors.displayName && <p className="mt-1 text-xs text-red-500">{errors.displayName.message}</p>}
+        {errors.displayName && (
+          <p className="mt-1 text-xs text-red-500">{errors.displayName.message}</p>
+        )}
       </div>
-      
+
       <div>
         <Label htmlFor="description">Description</Label>
         <Controller
           name="description"
           control={control}
           render={({ field }) => (
-            <Textarea
-              id="description"
-              {...field}
-              disabled={isLoading}
-              rows={3}
-            />
+            <Textarea id="description" {...field} disabled={isLoading} rows={3} />
           )}
         />
       </div>
-      
+
       <div>
         <MultiSelectField
           name="resources"
-          label="Resources"
+          label="Applications"
           options={applicationOptions}
           setValue={setValue}
           watch={watch}
@@ -183,31 +183,23 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
           isLoading={false}
           className="mb-4"
         />
-        <div className="text-xs text-gray-500">
-          Select applications that this scope applies to
-        </div>
+        <div className="text-xs text-gray-500">Select applications that this scope applies to</div>
       </div>
-      
+
       <div className="flex justify-end space-x-2 pt-4">
-        <FormButton
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
+        <FormButton type="button" variant="secondary" onClick={onCancel} disabled={isLoading}>
           Cancel
         </FormButton>
-        <FormButton
-          type="submit"
-          disabled={isLoading}
-        >
+        <FormButton type="submit" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader className="mr-2 h-4 w-4" />
               {scope ? 'Updating...' : 'Creating...'}
             </>
+          ) : scope ? (
+            'Update Scope'
           ) : (
-            scope ? 'Update Scope' : 'Create Scope'
+            'Create Scope'
           )}
         </FormButton>
       </div>
