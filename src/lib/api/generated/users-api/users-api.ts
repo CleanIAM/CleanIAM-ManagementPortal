@@ -668,31 +668,30 @@ export const usePostApiUsersIdInvitationEmail = <TError = Error, TContext = unkn
 /**
  * @summary Disable MFA for user
  */
-export const postApiUsersIdMfaDisabled = (id: string, signal?: AbortSignal) => {
+export const deleteApiUsersIdMfaEnabled = (id: string) => {
 	return customAxiosRequest<MfaDisabledForUser>({
-		url: `/api/users/${id}/mfa/disabled`,
-		method: 'POST',
-		signal
+		url: `/api/users/${id}/mfa/enabled`,
+		method: 'DELETE'
 	});
 };
 
-export const getPostApiUsersIdMfaDisabledMutationOptions = <
+export const getDeleteApiUsersIdMfaEnabledMutationOptions = <
 	TError = Error,
 	TContext = unknown
 >(options?: {
 	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+		Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
 		TError,
 		{ id: string },
 		TContext
 	>;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+	Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
 	TError,
 	{ id: string },
 	TContext
 > => {
-	const mutationKey = ['postApiUsersIdMfaDisabled'];
+	const mutationKey = ['deleteApiUsersIdMfaEnabled'];
 	const { mutation: mutationOptions } = options
 		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
 			? options
@@ -700,30 +699,30 @@ export const getPostApiUsersIdMfaDisabledMutationOptions = <
 		: { mutation: { mutationKey } };
 
 	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+		Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
 		{ id: string }
 	> = props => {
 		const { id } = props ?? {};
 
-		return postApiUsersIdMfaDisabled(id);
+		return deleteApiUsersIdMfaEnabled(id);
 	};
 
 	return { mutationFn, ...mutationOptions };
 };
 
-export type PostApiUsersIdMfaDisabledMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>
+export type DeleteApiUsersIdMfaEnabledMutationResult = NonNullable<
+	Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>
 >;
 
-export type PostApiUsersIdMfaDisabledMutationError = Error;
+export type DeleteApiUsersIdMfaEnabledMutationError = Error;
 
 /**
  * @summary Disable MFA for user
  */
-export const usePostApiUsersIdMfaDisabled = <TError = Error, TContext = unknown>(
+export const useDeleteApiUsersIdMfaEnabled = <TError = Error, TContext = unknown>(
 	options?: {
 		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+			Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
 			TError,
 			{ id: string },
 			TContext
@@ -731,12 +730,12 @@ export const usePostApiUsersIdMfaDisabled = <TError = Error, TContext = unknown>
 	},
 	queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof postApiUsersIdMfaDisabled>>,
+	Awaited<ReturnType<typeof deleteApiUsersIdMfaEnabled>>,
 	TError,
 	{ id: string },
 	TContext
 > => {
-	const mutationOptions = getPostApiUsersIdMfaDisabledMutationOptions(options);
+	const mutationOptions = getDeleteApiUsersIdMfaEnabledMutationOptions(options);
 
 	return useMutation(mutationOptions, queryClient);
 };

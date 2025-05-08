@@ -494,6 +494,15 @@ export type PostInvitationsRequestIdBody = {
 	ConfirmPassword: string;
 };
 
+export type PostMfaTotpBody = {
+	/**
+	 * The totp code from the Users authenticator app.
+	 * @minLength 6
+	 * @maxLength 6
+	 */
+	Totp: string;
+};
+
 export type PostPasswordResetBody = {
 	Email: string;
 };

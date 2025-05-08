@@ -1098,6 +1098,66 @@
         }
       }
     },
+    "/mfa/totp": {
+      "get": {
+        "tags": [
+          "Mfa"
+        ],
+        "summary": "Shows the MFA input from the user.",
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mfa"
+        ],
+        "summary": "Handles the MFA input from the user.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Totp"
+                ],
+                "type": "object",
+                "properties": {
+                  "Totp": {
+                    "maxLength": 6,
+                    "minLength": 6,
+                    "type": "string",
+                    "description": "The totp code from the Users authenticator app."
+                  }
+                }
+              },
+              "encoding": {
+                "Totp": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/password-reset": {
       "get": {
         "tags": [
@@ -3114,8 +3174,8 @@
         }
       }
     },
-    "/api/users/{id}/mfa/disabled": {
-      "post": {
+    "/api/users/{id}/mfa/enabled": {
+      "delete": {
         "tags": [
           "UsersApi"
         ],
