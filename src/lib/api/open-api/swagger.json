@@ -3875,15 +3875,6 @@
           {
             "name": "tenant",
             "in": "query",
-            "description": "custom tenant id if superAdmin wants to invite user to different organization",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "tenant",
-            "in": "query",
             "description": "Tenant identifier (UUID)",
             "schema": {
               "type": "string",
@@ -3987,15 +3978,6 @@
             "in": "path",
             "description": "Id of the user",
             "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "tenant",
-            "in": "query",
-            "description": "custom tenant id if superAdmin wants to invite user to different organization",
             "schema": {
               "type": "string",
               "format": "uuid"

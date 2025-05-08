@@ -980,20 +980,12 @@ export type PutApiUsersIdEnabledParams = {
 
 export type PostApiUsersInvitedParams = {
   /**
-   * custom tenant id if superAdmin wants to invite user to different organization
-   */
-  tenant?: string;
-  /**
    * Tenant identifier (UUID)
    */
   tenant?: string;
 };
 
 export type PostApiUsersIdInvitationEmailParams = {
-  /**
-   * custom tenant id if superAdmin wants to invite user to different organization
-   */
-  tenant?: string;
   /**
    * Tenant identifier (UUID)
    */
