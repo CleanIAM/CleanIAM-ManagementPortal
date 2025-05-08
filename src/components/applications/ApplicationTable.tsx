@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ApiApplicationModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { ApplicationActions } from './ApplicationActions';
 import { ApplicationInfoDialog } from './ApplicationInfoDialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { ApplicationForm } from '@/components/public/ApplicationForm';
 import { Badge } from '@/components/ui/badge';
 
 interface ApplicationTableProps {
@@ -26,6 +28,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
   // State for managing the selected application and dialog visibility
   const [selectedApplication, setSelectedApplication] = useState<ApiApplicationModel | null>(null);
   const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // Handle row click
   const handleRowClick = (application: ApiApplicationModel) => {
@@ -139,7 +142,54 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
         application={selectedApplication}
         isOpen={isInfoDialogOpen}
         onOpenChange={setIsInfoDialogOpen}
+        onEdit={(application) => {
+          setIsEditDialogOpen(true);
+          setIsAnyEditDialogOpen(true);
+        }}
       />
+      
+      {/* Edit Dialog - will show up when edit button in info dialog is clicked */}
+      {selectedApplication && (
+        <Dialog
+          open={isEditDialogOpen}
+          onOpenChange={(open) => {
+            setIsEditDialogOpen(open);
+            setIsAnyEditDialogOpen(open);
+            if (!open) {
+              // Reopen info dialog if edit dialog is closed without success
+              setIsInfoDialogOpen(true);
+            }
+          }}
+        >
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>{selectedApplication.displayName || selectedApplication.clientId}</DialogTitle>
+              <DialogDescription>
+                Edit the details of your existing OpenID Connect application
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="max-h-[80vh] overflow-y-auto py-4 pr-2">
+              <ApplicationForm
+                isEdit={true}
+                initialData={selectedApplication}
+                onSuccess={() => {
+                  setIsEditDialogOpen(false);
+                  setIsAnyEditDialogOpen(false);
+                  setIsInfoDialogOpen(false);
+                  onRefetch();
+                }}
+                onCancel={() => {
+                  setIsEditDialogOpen(false);
+                  setIsAnyEditDialogOpen(false);
+                  // Reopen info dialog when canceling
+                  setIsInfoDialogOpen(true);
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

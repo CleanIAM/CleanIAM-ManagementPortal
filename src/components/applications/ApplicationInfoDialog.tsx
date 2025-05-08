@@ -5,17 +5,20 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription
+  DialogDescription,
+  DialogFooter
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
-import { Globe, Key, Clock, Globe2, LucideFlame, LucideInfo, LucideUserX2 } from 'lucide-react';
+import { Globe, Key, Clock, Globe2, LucideFlame, LucideInfo, LucideUserX2, Edit, ExternalLink } from 'lucide-react';
 
 interface ApplicationInfoDialogProps {
   application: ApiApplicationModel | null;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  onEdit?: (application: ApiApplicationModel) => void;
 }
 
 const InfoSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -78,7 +81,8 @@ const UriList = ({
 export const ApplicationInfoDialog: React.FC<ApplicationInfoDialogProps> = ({
   application,
   isOpen,
-  onOpenChange
+  onOpenChange,
+  onEdit
 }) => {
   if (!application) return null;
 
@@ -193,6 +197,27 @@ export const ApplicationInfoDialog: React.FC<ApplicationInfoDialogProps> = ({
             </div>
           </Card>
         </div>
+
+        <DialogFooter className="mt-6 flex gap-2">
+          {onEdit && (
+            <Button
+              onClick={() => {
+                onEdit(application);
+                onOpenChange(false);
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Application
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            Close
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
