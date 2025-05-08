@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { LockIcon } from 'lucide-react';
+import { mockApplications } from '@/lib/mock/applications';
 
 interface ScopeInfoDialogProps {
   scope: Scope | null;
@@ -21,13 +22,16 @@ interface ScopeInfoDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
-  scope,
-  isDefault,
-  isOpen,
-  onOpenChange
-}) => {
+export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isDefault, isOpen, onOpenChange }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  // Get application names from resource IDs
+  const getApplicationNames = (resourceIds: string[]) => {
+    return resourceIds.map(id => {
+      const app = mockApplications.find(a => a.id === id);
+      return app ? app.name : id;
+    });
+  };
 
   // Handle edit success
   const handleEditSuccess = () => {
@@ -50,6 +54,8 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
   if (!scope) {
     return null;
   }
+
+  const applicationNames = getApplicationNames(scope.resources);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -79,12 +85,9 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
             <div className="space-y-6">
               <div>
                 <p className="text-sm font-medium text-gray-500">Scope Name</p>
-                <TextWithCopy
-                  value={scope.name}
-                  className="text-md justify-start gap-2 font-mono"
-                />
+                <TextWithCopy value={scope.name} className="text-md justify-start gap-2 font-mono" />
               </div>
-
+              
               <div>
                 <h3 className="mb-2 text-sm font-medium text-gray-500">Basic Information</h3>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -100,18 +103,28 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
               </div>
 
               <div>
-                <h3 className="mb-2 text-sm font-medium text-gray-500">Resources</h3>
+                <h3 className="mb-2 text-sm font-medium text-gray-500">Applications</h3>
                 <div className="rounded-md border border-gray-200 p-4">
-                  {scope.resources.length > 0 ? (
+                  {applicationNames.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
-                      {scope.resources.map(resource => (
-                        <Badge key={resource} variant="outline" className="px-2 py-1">
-                          {resource}
+                      {applicationNames.map((appName, index) => (
+                        <Badge key={index} variant="outline" className="px-2 py-1">
+                          {appName}
                         </Badge>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">No resources defined for this scope</p>
+                    <p className="text-gray-500">No applications defined for this scope</p>
+                  )}
+                </div>
+                <div className="mt-2 text-xs text-gray-500">
+                  {scope.resources.length > 0 && (
+                    <details className="mt-1">
+                      <summary className="cursor-pointer">View Resource IDs</summary>
+                      <div className="mt-2 rounded bg-gray-50 p-2 font-mono text-xs">
+                        {scope.resources.join(', ')}
+                      </div>
+                    </details>
                   )}
                 </div>
               </div>
@@ -122,7 +135,11 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          <FormButton variant="primary" className="ml-2 opacity-50" disabled={true}>
+                          <FormButton 
+                            variant="primary" 
+                            className="ml-2 opacity-50" 
+                            disabled={true}
+                          >
                             <LockIcon className="mr-2 h-4 w-4" />
                             Edit Scope
                           </FormButton>

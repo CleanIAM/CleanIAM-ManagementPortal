@@ -18,6 +18,8 @@ interface Option {
 interface MultiSelectFieldProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
+  dialogTitle: string | null;
+  dialogDescription: string | null;
   options: Option[] | string;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
@@ -29,6 +31,8 @@ interface MultiSelectFieldProps<T extends FieldValues> {
 export const MultiSelectField = <T extends FieldValues>({
   name,
   label,
+  dialogTitle = null,
+  dialogDescription = null,
   options,
   setValue,
   watch,
@@ -91,8 +95,10 @@ export const MultiSelectField = <T extends FieldValues>({
 
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Select Scopes</DialogTitle>
-            <DialogDescription>Choose the scopes required for this application</DialogDescription>
+            <DialogTitle>{dialogTitle ?? 'Select Values'}</DialogTitle>
+            <DialogDescription>
+              {dialogDescription ?? 'Choose the values you need'}
+            </DialogDescription>
           </DialogHeader>
 
           <div className="mt-4 max-h-[60vh] overflow-y-auto">

@@ -5,6 +5,7 @@ import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info } from 'lucide-react';
+import { mockApplications } from '@/lib/mock/applications';
 
 // Extend the Scope type to include isDefault flag
 interface ExtendedScope extends Scope {
@@ -39,22 +40,31 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
     return scope.displayName || scope.name;
   };
 
+  // Get application name from resource ID
+  const getApplicationName = (resourceId: string) => {
+    const app = mockApplications.find(a => a.id === resourceId);
+    return app ? app.name : resourceId;
+  };
+
   // Format resources for display with overflow handling
   const formatResources = (resources: string[]) => {
     if (resources.length === 0) {
-      return <span className="text-gray-400 italic">No resources</span>;
+      return <span className="text-gray-400 italic">No applications</span>;
     }
 
-    // Show first 2 resources and indicate if there are more
-    const visibleResources = resources.slice(0, 2);
-    const hasMore = resources.length > 2;
+    // Get application names
+    const appNames = resources.map(getApplicationName);
+    
+    // Show first 2 applications and indicate if there are more
+    const visibleApps = appNames.slice(0, 2);
+    const hasMore = appNames.length > 2;
     
     return (
       <div className="flex items-center">
         <div className="flex flex-wrap gap-1 max-w-[300px]">
-          {visibleResources.map(resource => (
-            <Badge key={resource} variant="outline" className="px-2 py-0.5 text-xs">
-              {resource}
+          {visibleApps.map((appName, index) => (
+            <Badge key={index} variant="outline" className="px-2 py-0.5 text-xs">
+              {appName}
             </Badge>
           ))}
         </div>
@@ -67,10 +77,10 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="font-medium mb-1">All Resources:</p>
+                <p className="font-medium mb-1">All Applications:</p>
                 <ul className="list-disc pl-4 space-y-1">
-                  {resources.map(resource => (
-                    <li key={resource}>{resource}</li>
+                  {appNames.map((appName, index) => (
+                    <li key={index}>{appName}</li>
                   ))}
                 </ul>
               </TooltipContent>
@@ -104,7 +114,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
-              Resources
+              Applications
             </th>
             <th
               scope="col"
