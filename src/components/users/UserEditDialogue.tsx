@@ -12,9 +12,10 @@ interface UserEditDialogProps {
   user: ApiUserModel;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  tenant?: string;
 }
 
-export const UserEditDialog = ({ user, isOpen, onOpenChange }: UserEditDialogProps) => {
+export const UserEditDialog = ({ user, isOpen, onOpenChange, tenant }: UserEditDialogProps) => {
   // Handle dialog open change to prevent event propagation
   const handleOpenChange = (open: boolean) => {
     // Prevent the event from bubbling up when dialog is closed
@@ -40,6 +41,7 @@ export const UserEditDialog = ({ user, isOpen, onOpenChange }: UserEditDialogPro
             onSuccess={() => onOpenChange(false)}
             onCancel={() => onOpenChange(false)}
             disableEmail={true}
+            tenant={tenant}
           />
         </div>
       </DialogContent>

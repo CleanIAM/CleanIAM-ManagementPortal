@@ -7,9 +7,10 @@ import { UserInfoDialog } from './UserInfoDialog';
 
 interface UserTableProps {
   users: ApiUserModel[];
+  tenant?: string;
 }
 
-export const UserTable: React.FC<UserTableProps> = ({ users }) => {
+export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
   // Track if an edit dialog is currently open in any row
   const [isAnyEditDialogOpen, setIsAnyEditDialogOpen] = useState(false);
 
@@ -100,7 +101,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users }) => {
                 <UserStatus user={user} />
               </td>
               <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <UserActions user={user} onEditDialogStateChange={handleEditDialogStateChange} />
+                <UserActions user={user} onEditDialogStateChange={handleEditDialogStateChange} tenant={tenant} />
               </td>
             </tr>
           ))}

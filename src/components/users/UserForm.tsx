@@ -37,13 +37,15 @@ interface UserFormProps {
   onSuccess: () => void;
   onCancel: () => void;
   disableEmail?: boolean;
+  tenant?: string;
 }
 
 export const UserForm: React.FC<UserFormProps> = ({
   user,
   onSuccess,
   onCancel,
-  disableEmail = false
+  disableEmail = false,
+  tenant
 }) => {
   // Initialize React Hook Form with Zod validation
   const {
@@ -61,7 +63,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     }
   });
 
-  const { refetch } = useGetApiUsers();
+  const { refetch } = useGetApiUsers(tenant ? { tenant } : undefined);
 
   // Create user mutation
   const createUserMutation = usePostApiUsersInvited({
@@ -105,7 +107,8 @@ export const UserForm: React.FC<UserFormProps> = ({
     } else {
       // Create new user
       createUserMutation.mutate({
-        data: data
+        data: data,
+        params: tenant ? { tenant } : undefined
       });
     }
   };

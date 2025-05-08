@@ -26,9 +26,10 @@ import { DeleteUserConfirmDialog } from './DeleteUserConfirmDialog';
 interface UserActionsProps {
   user: ApiUserModel;
   onEditDialogStateChange?: (isOpen: boolean) => void;
+  tenant?: string;
 }
 
-export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStateChange }) => {
+export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStateChange, tenant }) => {
   // State for edit dialog
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   // State for MFA reset confirmation dialog
@@ -43,7 +44,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
       onEditDialogStateChange(isOpen);
     }
   };
-  const { refetch } = useGetApiUsers();
+  const { refetch } = useGetApiUsers(tenant ? { tenant } : undefined);
 
   // Disable user mutation
   const disableUserMutation = usePutApiUsersIdDisabled({
@@ -118,23 +119,23 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 
   // Handle confirm delete user
   const handleConfirmDeleteUser = () => {
-    deleteUserMutation.mutate({ id: user.id });
+    deleteUserMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
     setIsDeleteDialogOpen(false);
   };
 
   // Handle resend invitation
   const handleResendInvitation = (e: React.MouseEvent) => {
     e.stopPropagation();
-    resendInvitationMutation.mutate({ id: user.id });
+    resendInvitationMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
   };
 
   // Handle toggle user status (enable/disable)
   const handleToggleUserStatus = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (user.isDisabled) {
-      enableUserMutation.mutate({ id: user.id });
+      enableUserMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
     } else {
-      disableUserMutation.mutate({ id: user.id });
+      disableUserMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
     }
   };
 
@@ -146,7 +147,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
 
   // Handle confirm reset MFA
   const handleConfirmResetMfa = () => {
-    resetMfaMutation.mutate({ id: user.id });
+    resetMfaMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
     setIsResetMfaDialogOpen(false);
   };
 
@@ -224,7 +225,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
       </DropdownMenu>
 
       {/* Edit User Dialog */}
-      <UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={handleEditDialogOpen} />
+      <UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={handleEditDialogOpen} tenant={tenant} />
 
       {/* Reset MFA Confirmation Dialog */}
       <ResetMfaConfirmDialog

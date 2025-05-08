@@ -1,5 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useGetApiUsers } from '../lib/api/generated/users-api/users-api';
+import {
+  useGetApiTenants,
+  usePutApiTenantsTenantIdUsersUserId
+} from '../lib/api/generated/tenants/tenants';
+import { UserRole } from '../lib/api/generated/cleanIAM.schemas';
 import { FormButton } from '../components/form';
 import {
   Dialog,
@@ -8,15 +13,47 @@ import {
   DialogHeader,
   DialogTitle
 } from '../components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import { Loader } from '@/components/public/Loader';
 import { UserForm } from '@/components/users/UserForm';
 import { UserTable } from '@/components/users/UserTable';
+import { useRoles } from '@/lib/hooks/useRoles';
 
 export const UsersPage = () => {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [selectedTenant, setSelectedTenant] = useState<string>('');
 
-  // Fetch users data
-  const { data: usersResponse, isLoading, isError, error, refetch } = useGetApiUsers();
+  // Get user roles
+  const userRoles = useRoles();
+  console.log('User Roles:', userRoles);
+
+  const isMasterAdmin = userRoles.includes(UserRole.MasterAdmin);
+
+  // Fetch tenants data if user is master admin
+  const { data: tenantsResponse, isLoading: isLoadingTenants } = useGetApiTenants(undefined, {
+    query: { enabled: isMasterAdmin }
+  });
+
+  // Filter and format tenants for dropdown
+  const tenants = useMemo(() => {
+    if (isLoadingTenants || !tenantsResponse?.data) return [];
+    return tenantsResponse.data;
+  }, [isLoadingTenants, tenantsResponse?.data]);
+
+  // Fetch users data with tenant param when selected
+  const {
+    data: usersResponse,
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useGetApiUsers(selectedTenant ? { tenant: selectedTenant } : undefined);
 
   // Get users array from response with proper error handling
   const users = useMemo(() => {
@@ -35,9 +72,30 @@ export const UsersPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-blue-800">Users</h1>
-        <p className="text-gray-600">Manage users in your application</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold text-blue-800">Users</h1>
+          <p className="text-gray-600">Manage users in your application</p>
+        </div>
+
+        {isMasterAdmin && tenants.length > 0 && (
+          <div className="w-64">
+            <label className="mb-1 block text-sm font-medium text-gray-700">Select Tenant</label>
+            <Select value={selectedTenant} onValueChange={value => setSelectedTenant(value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="My tenant" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="My tenant">My tenant</SelectItem>
+                {tenants.map(tenant => (
+                  <SelectItem key={tenant.id} value={tenant.id}>
+                    {tenant.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
@@ -57,7 +115,7 @@ export const UsersPage = () => {
             <FormButton onClick={() => setIsInviteDialogOpen(true)}>Invite User</FormButton>
           </div>
 
-          <UserTable users={users} />
+          <UserTable users={users} tenant={selectedTenant || undefined} />
         </div>
       )}
 
@@ -76,6 +134,7 @@ export const UsersPage = () => {
                 refetch();
               }}
               onCancel={handleCloseEditUserDialog}
+              tenant={selectedTenant || undefined}
             />
           </div>
         </DialogContent>
@@ -83,3 +142,5 @@ export const UsersPage = () => {
     </div>
   );
 };
+
+export default UsersPage;
