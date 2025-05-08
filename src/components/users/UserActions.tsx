@@ -8,7 +8,7 @@ import {
   useDeleteApiUsersIdMfaEnabled
 } from '@/lib/api/generated/users-api/users-api';
 import { toast } from 'react-toastify';
-import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
+import { ApiUserModel, UserRole } from '@/lib/api/generated/cleanIAM.schemas';
 import { Loader } from '../public/Loader';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,24 +18,35 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { Settings, Send, Power, Trash2, Edit, ShieldOff } from 'lucide-react';
+import { Settings, Send, Power, Trash2, Edit, ShieldOff, Building } from 'lucide-react';
+import { useRoles } from '@/lib/hooks/useRoles';
 import { UserEditDialog } from './UserEditDialogue';
 import { ResetMfaConfirmDialog } from './ResetMfaConfirmDialog';
 import { DeleteUserConfirmDialog } from './DeleteUserConfirmDialog';
+import { AssignTenantDialog } from './AssignTenantDialog';
 
 interface UserActionsProps {
   user: ApiUserModel;
   onEditDialogStateChange?: (isOpen: boolean) => void;
+  onAssignDialogStateChange?: (isOpen: boolean) => void;
   tenant?: string;
 }
 
-export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStateChange, tenant }) => {
-  // State for edit dialog
+export const UserActions: React.FC<UserActionsProps> = ({
+  user,
+  onEditDialogStateChange,
+  onAssignDialogStateChange,
+  tenant
+}) => {
+  // State for dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  // State for MFA reset confirmation dialog
   const [isResetMfaDialogOpen, setIsResetMfaDialogOpen] = useState(false);
-  // State for delete confirmation dialog
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAssignTenantDialogOpen, setIsAssignTenantDialogOpen] = useState(false);
+  
+  // Get user roles to determine if user is a master admin
+  const userRoles = useRoles();
+  const isMasterAdmin = userRoles.includes(UserRole.MasterAdmin);
 
   // Update parent component when edit dialog state changes
   const handleEditDialogOpen = (isOpen: boolean) => {
@@ -44,6 +55,15 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
       onEditDialogStateChange(isOpen);
     }
   };
+  
+  // Update parent component when assign tenant dialog state changes
+  const handleAssignDialogOpen = (isOpen: boolean) => {
+    setIsAssignTenantDialogOpen(isOpen);
+    if (onAssignDialogStateChange) {
+      onAssignDialogStateChange(isOpen);
+    }
+  };
+  
   const { refetch } = useGetApiUsers(tenant ? { tenant } : undefined);
 
   // Disable user mutation
@@ -114,6 +134,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
   // Handle delete user
   const handleDeleteUser = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setIsDeleteDialogOpen(true);
   };
 
@@ -126,12 +147,14 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
   // Handle resend invitation
   const handleResendInvitation = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     resendInvitationMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
   };
 
   // Handle toggle user status (enable/disable)
   const handleToggleUserStatus = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     if (user.isDisabled) {
       enableUserMutation.mutate({ id: user.id, params: tenant ? { tenant } : undefined });
     } else {
@@ -142,6 +165,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
   // Handle reset MFA
   const handleResetMfa = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setIsResetMfaDialogOpen(true);
   };
 
@@ -151,16 +175,28 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
     setIsResetMfaDialogOpen(false);
   };
 
+  // Handle assign tenant dialog
+  const handleAssignTenant = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    handleAssignDialogOpen(true);
+  };
+
+  // Handle after successful tenant assignment
+  const handleTenantAssignSuccess = () => {
+    refetch();
+  };
+
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">User actions</span>
             <Settings className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
           {user.isInvitePending && (
             <>
               <DropdownMenuItem
@@ -199,7 +235,7 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
               handleEditDialogOpen(true);
@@ -208,6 +244,14 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
             <Edit className="mr-2 h-4 w-4" strokeWidth={2} />
             <span>Edit User</span>
           </DropdownMenuItem>
+          
+          {isMasterAdmin && (
+            <DropdownMenuItem onClick={handleAssignTenant}>
+              <Building className="mr-2 h-4 w-4" strokeWidth={2} />
+              <span>Assign to Tenant</span>
+            </DropdownMenuItem>
+          )}
+          
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={handleDeleteUser}
@@ -225,7 +269,12 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
       </DropdownMenu>
 
       {/* Edit User Dialog */}
-      <UserEditDialog user={user} isOpen={isEditDialogOpen} onOpenChange={handleEditDialogOpen} tenant={tenant} />
+      <UserEditDialog 
+        user={user} 
+        isOpen={isEditDialogOpen} 
+        onOpenChange={handleEditDialogOpen} 
+        tenant={tenant} 
+      />
 
       {/* Reset MFA Confirmation Dialog */}
       <ResetMfaConfirmDialog
@@ -244,6 +293,16 @@ export const UserActions: React.FC<UserActionsProps> = ({ user, onEditDialogStat
         isDeleting={deleteUserMutation.isPending}
         userName={`${user.firstName} ${user.lastName}`}
       />
+      
+      {/* Assign Tenant Dialog */}
+      {isMasterAdmin && (
+        <AssignTenantDialog
+          user={user}
+          isOpen={isAssignTenantDialogOpen}
+          onOpenChange={handleAssignDialogOpen}
+          onSuccess={handleTenantAssignSuccess}
+        />
+      )}
     </>
   );
 };

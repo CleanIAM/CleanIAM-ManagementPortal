@@ -11,12 +11,18 @@ interface UserTableProps {
 }
 
 export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
-  // Track if an edit dialog is currently open in any row
+  // Track any dialog that is open
   const [isAnyEditDialogOpen, setIsAnyEditDialogOpen] = useState(false);
+  const [isAnyAssignDialogOpen, setIsAnyAssignDialogOpen] = useState(false);
+  const isAnyDialogOpen = isAnyEditDialogOpen || isAnyAssignDialogOpen;
 
-  // Create a callback function to be passed down to UserActions
+  // Create callback functions to be passed down to UserActions
   const handleEditDialogStateChange = (isOpen: boolean) => {
     setIsAnyEditDialogOpen(isOpen);
+  };
+  
+  const handleAssignDialogStateChange = (isOpen: boolean) => {
+    setIsAnyAssignDialogOpen(isOpen);
   };
   // State for managing the selected user and dialog visibility
   const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
@@ -78,8 +84,8 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
               key={user.id}
               className="cursor-pointer hover:bg-gray-50"
               onClick={e => {
-                // Prevent row click when clicking on the actions column or when any edit dialog is open
-                if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
+                // Prevent row click when clicking on the actions column or when any dialog is open
+                if ((e.target as HTMLElement).closest('.actions-column') || isAnyDialogOpen) {
                   return;
                 }
                 handleRowClick(user);
@@ -101,7 +107,12 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
                 <UserStatus user={user} />
               </td>
               <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <UserActions user={user} onEditDialogStateChange={handleEditDialogStateChange} tenant={tenant} />
+                <UserActions 
+                  user={user} 
+                  onEditDialogStateChange={handleEditDialogStateChange} 
+                  onAssignDialogStateChange={handleAssignDialogStateChange}
+                  tenant={tenant} 
+                />
               </td>
             </tr>
           ))}

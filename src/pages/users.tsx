@@ -1,9 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useGetApiUsers } from '../lib/api/generated/users-api/users-api';
-import {
-  useGetApiTenants,
-  usePutApiTenantsTenantIdUsersUserId
-} from '../lib/api/generated/tenants/tenants';
+import { useGetApiTenants } from '../lib/api/generated/tenants/tenants';
 import { UserRole } from '../lib/api/generated/cleanIAM.schemas';
 import { FormButton } from '../components/form';
 import {
