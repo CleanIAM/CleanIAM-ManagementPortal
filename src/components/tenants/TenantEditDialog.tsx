@@ -26,7 +26,7 @@ export const TenantEditDialog = ({ tenant, isOpen, onOpenChange }: TenantEditDia
       onOpenChange(open);
     }
   };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl">

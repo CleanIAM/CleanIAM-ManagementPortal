@@ -21,7 +21,12 @@ interface ScopeInfoDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isDefault, isOpen, onOpenChange }) => {
+export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({
+  scope,
+  isDefault,
+  isOpen,
+  onOpenChange
+}) => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Handle edit success
@@ -74,9 +79,12 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isDefau
             <div className="space-y-6">
               <div>
                 <p className="text-sm font-medium text-gray-500">Scope Name</p>
-                <TextWithCopy value={scope.name} className="text-md justify-start gap-2 font-mono" />
+                <TextWithCopy
+                  value={scope.name}
+                  className="text-md justify-start gap-2 font-mono"
+                />
               </div>
-              
+
               <div>
                 <h3 className="mb-2 text-sm font-medium text-gray-500">Basic Information</h3>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -114,11 +122,7 @@ export const ScopeInfoDialog: React.FC<ScopeInfoDialogProps> = ({ scope, isDefau
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          <FormButton 
-                            variant="primary" 
-                            className="ml-2 opacity-50" 
-                            disabled={true}
-                          >
+                          <FormButton variant="primary" className="ml-2 opacity-50" disabled={true}>
                             <LockIcon className="mr-2 h-4 w-4" />
                             Edit Scope
                           </FormButton>

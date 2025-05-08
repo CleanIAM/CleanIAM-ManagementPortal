@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { useDeleteApiScopesScopeName, useGetApiScopes } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+import {
+  useDeleteApiScopesScopeName,
+  useGetApiScopes
+} from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
 import { toast } from 'react-toastify';
 import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { Loader } from '@/components/public/Loader';
@@ -13,7 +16,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Settings, Trash2, Edit, LockIcon } from 'lucide-react';
 import { DeleteScopeConfirmDialog } from './DeleteScopeConfirmDialog';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
 import { ScopeForm } from './ScopeForm';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -23,7 +32,11 @@ interface ScopeActionsProps {
   onEditDialogStateChange?: (isOpen: boolean) => void;
 }
 
-export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, isDefault, onEditDialogStateChange }) => {
+export const ScopeActions: React.FC<ScopeActionsProps> = ({
+  scope,
+  isDefault,
+  onEditDialogStateChange
+}) => {
   // State for dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -76,7 +89,7 @@ export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, isDefault, on
         <Tooltip delayDuration={300}>
           <TooltipTrigger asChild>
             <div className="flex justify-end">
-              <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
+              <Button variant="ghost" className="h-8 w-8 cursor-not-allowed p-0 opacity-50">
                 <span className="sr-only">Scope actions</span>
                 <LockIcon className="h-4 w-4 text-gray-400" />
               </Button>
@@ -100,9 +113,7 @@ export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, isDefault, on
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onClick={handleEditScope}
-          >
+          <DropdownMenuItem onClick={handleEditScope}>
             <Edit className="mr-2 h-4 w-4" strokeWidth={2} />
             <span>Edit</span>
           </DropdownMenuItem>

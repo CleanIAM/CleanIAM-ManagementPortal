@@ -7,18 +7,18 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type { PostMfaTotpBody } from '../cleanIAM.schemas';
@@ -29,137 +29,137 @@ import { customAxiosRequest } from '../../mutator/axios/custom-axios';
  * @summary Shows the MFA input from the user.
  */
 export const getMfaTotp = (signal?: AbortSignal) => {
-	return customAxiosRequest<void>({ url: `/mfa/totp`, method: 'GET', signal });
+  return customAxiosRequest<void>({ url: `/mfa/totp`, method: 'GET', signal });
 };
 
 export const getGetMfaTotpQueryKey = () => {
-	return [`/mfa/totp`] as const;
+  return [`/mfa/totp`] as const;
 };
 
 export const getGetMfaTotpQueryOptions = <
-	TData = Awaited<ReturnType<typeof getMfaTotp>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getMfaTotp>>,
+  TError = unknown
 >(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
 }) => {
-	const { query: queryOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetMfaTotpQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetMfaTotpQueryKey();
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getMfaTotp>>> = ({ signal }) =>
-		getMfaTotp(signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMfaTotp>>> = ({ signal }) =>
+    getMfaTotp(signal);
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getMfaTotp>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMfaTotp>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetMfaTotpQueryResult = NonNullable<Awaited<ReturnType<typeof getMfaTotp>>>;
 export type GetMfaTotpQueryError = unknown;
 
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMfaTotp>>,
-					TError,
-					Awaited<ReturnType<typeof getMfaTotp>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMfaTotp>>,
+          TError,
+          Awaited<ReturnType<typeof getMfaTotp>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getMfaTotp>>,
-					TError,
-					Awaited<ReturnType<typeof getMfaTotp>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMfaTotp>>,
+          TError,
+          Awaited<ReturnType<typeof getMfaTotp>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Shows the MFA input from the user.
  */
 
 export function useGetMfaTotp<TData = Awaited<ReturnType<typeof getMfaTotp>>, TError = unknown>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getMfaTotp>>, TError, TData>>;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetMfaTotpQueryOptions(options);
+  const queryOptions = getGetMfaTotpQueryOptions(options);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-	query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey;
 
-	return query;
+  return query;
 }
 
 /**
  * @summary Handles the MFA input from the user.
  */
 export const postMfaTotp = (postMfaTotpBody: PostMfaTotpBody, signal?: AbortSignal) => {
-	const formData = new FormData();
-	formData.append('Totp', postMfaTotpBody.Totp);
+  const formData = new FormData();
+  formData.append('Totp', postMfaTotpBody.Totp);
 
-	return customAxiosRequest<void>({
-		url: `/mfa/totp`,
-		method: 'POST',
-		headers: { 'Content-Type': 'multipart/form-data' },
-		data: formData,
-		signal
-	});
+  return customAxiosRequest<void>({
+    url: `/mfa/totp`,
+    method: 'POST',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data: formData,
+    signal
+  });
 };
 
 export const getPostMfaTotpMutationOptions = <TError = unknown, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postMfaTotp>>,
-		TError,
-		{ data: PostMfaTotpBody },
-		TContext
-	>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postMfaTotp>>,
+    TError,
+    { data: PostMfaTotpBody },
+    TContext
+  >;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof postMfaTotp>>,
-	TError,
-	{ data: PostMfaTotpBody },
-	TContext
+  Awaited<ReturnType<typeof postMfaTotp>>,
+  TError,
+  { data: PostMfaTotpBody },
+  TContext
 > => {
-	const mutationKey = ['postMfaTotp'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
+  const mutationKey = ['postMfaTotp'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postMfaTotp>>,
-		{ data: PostMfaTotpBody }
-	> = props => {
-		const { data } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postMfaTotp>>,
+    { data: PostMfaTotpBody }
+  > = props => {
+    const { data } = props ?? {};
 
-		return postMfaTotp(data);
-	};
+    return postMfaTotp(data);
+  };
 
-	return { mutationFn, ...mutationOptions };
+  return { mutationFn, ...mutationOptions };
 };
 
 export type PostMfaTotpMutationResult = NonNullable<Awaited<ReturnType<typeof postMfaTotp>>>;
@@ -170,22 +170,22 @@ export type PostMfaTotpMutationError = unknown;
  * @summary Handles the MFA input from the user.
  */
 export const usePostMfaTotp = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postMfaTotp>>,
-			TError,
-			{ data: PostMfaTotpBody },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postMfaTotp>>,
+      TError,
+      { data: PostMfaTotpBody },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof postMfaTotp>>,
-	TError,
-	{ data: PostMfaTotpBody },
-	TContext
+  Awaited<ReturnType<typeof postMfaTotp>>,
+  TError,
+  { data: PostMfaTotpBody },
+  TContext
 > => {
-	const mutationOptions = getPostMfaTotpMutationOptions(options);
+  const mutationOptions = getPostMfaTotpMutationOptions(options);
 
-	return useMutation(mutationOptions, queryClient);
+  return useMutation(mutationOptions, queryClient);
 };

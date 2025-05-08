@@ -2,10 +2,10 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
+import {
   useGetApiTenants,
-  usePostApiTenants, 
-  usePutApiTenantsTenantId 
+  usePostApiTenants,
+  usePutApiTenantsTenantId
 } from '@/lib/api/generated/tenants/tenants';
 import { ApiTenantModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { FormButton } from '@/components/form';
@@ -29,11 +29,7 @@ interface TenantFormProps {
   onCancel: () => void;
 }
 
-export const TenantForm: React.FC<TenantFormProps> = ({
-  tenant,
-  onSuccess,
-  onCancel
-}) => {
+export const TenantForm: React.FC<TenantFormProps> = ({ tenant, onSuccess, onCancel }) => {
   // Initialize React Hook Form with Zod validation
   const {
     register,
@@ -81,7 +77,7 @@ export const TenantForm: React.FC<TenantFormProps> = ({
     // Prevent default form submission behavior
     event?.preventDefault();
     event?.stopPropagation();
-    
+
     if (tenant) {
       // Update existing tenant
       updateTenantMutation.mutate({
@@ -117,7 +113,9 @@ export const TenantForm: React.FC<TenantFormProps> = ({
         </FormButton>
         <FormButton
           type="submit"
-          disabled={isSubmitting || createTenantMutation.isPending || updateTenantMutation.isPending}
+          disabled={
+            isSubmitting || createTenantMutation.isPending || updateTenantMutation.isPending
+          }
         >
           {isSubmitting || createTenantMutation.isPending || updateTenantMutation.isPending ? (
             tenant ? (

@@ -7,18 +7,18 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type { PostEmailVerificationBody } from '../cleanIAM.schemas';
@@ -29,171 +29,171 @@ import { customAxiosRequest } from '../../mutator/axios/custom-axios';
  * @summary Show a page announcing that email verification is required
  */
 export const getEmailVerification = (signal?: AbortSignal) => {
-	return customAxiosRequest<void>({ url: `/email-verification`, method: 'GET', signal });
+  return customAxiosRequest<void>({ url: `/email-verification`, method: 'GET', signal });
 };
 
 export const getGetEmailVerificationQueryKey = () => {
-	return [`/email-verification`] as const;
+  return [`/email-verification`] as const;
 };
 
 export const getGetEmailVerificationQueryOptions = <
-	TData = Awaited<ReturnType<typeof getEmailVerification>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerification>>,
+  TError = unknown
 >(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>>;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>>;
 }) => {
-	const { query: queryOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationQueryKey();
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerification>>> = ({ signal }) =>
-		getEmailVerification(signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerification>>> = ({ signal }) =>
+    getEmailVerification(signal);
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getEmailVerification>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getEmailVerification>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetEmailVerificationQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getEmailVerification>>
+  Awaited<ReturnType<typeof getEmailVerification>>
 >;
 export type GetEmailVerificationQueryError = unknown;
 
 export function useGetEmailVerification<
-	TData = Awaited<ReturnType<typeof getEmailVerification>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerification>>,
+  TError = unknown
 >(
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEmailVerification>>,
-					TError,
-					Awaited<ReturnType<typeof getEmailVerification>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmailVerification>>,
+          TError,
+          Awaited<ReturnType<typeof getEmailVerification>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetEmailVerification<
-	TData = Awaited<ReturnType<typeof getEmailVerification>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerification>>,
+  TError = unknown
 >(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEmailVerification>>,
-					TError,
-					Awaited<ReturnType<typeof getEmailVerification>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmailVerification>>,
+          TError,
+          Awaited<ReturnType<typeof getEmailVerification>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetEmailVerification<
-	TData = Awaited<ReturnType<typeof getEmailVerification>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerification>>,
+  TError = unknown
 >(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Show a page announcing that email verification is required
  */
 
 export function useGetEmailVerification<
-	TData = Awaited<ReturnType<typeof getEmailVerification>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerification>>,
+  TError = unknown
 >(
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerification>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetEmailVerificationQueryOptions(options);
+  const queryOptions = getGetEmailVerificationQueryOptions(options);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-	query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey;
 
-	return query;
+  return query;
 }
 
 /**
  * @summary Handle the user requesting email for email verification
  */
 export const postEmailVerification = (
-	postEmailVerificationBody: PostEmailVerificationBody,
-	signal?: AbortSignal
+  postEmailVerificationBody: PostEmailVerificationBody,
+  signal?: AbortSignal
 ) => {
-	const formData = new FormData();
-	if (postEmailVerificationBody.RequestId !== undefined) {
-		formData.append('RequestId', postEmailVerificationBody.RequestId);
-	}
+  const formData = new FormData();
+  if (postEmailVerificationBody.RequestId !== undefined) {
+    formData.append('RequestId', postEmailVerificationBody.RequestId);
+  }
 
-	return customAxiosRequest<void>({
-		url: `/email-verification`,
-		method: 'POST',
-		headers: { 'Content-Type': 'multipart/form-data' },
-		data: formData,
-		signal
-	});
+  return customAxiosRequest<void>({
+    url: `/email-verification`,
+    method: 'POST',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data: formData,
+    signal
+  });
 };
 
 export const getPostEmailVerificationMutationOptions = <
-	TError = unknown,
-	TContext = unknown
+  TError = unknown,
+  TContext = unknown
 >(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postEmailVerification>>,
-		TError,
-		{ data: PostEmailVerificationBody },
-		TContext
-	>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postEmailVerification>>,
+    TError,
+    { data: PostEmailVerificationBody },
+    TContext
+  >;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof postEmailVerification>>,
-	TError,
-	{ data: PostEmailVerificationBody },
-	TContext
+  Awaited<ReturnType<typeof postEmailVerification>>,
+  TError,
+  { data: PostEmailVerificationBody },
+  TContext
 > => {
-	const mutationKey = ['postEmailVerification'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
+  const mutationKey = ['postEmailVerification'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postEmailVerification>>,
-		{ data: PostEmailVerificationBody }
-	> = props => {
-		const { data } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postEmailVerification>>,
+    { data: PostEmailVerificationBody }
+  > = props => {
+    const { data } = props ?? {};
 
-		return postEmailVerification(data);
-	};
+    return postEmailVerification(data);
+  };
 
-	return { mutationFn, ...mutationOptions };
+  return { mutationFn, ...mutationOptions };
 };
 
 export type PostEmailVerificationMutationResult = NonNullable<
-	Awaited<ReturnType<typeof postEmailVerification>>
+  Awaited<ReturnType<typeof postEmailVerification>>
 >;
 export type PostEmailVerificationMutationBody = PostEmailVerificationBody;
 export type PostEmailVerificationMutationError = unknown;
@@ -202,141 +202,141 @@ export type PostEmailVerificationMutationError = unknown;
  * @summary Handle the user requesting email for email verification
  */
 export const usePostEmailVerification = <TError = unknown, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postEmailVerification>>,
-			TError,
-			{ data: PostEmailVerificationBody },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postEmailVerification>>,
+      TError,
+      { data: PostEmailVerificationBody },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof postEmailVerification>>,
-	TError,
-	{ data: PostEmailVerificationBody },
-	TContext
+  Awaited<ReturnType<typeof postEmailVerification>>,
+  TError,
+  { data: PostEmailVerificationBody },
+  TContext
 > => {
-	const mutationOptions = getPostEmailVerificationMutationOptions(options);
+  const mutationOptions = getPostEmailVerificationMutationOptions(options);
 
-	return useMutation(mutationOptions, queryClient);
+  return useMutation(mutationOptions, queryClient);
 };
 /**
  * @summary Handle the user clicking on the email verification link
  */
 export const getEmailVerificationId = (id: string, signal?: AbortSignal) => {
-	return customAxiosRequest<void>({ url: `/email-verification/${id}`, method: 'GET', signal });
+  return customAxiosRequest<void>({ url: `/email-verification/${id}`, method: 'GET', signal });
 };
 
 export const getGetEmailVerificationIdQueryKey = (id: string) => {
-	return [`/email-verification/${id}`] as const;
+  return [`/email-verification/${id}`] as const;
 };
 
 export const getGetEmailVerificationIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
+  TError = unknown
 >(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
-		>;
-	}
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
+    >;
+  }
 ) => {
-	const { query: queryOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationIdQueryKey(id);
+  const queryKey = queryOptions?.queryKey ?? getGetEmailVerificationIdQueryKey(id);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerificationId>>> = ({ signal }) =>
-		getEmailVerificationId(id, signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getEmailVerificationId>>> = ({ signal }) =>
+    getEmailVerificationId(id, signal);
 
-	return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getEmailVerificationId>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getEmailVerificationId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetEmailVerificationIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getEmailVerificationId>>
+  Awaited<ReturnType<typeof getEmailVerificationId>>
 >;
 export type GetEmailVerificationIdQueryError = unknown;
 
 export function useGetEmailVerificationId<
-	TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
+  TError = unknown
 >(
-	id: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEmailVerificationId>>,
-					TError,
-					Awaited<ReturnType<typeof getEmailVerificationId>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmailVerificationId>>,
+          TError,
+          Awaited<ReturnType<typeof getEmailVerificationId>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetEmailVerificationId<
-	TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
+  TError = unknown
 >(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getEmailVerificationId>>,
-					TError,
-					Awaited<ReturnType<typeof getEmailVerificationId>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getEmailVerificationId>>,
+          TError,
+          Awaited<ReturnType<typeof getEmailVerificationId>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetEmailVerificationId<
-	TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
+  TError = unknown
 >(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Handle the user clicking on the email verification link
  */
 
 export function useGetEmailVerificationId<
-	TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
-	TError = unknown
+  TData = Awaited<ReturnType<typeof getEmailVerificationId>>,
+  TError = unknown
 >(
-	id: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getEmailVerificationId>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetEmailVerificationIdQueryOptions(id, options);
+  const queryOptions = getGetEmailVerificationIdQueryOptions(id, options);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-	query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey;
 
-	return query;
+  return query;
 }

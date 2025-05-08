@@ -6,225 +6,225 @@
  * OpenAPI spec version: v1
  */
 export interface ApiApplicationModel {
-	/** Gets or sets the id associated with the application. */
-	id: string;
-	applicationType: ApplicationType;
-	/**
-	 * Gets or sets the client identifier associated with the application.
-	 * @minLength 1
-	 */
-	clientId: string;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/**
-	 * Gets or sets the display name associated with the application.
-	 * @nullable
-	 */
-	displayName: string | null;
-	/** Allowed scopes for the application. */
-	scopes: string[];
-	/** Gets the post-logout redirect URIs associated with the application. */
-	postLogoutRedirectUris: string[];
-	/** Gets the redirect URIs associated with the application. */
-	redirectUris: string[];
+  /** Gets or sets the id associated with the application. */
+  id: string;
+  applicationType: ApplicationType;
+  /**
+   * Gets or sets the client identifier associated with the application.
+   * @minLength 1
+   */
+  clientId: string;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /**
+   * Gets or sets the display name associated with the application.
+   * @nullable
+   */
+  displayName: string | null;
+  /** Allowed scopes for the application. */
+  scopes: string[];
+  /** Gets the post-logout redirect URIs associated with the application. */
+  postLogoutRedirectUris: string[];
+  /** Gets the redirect URIs associated with the application. */
+  redirectUris: string[];
 }
 
 /**
  * Represents a tenant in the system.
  */
 export interface ApiTenantModel {
-	/** The unique identifier for the tenant. */
-	id: string;
-	/** The name of the tenant. */
-	name: string;
+  /** The unique identifier for the tenant. */
+  id: string;
+  /** The name of the tenant. */
+  name: string;
 }
 
 /**
  * Api user model
  */
 export interface ApiUserModel {
-	/** Id of the user */
-	id: string;
-	/** Email of the user */
-	email: string;
-	/** Indicates whether the user's email has been verified. */
-	emailVerified: boolean;
-	/** First name of the user */
-	firstName: string;
-	/** last name of the user */
-	lastName: string;
-	/** User roles */
-	roles: UserRole[];
-	/** Indicates whether the user account is disabled. */
-	isDisabled: boolean;
-	/** Indicates whether the user has enabled multifactor authentication (MFA). */
-	isMFAEnabled: boolean;
-	/** Indicates whether the user has configured multifactor authentication (MFA). */
-	isMFAConfigured: boolean;
-	/** Indicates whether the user has a pending invite or the profile is already set up. */
-	isInvitePending: boolean;
+  /** Id of the user */
+  id: string;
+  /** Email of the user */
+  email: string;
+  /** Indicates whether the user's email has been verified. */
+  emailVerified: boolean;
+  /** First name of the user */
+  firstName: string;
+  /** last name of the user */
+  lastName: string;
+  /** User roles */
+  roles: UserRole[];
+  /** Indicates whether the user account is disabled. */
+  isDisabled: boolean;
+  /** Indicates whether the user has enabled multifactor authentication (MFA). */
+  isMFAEnabled: boolean;
+  /** Indicates whether the user has configured multifactor authentication (MFA). */
+  isMFAConfigured: boolean;
+  /** Indicates whether the user has a pending invite or the profile is already set up. */
+  isInvitePending: boolean;
 }
 
 export type ApplicationType = (typeof ApplicationType)[keyof typeof ApplicationType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ApplicationType = {
-	Native: 'Native',
-	Web: 'Web'
+  Native: 'Native',
+  Web: 'Web'
 } as const;
 
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ClientType = {
-	Public: 'Public',
-	Confidential: 'Confidential'
+  Public: 'Public',
+  Confidential: 'Confidential'
 } as const;
 
 /**
  * Request model for configuring MFA
  */
 export interface ConfigureMfaRequest {
-	/** Totp code to verify the user has successfully connected to some authenticator app */
-	totp: string;
-	/** Enable or disable MFA of the totp code is successfully verified */
-	enableMfa: boolean;
+  /** Totp code to verify the user has successfully connected to some authenticator app */
+  totp: string;
+  /** Enable or disable MFA of the totp code is successfully verified */
+  enableMfa: boolean;
 }
 
 export type ConsentType = (typeof ConsentType)[keyof typeof ConsentType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ConsentType = {
-	Explicit: 'Explicit',
-	External: 'External',
-	Implicit: 'Implicit',
-	Systematic: 'Systematic'
+  Explicit: 'Explicit',
+  External: 'External',
+  Implicit: 'Implicit',
+  Systematic: 'Systematic'
 } as const;
 
 export interface CreateNewApplicationRequest {
-	applicationType: ApplicationType;
-	/**
-	 * Gets or sets the client identifier associated with the application.
-	 * @minLength 1
-	 */
-	clientId: string;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/**
-	 * Gets or sets the display name associated with the application.
-	 * @nullable
-	 */
-	displayName: string | null;
-	/** Allowed scopes for the application. */
-	scopes: string[];
-	/** Gets the post-logout redirect URIs associated with the application. */
-	postLogoutRedirectUris: string[];
-	/** Gets the redirect URIs associated with the application. */
-	redirectUris: string[];
+  applicationType: ApplicationType;
+  /**
+   * Gets or sets the client identifier associated with the application.
+   * @minLength 1
+   */
+  clientId: string;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /**
+   * Gets or sets the display name associated with the application.
+   * @nullable
+   */
+  displayName: string | null;
+  /** Allowed scopes for the application. */
+  scopes: string[];
+  /** Gets the post-logout redirect URIs associated with the application. */
+  postLogoutRedirectUris: string[];
+  /** Gets the redirect URIs associated with the application. */
+  redirectUris: string[];
 }
 
 /**
  * Request to create a new scope.
  */
 export interface CreateNewScopeRequest {
-	/** The name of the scope. */
-	name: string;
-	/** The display name of the scope. */
-	displayName: string;
-	/**
-	 * The description of the scope.
-	 * @nullable
-	 */
-	description: string | null;
-	/** The resources the scopes allows access to. */
-	resources: string[];
+  /** The name of the scope. */
+  name: string;
+  /** The display name of the scope. */
+  displayName: string;
+  /**
+   * The description of the scope.
+   * @nullable
+   */
+  description: string | null;
+  /** The resources the scopes allows access to. */
+  resources: string[];
 }
 
 /**
  * Request to create a new tenant
  */
 export interface CreateNewTenantRequest {
-	/**
-	 * Name of the new tenant
-	 * @minLength 1
-	 */
-	name: string;
+  /**
+   * Name of the new tenant
+   * @minLength 1
+   */
+  name: string;
 }
 
 /**
  * Response model for enabling/disabling MFA
  */
 export interface EnableMfaRequest {
-	/** Enable or disable MFA */
-	enable: boolean;
+  /** Enable or disable MFA */
+  enable: boolean;
 }
 
 export interface Error {
-	message: string;
-	code: number;
+  message: string;
+  code: number;
 }
 
 /**
  * Request model for inviting a user.
  */
 export interface InviteUserRequest {
-	/** Email of the invited user */
-	email: string;
-	/** First name of the invited user */
-	firstName: string;
-	/** Last name of the invited user */
-	lastName: string;
-	/** Roles of the invited user */
-	roles: UserRole[];
+  /** Email of the invited user */
+  email: string;
+  /** First name of the invited user */
+  firstName: string;
+  /** Last name of the invited user */
+  lastName: string;
+  /** Roles of the invited user */
+  roles: UserRole[];
 }
 
 export type JsonValueKind = (typeof JsonValueKind)[keyof typeof JsonValueKind];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const JsonValueKind = {
-	NUMBER_0: 0,
-	NUMBER_1: 1,
-	NUMBER_2: 2,
-	NUMBER_3: 3,
-	NUMBER_4: 4,
-	NUMBER_5: 5,
-	NUMBER_6: 6,
-	NUMBER_7: 7
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+  NUMBER_4: 4,
+  NUMBER_5: 5,
+  NUMBER_6: 6,
+  NUMBER_7: 7
 } as const;
 
 /**
  * Response model for MFA configuration flow
  */
 export interface MfaConfigurationResponse {
-	/** QrCode with totp configuration string
+  /** QrCode with totp configuration string
 Represents PNG image in Base64 format */
-	qrCode: string;
+  qrCode: string;
 }
 
 /**
  * Represents the event of user disabling multifactor authentication (MFA).
  */
 export interface MfaDisabledForUser {
-	/** Id of user */
-	id: string;
+  /** Id of user */
+  id: string;
 }
 
 /**
  * Response model for enabling/disabling MFA
  */
 export interface MfaUpdatedResponse {
-	/** Indicates whether MFA is enabled or not */
-	mfaEnabled: boolean;
+  /** Indicates whether MFA is enabled or not */
+  mfaEnabled: boolean;
 }
 
 /**
  * Event that is raised when a new tenant is created
  */
 export interface NewTenantCreated {
-	/** Id of the new tenant */
-	id: string;
-	/** Name of the new tenant */
-	name: string;
+  /** Id of the new tenant */
+  id: string;
+  /** Name of the new tenant */
+  name: string;
 }
 
 /**
@@ -233,400 +233,400 @@ export interface NewTenantCreated {
 export type OpenIdApplicationProperties = { [key: string]: unknown };
 
 export interface OpenIdApplication {
-	/** Gets or sets the id associated with the application. */
-	id: string;
-	applicationType: ApplicationType;
-	/** Gets or sets the client identifier associated with the application. */
-	clientId: string;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/**
-	 * Gets or sets the display name associated with the application.
-	 * @nullable
-	 */
-	displayName: string | null;
-	/** Allowed scopes for the application. */
-	scopes: string[];
-	/** Gets the post-logout redirect URIs associated with the application. */
-	postLogoutRedirectUris: string[];
-	/** Gets the additional properties associated with the application. */
-	properties: OpenIdApplicationProperties;
-	/** Gets the redirect URIs associated with the application. */
-	redirectUris: string[];
+  /** Gets or sets the id associated with the application. */
+  id: string;
+  applicationType: ApplicationType;
+  /** Gets or sets the client identifier associated with the application. */
+  clientId: string;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /**
+   * Gets or sets the display name associated with the application.
+   * @nullable
+   */
+  displayName: string | null;
+  /** Allowed scopes for the application. */
+  scopes: string[];
+  /** Gets the post-logout redirect URIs associated with the application. */
+  postLogoutRedirectUris: string[];
+  /** Gets the additional properties associated with the application. */
+  properties: OpenIdApplicationProperties;
+  /** Gets the redirect URIs associated with the application. */
+  redirectUris: string[];
 }
 
 export interface OpenIdApplicationCreated {
-	id: string;
-	applicationType: ApplicationType;
-	clientId: string;
-	/** @nullable */
-	clientSecret: string | null;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/** @nullable */
-	displayName: string | null;
-	scopes: string[];
-	postLogoutRedirectUris: string[];
-	redirectUris: string[];
+  id: string;
+  applicationType: ApplicationType;
+  clientId: string;
+  /** @nullable */
+  clientSecret: string | null;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /** @nullable */
+  displayName: string | null;
+  scopes: string[];
+  postLogoutRedirectUris: string[];
+  redirectUris: string[];
 }
 
 export interface OpenIdApplicationDeleted {
-	id: string;
-	displayName: string;
+  id: string;
+  displayName: string;
 }
 
 export interface OpenIdApplicationUpdated {
-	id: string;
-	applicationType: ApplicationType;
-	clientId: string;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/** @nullable */
-	displayName: string | null;
-	scopes: string[];
-	postLogoutRedirectUris: string[];
-	redirectUris: string[];
+  id: string;
+  applicationType: ApplicationType;
+  clientId: string;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /** @nullable */
+  displayName: string | null;
+  scopes: string[];
+  postLogoutRedirectUris: string[];
+  redirectUris: string[];
 }
 
 /**
  * Represents a scope in the OpenID Connect system.
  */
 export interface Scope {
-	/** The name of the scope. */
-	name: string;
-	/** The display name of the scope. */
-	displayName: string;
-	/**
-	 * The description of the scope.
-	 * @nullable
-	 */
-	description: string | null;
-	/** The resources the scopes allows access to. */
-	resources: string[];
+  /** The name of the scope. */
+  name: string;
+  /** The display name of the scope. */
+  displayName: string;
+  /**
+   * The description of the scope.
+   * @nullable
+   */
+  description: string | null;
+  /** The resources the scopes allows access to. */
+  resources: string[];
 }
 
 /**
  * Event triggered when a new scope is created.
  */
 export interface ScopeCreated {
-	/** Name of the new scope */
-	name: string;
-	/** Display name of the new scope */
-	displayName: string;
-	/** Description name of the new scope */
-	description: string;
-	/** Resources the scope allows access to */
-	resources: string[];
+  /** Name of the new scope */
+  name: string;
+  /** Display name of the new scope */
+  displayName: string;
+  /** Description name of the new scope */
+  description: string;
+  /** Resources the scope allows access to */
+  resources: string[];
 }
 
 /**
  * Event that is published when a scope is deleted.
  */
 export interface ScopeDeleted {
-	/** name of the deleted scope */
-	name: string;
+  /** name of the deleted scope */
+  name: string;
 }
 
 /**
  * Event triggered when a scope is updated.
  */
 export interface ScopeUpdated {
-	/** Name of the new scope */
-	name: string;
-	/** Display name of the new scope */
-	displayName: string;
-	/** Description name of the new scope */
-	description: string;
-	/** Resources the scope allows access to */
-	resources: string[];
+  /** Name of the new scope */
+  name: string;
+  /** Display name of the new scope */
+  displayName: string;
+  /** Description name of the new scope */
+  description: string;
+  /** Resources the scope allows access to */
+  resources: string[];
 }
 
 export interface StringStringValuesKeyValuePair {
-	key: string;
-	value: string[];
+  key: string;
+  value: string[];
 }
 
 export interface TenantUpdated {
-	id: string;
-	name: string;
+  id: string;
+  name: string;
 }
 
 export interface UpdateApplicationRequest {
-	/** Gets or sets the id associated with the application. */
-	id: string;
-	applicationType: ApplicationType;
-	/**
-	 * Gets or sets the client identifier associated with the application.
-	 * @minLength 1
-	 */
-	clientId: string;
-	clientType: ClientType;
-	consentType: ConsentType;
-	/**
-	 * Gets or sets the display name associated with the application.
-	 * @nullable
-	 */
-	displayName: string | null;
-	/** Allowed scopes for the application. */
-	scopes: string[];
-	/** Gets the post-logout redirect URIs associated with the application. */
-	postLogoutRedirectUris: string[];
-	/** Gets the redirect URIs associated with the application. */
-	redirectUris: string[];
+  /** Gets or sets the id associated with the application. */
+  id: string;
+  applicationType: ApplicationType;
+  /**
+   * Gets or sets the client identifier associated with the application.
+   * @minLength 1
+   */
+  clientId: string;
+  clientType: ClientType;
+  consentType: ConsentType;
+  /**
+   * Gets or sets the display name associated with the application.
+   * @nullable
+   */
+  displayName: string | null;
+  /** Allowed scopes for the application. */
+  scopes: string[];
+  /** Gets the post-logout redirect URIs associated with the application. */
+  postLogoutRedirectUris: string[];
+  /** Gets the redirect URIs associated with the application. */
+  redirectUris: string[];
 }
 
 /**
  * Request to update a scope.
  */
 export interface UpdateScopeRequest {
-	/** The display name of the scope. */
-	displayName: string;
-	/**
-	 * The description of the scope.
-	 * @nullable
-	 */
-	description: string | null;
-	/** The resources the scopes allows access to. */
-	resources: string[];
+  /** The display name of the scope. */
+  displayName: string;
+  /**
+   * The description of the scope.
+   * @nullable
+   */
+  description: string | null;
+  /** The resources the scopes allows access to. */
+  resources: string[];
 }
 
 /**
  * Request to update a tenant
  */
 export interface UpdateTenantRequest {
-	/**
-	 * New name for the tenant
-	 * @minLength 1
-	 */
-	name: string;
+  /**
+   * New name for the tenant
+   * @minLength 1
+   */
+  name: string;
 }
 
 export interface UpdateUserRequest {
-	/** First name of the user */
-	firstName: string;
-	/** last name of the user */
-	lastName: string;
-	/** User roles */
-	roles: UserRole[];
+  /** First name of the user */
+  firstName: string;
+  /** last name of the user */
+  lastName: string;
+  /** User roles */
+  roles: UserRole[];
 }
 
 export interface UpdateUserSimpleRequest {
-	/** First name of the user */
-	firstName: string;
-	/** last name of the user */
-	lastName: string;
+  /** First name of the user */
+  firstName: string;
+  /** last name of the user */
+  lastName: string;
 }
 
 /**
  * Event that is raised when a user is assigned to a tenant
  */
 export interface UserAssignedToTenant {
-	/** Id of the new tenant */
-	newTenantId: string;
-	/** Id of the old tenant */
-	oldTenantId: string;
-	/** New tenant name */
-	tenantName: string;
-	/** Id of the user */
-	userId: string;
-	/** First name of the user */
-	userFirstName: string;
-	/** Last name of the user */
-	userLastName: string;
+  /** Id of the new tenant */
+  newTenantId: string;
+  /** Id of the old tenant */
+  oldTenantId: string;
+  /** New tenant name */
+  tenantName: string;
+  /** Id of the user */
+  userId: string;
+  /** First name of the user */
+  userFirstName: string;
+  /** Last name of the user */
+  userLastName: string;
 }
 
 export interface UserDeleted {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	roles: UserRole[];
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roles: UserRole[];
 }
 
 /**
  * Represents an event triggered when a user has been disabled within the system.
  */
 export interface UserDisabled {
-	/** Id of the user */
-	id: string;
-	/** Email address of the user */
-	email: string;
-	/** First name of the user */
-	firstName: string;
-	/** Last name of the user */
-	lastName: string;
+  /** Id of the user */
+  id: string;
+  /** Email address of the user */
+  email: string;
+  /** First name of the user */
+  firstName: string;
+  /** Last name of the user */
+  lastName: string;
 }
 
 /**
  * Represents an event that is triggered when a user is invited.
  */
 export interface UserInvited {
-	/** Id of the invited user */
-	id: string;
-	/** Email of the invited user */
-	email: string;
-	/** First name of the invited user */
-	firstName: string;
-	/** Last name of the invited user */
-	lastName: string;
-	/** Roles of the invited user */
-	roles: UserRole[];
+  /** Id of the invited user */
+  id: string;
+  /** Email of the invited user */
+  email: string;
+  /** First name of the invited user */
+  firstName: string;
+  /** Last name of the invited user */
+  lastName: string;
+  /** Roles of the invited user */
+  roles: UserRole[];
 }
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserRole = {
-	User: 'User',
-	Admin: 'Admin',
-	MasterAdmin: 'MasterAdmin'
+  User: 'User',
+  Admin: 'Admin',
+  MasterAdmin: 'MasterAdmin'
 } as const;
 
 export interface UserUpdated {
-	id: string;
-	email: string;
-	firstName: string;
-	lastName: string;
-	roles: UserRole[];
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roles: UserRole[];
 }
 
 export type GetConnectAuthorizeParams = {
-	/**
-	 * Indicates whether the user should be prompted with account chooser
-	 */
-	chooseAccount?: boolean;
+  /**
+   * Indicates whether the user should be prompted with account chooser
+   */
+  chooseAccount?: boolean;
 };
 
 export type PostConnectAuthorizeBody = {
-	newSignIn?: boolean;
+  newSignIn?: boolean;
 };
 
 export type PostConnectEndsessionParams = {
-	'AccessToken'?: string;
-	'AcrValues'?: string;
-	'Assertion'?: string;
-	'Audiences'?: string[];
-	'Claims.ValueKind'?: JsonValueKind;
-	'ClaimsLocales'?: string;
-	'ClientAssertion'?: string;
-	'ClientAssertionType'?: string;
-	'ClientId'?: string;
-	'ClientSecret'?: string;
-	'Code'?: string;
-	'CodeChallenge'?: string;
-	'CodeChallengeMethod'?: string;
-	'CodeVerifier'?: string;
-	'DeviceCode'?: string;
-	'Display'?: string;
-	'GrantType'?: string;
-	'IdentityProvider'?: string;
-	'IdToken'?: string;
-	'IdTokenHint'?: string;
-	'LoginHint'?: string;
-	'MaxAge'?: number;
-	'Nonce'?: string;
-	'Password'?: string;
-	'PostLogoutRedirectUri'?: string;
-	'Prompt'?: string;
-	'RedirectUri'?: string;
-	'RefreshToken'?: string;
-	'Request'?: string;
-	'RequestId'?: string;
-	'RequestUri'?: string;
-	'Resources'?: string[];
-	'ResponseMode'?: string;
-	'ResponseType'?: string;
-	'Scope'?: string;
-	'State'?: string;
-	'Token'?: string;
-	'TokenTypeHint'?: string;
-	'Registration.ValueKind'?: JsonValueKind;
-	'UiLocales'?: string;
-	'UserCode'?: string;
-	'Username'?: string;
-	'Count'?: number;
-	/**
-	 * Indicates if the user should be sign out also from the CleanIAM.
-	 */
-	'FullLogout': boolean;
-	/**
-	 * Parameters to be passed to the end session endpoint.
-	 */
-	'Parameters'?: StringStringValuesKeyValuePair[];
+  'AccessToken'?: string;
+  'AcrValues'?: string;
+  'Assertion'?: string;
+  'Audiences'?: string[];
+  'Claims.ValueKind'?: JsonValueKind;
+  'ClaimsLocales'?: string;
+  'ClientAssertion'?: string;
+  'ClientAssertionType'?: string;
+  'ClientId'?: string;
+  'ClientSecret'?: string;
+  'Code'?: string;
+  'CodeChallenge'?: string;
+  'CodeChallengeMethod'?: string;
+  'CodeVerifier'?: string;
+  'DeviceCode'?: string;
+  'Display'?: string;
+  'GrantType'?: string;
+  'IdentityProvider'?: string;
+  'IdToken'?: string;
+  'IdTokenHint'?: string;
+  'LoginHint'?: string;
+  'MaxAge'?: number;
+  'Nonce'?: string;
+  'Password'?: string;
+  'PostLogoutRedirectUri'?: string;
+  'Prompt'?: string;
+  'RedirectUri'?: string;
+  'RefreshToken'?: string;
+  'Request'?: string;
+  'RequestId'?: string;
+  'RequestUri'?: string;
+  'Resources'?: string[];
+  'ResponseMode'?: string;
+  'ResponseType'?: string;
+  'Scope'?: string;
+  'State'?: string;
+  'Token'?: string;
+  'TokenTypeHint'?: string;
+  'Registration.ValueKind'?: JsonValueKind;
+  'UiLocales'?: string;
+  'UserCode'?: string;
+  'Username'?: string;
+  'Count'?: number;
+  /**
+   * Indicates if the user should be sign out also from the CleanIAM.
+   */
+  'FullLogout': boolean;
+  /**
+   * Parameters to be passed to the end session endpoint.
+   */
+  'Parameters'?: StringStringValuesKeyValuePair[];
 };
 
 export type PostEmailVerificationBody = {
-	RequestId?: string;
+  RequestId?: string;
 };
 
 export type GetErrorParams = {
-	error?: string;
-	errorDescription?: string;
+  error?: string;
+  errorDescription?: string;
 };
 
 export type GetExternalProvidersRequestProviderParams = {
-	request?: string;
+  request?: string;
 };
 
 export type PostInvitationsRequestIdBody = {
-	RequestId: string;
-	NewPassword: string;
-	ConfirmPassword: string;
+  RequestId: string;
+  NewPassword: string;
+  ConfirmPassword: string;
 };
 
 export type PostMfaTotpBody = {
-	/**
-	 * The totp code from the Users authenticator app.
-	 * @minLength 6
-	 * @maxLength 6
-	 */
-	Totp: string;
+  /**
+   * The totp code from the Users authenticator app.
+   * @minLength 6
+   * @maxLength 6
+   */
+  Totp: string;
 };
 
 export type PostPasswordResetBody = {
-	Email: string;
+  Email: string;
 };
 
 export type PostPasswordResetRequestIdBody = {
-	RequestId: string;
-	NewPassword: string;
-	ConfirmPassword: string;
+  RequestId: string;
+  NewPassword: string;
+  ConfirmPassword: string;
 };
 
 export type GetSigninParams = {
-	request?: string;
-	error?: string;
+  request?: string;
+  error?: string;
 };
 
 export type PostSigninParams = {
-	request?: string;
+  request?: string;
 };
 
 export type PostSigninBody = {
-	Email: string;
-	/** @maxLength 128 */
-	Password: string;
+  Email: string;
+  /** @maxLength 128 */
+  Password: string;
 };
 
 export type PostSignupBody = {
-	Email: string;
-	/** @minLength 3 */
-	FirstName: string;
-	/** @minLength 3 */
-	LastName: string;
-	Password: string;
+  Email: string;
+  /** @minLength 3 */
+  FirstName: string;
+  /** @minLength 3 */
+  LastName: string;
+  Password: string;
 };
 
 export type PostApiUsersInvitedParams = {
-	/**
-	 * custom tenant id if superAdmin wants to invite user to different organization
-	 */
-	tenant?: string;
+  /**
+   * custom tenant id if superAdmin wants to invite user to different organization
+   */
+  tenant?: string;
 };
 
 export type PostApiUsersIdInvitationEmailParams = {
-	/**
-	 * custom tenant id if superAdmin wants to invite user to different organization
-	 */
-	tenant?: string;
+  /**
+   * custom tenant id if superAdmin wants to invite user to different organization
+   */
+  tenant?: string;
 };

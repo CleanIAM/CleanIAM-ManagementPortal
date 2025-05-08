@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
 } from '@/components/ui/dialog';
 import { ApiUserModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { UserForm } from './UserForm';
@@ -15,122 +15,122 @@ import { TextWithCopy } from '@/components/public/TextWithCopy';
 import { Badge } from '@/components/public/Badge';
 
 interface UserInfoDialogProps {
-	user: ApiUserModel | null;
-	isOpen: boolean;
-	onOpenChange: (open: boolean) => void;
+  user: ApiUserModel | null;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, onOpenChange }) => {
-	const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-	// Handle edit success
-	const handleEditSuccess = () => {
-		setIsEditing(false);
-		onOpenChange(false);
-	};
-	const handleOpenChange = (open: boolean) => {
-		setIsEditing(false);
-		// Use setTimeout to prevent event propagation issues
-		if (!open) {
-			setTimeout(() => {
-				onOpenChange(open);
-			}, 10);
-		} else {
-			onOpenChange(open);
-		}
-	};
+  // Handle edit success
+  const handleEditSuccess = () => {
+    setIsEditing(false);
+    onOpenChange(false);
+  };
+  const handleOpenChange = (open: boolean) => {
+    setIsEditing(false);
+    // Use setTimeout to prevent event propagation issues
+    if (!open) {
+      setTimeout(() => {
+        onOpenChange(open);
+      }, 10);
+    } else {
+      onOpenChange(open);
+    }
+  };
 
-	if (!user) {
-		return null;
-	}
+  if (!user) {
+    return null;
+  }
 
-	return (
-		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
-			<DialogContent className="max-w-2xl">
-				<DialogHeader>
-					<DialogTitle>{isEditing ? 'Edit User' : 'User Details'}</DialogTitle>
-					<DialogDescription>
-						{isEditing ? 'Edit user information' : 'View user information'}
-					</DialogDescription>
-				</DialogHeader>
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{isEditing ? 'Edit User' : 'User Details'}</DialogTitle>
+          <DialogDescription>
+            {isEditing ? 'Edit user information' : 'View user information'}
+          </DialogDescription>
+        </DialogHeader>
 
-				<div className="pb-4">
-					{isEditing ? (
-						<UserForm
-							user={user}
-							onSuccess={handleEditSuccess}
-							onCancel={() => setIsEditing(false)}
-							disableEmail={true}
-						/>
-					) : (
-						<div className="space-y-6">
-							<div>
-								<p className="text-sm font-medium text-gray-500">User Id</p>
-								<TextWithCopy value={user.id} className="text-md justify-start gap-2 font-mono" />
-							</div>
-							<div>
-								<h3 className="mb-2 text-sm font-medium text-gray-500">Personal Information</h3>
-								<div className="grid gap-4 md:grid-cols-2">
-									<div>
-										<p className="text-sm font-medium text-gray-500">Full Name</p>
-										<p className="text-lg font-medium">
-											{user.firstName} {user.lastName}
-										</p>
-									</div>
-									<div>
-										<p className="text-sm font-medium text-gray-500">Email</p>
-										<p className="text-lg">{user.email}</p>
-									</div>
-								</div>
-							</div>
+        <div className="pb-4">
+          {isEditing ? (
+            <UserForm
+              user={user}
+              onSuccess={handleEditSuccess}
+              onCancel={() => setIsEditing(false)}
+              disableEmail={true}
+            />
+          ) : (
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm font-medium text-gray-500">User Id</p>
+                <TextWithCopy value={user.id} className="text-md justify-start gap-2 font-mono" />
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-gray-500">Personal Information</h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Full Name</p>
+                    <p className="text-lg font-medium">
+                      {user.firstName} {user.lastName}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Email</p>
+                    <p className="text-lg">{user.email}</p>
+                  </div>
+                </div>
+              </div>
 
-							<div>
-								<h3 className="mb-2 text-sm font-medium text-gray-500">Account Information</h3>
-								<div className="grid gap-4 md:grid-cols-2">
-									<div>
-										<p className="text-sm font-medium text-gray-500">Roles</p>
-										<div className="mt-1">
-											<UserRoleBadges roles={user.roles} />
-										</div>
-									</div>
-									<div>
-										<p className="text-sm font-medium text-gray-500">Status</p>
-										<div className="mt-1">
-											<UserStatus user={user} />
-										</div>
-									</div>
-									<div>
-										<p className="text-sm font-medium text-gray-500">Email Verified</p>
-										<p className="mt-1 font-medium">
-											{user.emailVerified ? (
-												<Badge className="bg-green-100 text-green-800" value="Yes" />
-											) : (
-												<Badge className="bg-red-100 text-red-800" value="No" />
-											)}
-										</p>
-									</div>
-									<div>
-										<p className="text-sm font-medium text-gray-500">MFA Enabled</p>
-										<p className="mt-1 font-medium">
-											{user.isMFAEnabled ? (
-												<Badge className="bg-green-100 text-green-800" value="Yes" />
-											) : (
-												<Badge className="bg-gray-100 text-gray-800" value="No" />
-											)}
-										</p>
-									</div>
-								</div>
-							</div>
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-gray-500">Account Information</h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Roles</p>
+                    <div className="mt-1">
+                      <UserRoleBadges roles={user.roles} />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Status</p>
+                    <div className="mt-1">
+                      <UserStatus user={user} />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Email Verified</p>
+                    <p className="mt-1 font-medium">
+                      {user.emailVerified ? (
+                        <Badge className="bg-green-100 text-green-800" value="Yes" />
+                      ) : (
+                        <Badge className="bg-red-100 text-red-800" value="No" />
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">MFA Enabled</p>
+                    <p className="mt-1 font-medium">
+                      {user.isMFAEnabled ? (
+                        <Badge className="bg-green-100 text-green-800" value="Yes" />
+                      ) : (
+                        <Badge className="bg-gray-100 text-gray-800" value="No" />
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-							<div className="flex justify-end">
-								<FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
-									Edit User
-								</FormButton>
-							</div>
-						</div>
-					)}
-				</div>
-			</DialogContent>
-		</Dialog>
-	);
+              <div className="flex justify-end">
+                <FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
+                  Edit User
+                </FormButton>
+              </div>
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 };

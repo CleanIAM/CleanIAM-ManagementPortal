@@ -11,11 +11,7 @@ import { TenantForm } from './TenantForm';
 import { FormButton } from '@/components/form';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
 import { Badge } from '@/components/public/Badge';
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger 
-} from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { InfoIcon } from 'lucide-react';
 
 // Pattern for empty GUID (all zeros)
@@ -27,10 +23,10 @@ interface TenantInfoDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({ 
-  tenant, 
-  isOpen, 
-  onOpenChange 
+export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
+  tenant,
+  isOpen,
+  onOpenChange
 }) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -84,7 +80,7 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
                 <p className="text-sm font-medium text-gray-500">Tenant ID</p>
                 <TextWithCopy value={tenant.id} className="text-md justify-start gap-2 font-mono" />
               </div>
-              
+
               <div>
                 <h3 className="mb-2 text-sm font-medium text-gray-500">Tenant Information</h3>
                 <div className="grid gap-4 md:grid-cols-2">
@@ -112,11 +108,7 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
 
               <div className="flex justify-end">
                 {!isDefaultTenant(tenant) && (
-                  <FormButton 
-                    variant="primary" 
-                    onClick={() => setIsEditing(true)} 
-                    className="ml-2"
-                  >
+                  <FormButton variant="primary" onClick={() => setIsEditing(true)} className="ml-2">
                     Edit Tenant
                   </FormButton>
                 )}
@@ -124,8 +116,8 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span>
-                        <FormButton 
-                          variant="primary" 
+                        <FormButton
+                          variant="primary"
                           disabled={true}
                           className="ml-2 cursor-not-allowed opacity-50"
                         >

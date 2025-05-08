@@ -27,7 +27,7 @@ export const DeleteUserConfirmDialog: React.FC<DeleteUserConfirmDialogProps> = (
   userName
 }) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <AlertDialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete User</AlertDialogTitle>
@@ -37,8 +37,8 @@ export const DeleteUserConfirmDialog: React.FC<DeleteUserConfirmDialogProps> = (
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={(e) => {
+          <AlertDialogAction
+            onClick={e => {
               e.preventDefault();
               onConfirm();
             }}

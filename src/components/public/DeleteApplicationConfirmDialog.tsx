@@ -27,18 +27,19 @@ export const DeleteApplicationConfirmDialog: React.FC<DeleteApplicationConfirmDi
   applicationName
 }) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <AlertDialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Application</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete "{applicationName}"? This action cannot be undone and may affect any services using this application.
+            Are you sure you want to delete "{applicationName}"? This action cannot be undone and
+            may affect any services using this application.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={(e) => {
+          <AlertDialogAction
+            onClick={e => {
               e.preventDefault();
               onConfirm();
             }}

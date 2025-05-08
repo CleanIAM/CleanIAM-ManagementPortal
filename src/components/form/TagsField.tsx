@@ -18,7 +18,7 @@ export const TagsField = <T extends FieldValues>({
   watch,
   error,
   placeholder,
-  className = '',
+  className = ''
 }: TagsFieldProps<T>) => {
   const [inputValue, setInputValue] = useState('');
   const tags = watch(name) as string[];
@@ -31,7 +31,7 @@ export const TagsField = <T extends FieldValues>({
   };
 
   const removeTag = (tag: string) => {
-    setValue(name, tags.filter((t) => t !== tag) as any);
+    setValue(name, tags.filter(t => t !== tag) as any);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -48,7 +48,7 @@ export const TagsField = <T extends FieldValues>({
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={e => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           className={`block w-full flex-1 rounded-none rounded-l-md border ${
@@ -67,7 +67,10 @@ export const TagsField = <T extends FieldValues>({
 
       <div className="mt-2 flex flex-wrap gap-2">
         {tags.map((tag, index) => (
-          <div key={index} className="flex items-center rounded bg-blue-100 px-3 py-1 text-sm text-blue-800">
+          <div
+            key={index}
+            className="flex items-center rounded bg-blue-100 px-3 py-1 text-sm text-blue-800"
+          >
             {tag}
             <button
               type="button"

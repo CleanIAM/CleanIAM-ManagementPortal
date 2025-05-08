@@ -13,35 +13,35 @@ import { AuthGuard } from './components/layout/AuthGuard';
 import { RootLayout } from './components/layout/RootLayout';
 
 export const router = createBrowserRouter([
-	// Public routes
-	{
-		path: '/',
-		element: <LandingPage />,
-		errorElement: <NotFoundPage />
-	},
+  // Public routes
+  {
+    path: '/',
+    element: <LandingPage />,
+    errorElement: <NotFoundPage />
+  },
 
-	// Auth routes
-	{ path: '/auth/signin-callback', element: <SigninCallback /> },
+  // Auth routes
+  { path: '/auth/signin-callback', element: <SigninCallback /> },
 
-	// Protected dashboard routes
-	{
-		element: <AuthGuard />,
-		children: [
-			{
-				element: <RootLayout />,
-				children: [
-					{ path: '/home', element: <HomePage /> },
-					{ path: '/applications', element: <ApplicationsPage /> },
-					{ path: '/users', element: <UsersPage /> },
-					{ path: '/tenants', element: <TenantsPage /> },
-					{ path: '/scopes', element: <ScopesPage /> },
-					{ path: '/profile', element: <ProfilePage /> }
-				]
-			}
-		]
-	},
+  // Protected dashboard routes
+  {
+    element: <AuthGuard />,
+    children: [
+      {
+        element: <RootLayout />,
+        children: [
+          { path: '/home', element: <HomePage /> },
+          { path: '/applications', element: <ApplicationsPage /> },
+          { path: '/users', element: <UsersPage /> },
+          { path: '/tenants', element: <TenantsPage /> },
+          { path: '/scopes', element: <ScopesPage /> },
+          { path: '/profile', element: <ProfilePage /> }
+        ]
+      }
+    ]
+  },
 
-	// Fallback and redirects
-	{ path: '*', element: <NotFoundPage /> },
-	{ path: '/app', loader: () => redirect('/applications') }
+  // Fallback and redirects
+  { path: '*', element: <NotFoundPage /> },
+  { path: '/app', loader: () => redirect('/applications') }
 ]);

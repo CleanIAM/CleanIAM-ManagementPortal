@@ -4,14 +4,14 @@ import { Features } from '@/components/public/Features';
 import { Footer } from '@/components/public/Footer';
 
 export const LandingPage = () => {
-	return (
-		<div className="flex min-h-screen flex-col">
-			<LandingNavbar />
-			<main className="flex-grow">
-				<Hero />
-				<Features />
-			</main>
-			<Footer />
-		</div>
-	);
+  return (
+    <div className="flex min-h-screen flex-col">
+      <LandingNavbar />
+      <main className="flex-grow">
+        <Hero />
+        <Features />
+      </main>
+      <Footer />
+    </div>
+  );
 };

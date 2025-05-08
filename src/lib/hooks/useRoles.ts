@@ -5,8 +5,8 @@ import { useAuth } from 'react-oidc-context';
  * @returns {string[]} An array of roles assigned to the user.
  */
 export const useRoles = (): string[] => {
-	const auth = useAuth();
-	const user = auth.user;
+  const auth = useAuth();
+  const user = auth.user;
 
-	return (user?.profile?.role || user?.profile?.roles || []) as string[];
+  return (user?.profile?.role || user?.profile?.roles || []) as string[];
 };

@@ -1,5 +1,12 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/public/Loader';
 
@@ -19,24 +26,21 @@ export const ResetMfaConfirmDialog: React.FC<ResetMfaConfirmDialogProps> = ({
   userName
 }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Reset MFA for {userName}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to reset and disable MFA for this user? They will need to reconfigure MFA on their next login if they want to use it.
+            Are you sure you want to reset and disable MFA for this user? They will need to
+            reconfigure MFA on their next login if they want to use it.
           </DialogDescription>
         </DialogHeader>
-        
-        <DialogFooter className="sm:justify-between mt-6">
+
+        <DialogFooter className="mt-6 sm:justify-between">
           <Button type="button" variant="outline" onClick={onClose} disabled={isResetting}>
             Cancel
           </Button>
-          <Button 
-            onClick={onConfirm} 
-            variant="destructive" 
-            disabled={isResetting}
-          >
+          <Button onClick={onConfirm} variant="destructive" disabled={isResetting}>
             {isResetting ? <Loader className="mr-2 h-4 w-4" /> : null}
             Reset MFA
           </Button>

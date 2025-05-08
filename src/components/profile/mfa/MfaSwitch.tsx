@@ -35,8 +35,8 @@ export const MfaSwitch: React.FC<MfaSwitchProps> = ({
         )}
       />
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="bg-white/80 dark:bg-black/50 rounded-full h-4 w-4 flex items-center justify-center">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-white/80 dark:bg-black/50">
             <Loader className="h-3 w-3" />
           </div>
         </div>
@@ -51,9 +51,7 @@ export const MfaSwitch: React.FC<MfaSwitchProps> = ({
         <TooltipTrigger asChild>
           <span>{switchElement}</span>
         </TooltipTrigger>
-        <TooltipContent side="bottom">
-          {tooltip}
-        </TooltipContent>
+        <TooltipContent side="bottom">{tooltip}</TooltipContent>
       </Tooltip>
     );
   }

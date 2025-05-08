@@ -6,14 +6,14 @@ import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
-	plugins: [react(), tailwindcss(), mkcert()],
-	server: {
-		port: 3001,
-		proxy: {}
-	},
-	resolve: {
-		alias: {
-			'@': path.resolve(__dirname, './src')
-		}
-	}
+  plugins: [react(), tailwindcss(), mkcert()],
+  server: {
+    port: 3001,
+    proxy: {}
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  }
 });

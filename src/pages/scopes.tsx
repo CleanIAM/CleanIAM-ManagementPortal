@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useGetApiScopes, useGetApiScopesDefault } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
+import {
+  useGetApiScopes,
+  useGetApiScopesDefault
+} from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
 import { FormButton } from '@/components/form';
 import {
   Dialog,
@@ -20,7 +23,8 @@ export const ScopesPage = () => {
   const { data: scopesResponse, isLoading, isError, error, refetch } = useGetApiScopes();
 
   // Fetch default scopes data
-  const { data: defaultScopesResponse, isLoading: isDefaultScopesLoading } = useGetApiScopesDefault();
+  const { data: defaultScopesResponse, isLoading: isDefaultScopesLoading } =
+    useGetApiScopesDefault();
 
   // Get default scope names
   const defaultScopeNames = useMemo(() => {
@@ -35,7 +39,7 @@ export const ScopesPage = () => {
     if (isLoading || isError || !scopesResponse?.data) {
       return [];
     }
-    
+
     // Add isDefault flag to each scope
     return scopesResponse.data.map(scope => ({
       ...scope,

@@ -27,18 +27,19 @@ export const DeleteScopeConfirmDialog: React.FC<DeleteScopeConfirmDialogProps> =
   scopeName
 }) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <AlertDialog open={isOpen} onOpenChange={open => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Scope</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete the scope "{scopeName}"? This action cannot be undone and may affect applications using this scope.
+            Are you sure you want to delete the scope "{scopeName}"? This action cannot be undone
+            and may affect applications using this scope.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={(e) => {
+          <AlertDialogAction
+            onClick={e => {
               e.preventDefault();
               onConfirm();
             }}

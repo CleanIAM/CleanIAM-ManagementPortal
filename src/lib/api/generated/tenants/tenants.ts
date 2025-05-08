@@ -7,28 +7,28 @@
  */
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-	DataTag,
-	DefinedInitialDataOptions,
-	DefinedUseQueryResult,
-	MutationFunction,
-	QueryClient,
-	QueryFunction,
-	QueryKey,
-	UndefinedInitialDataOptions,
-	UseMutationOptions,
-	UseMutationResult,
-	UseQueryOptions,
-	UseQueryResult
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-	ApiTenantModel,
-	CreateNewTenantRequest,
-	Error,
-	NewTenantCreated,
-	TenantUpdated,
-	UpdateTenantRequest,
-	UserAssignedToTenant
+  ApiTenantModel,
+  CreateNewTenantRequest,
+  Error,
+  NewTenantCreated,
+  TenantUpdated,
+  UpdateTenantRequest,
+  UserAssignedToTenant
 } from '../cleanIAM.schemas';
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
@@ -37,137 +37,137 @@ import { customAxiosRequest } from '../../mutator/axios/custom-axios';
  * @summary Get all tenants in the system
  */
 export const getApiTenants = (signal?: AbortSignal) => {
-	return customAxiosRequest<ApiTenantModel[]>({ url: `/api/tenants`, method: 'GET', signal });
+  return customAxiosRequest<ApiTenantModel[]>({ url: `/api/tenants`, method: 'GET', signal });
 };
 
 export const getGetApiTenantsQueryKey = () => {
-	return [`/api/tenants`] as const;
+  return [`/api/tenants`] as const;
 };
 
 export const getGetApiTenantsQueryOptions = <
-	TData = Awaited<ReturnType<typeof getApiTenants>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenants>>,
+  TError = Error
 >(options?: {
-	query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
 }) => {
-	const { query: queryOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetApiTenantsQueryKey();
+  const queryKey = queryOptions?.queryKey ?? getGetApiTenantsQueryKey();
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenants>>> = ({ signal }) =>
-		getApiTenants(signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenants>>> = ({ signal }) =>
+    getApiTenants(signal);
 
-	return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getApiTenants>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiTenants>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiTenantsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiTenants>>>;
 export type GetApiTenantsQueryError = Error;
 
 export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = Error>(
-	options: {
-		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiTenants>>,
-					TError,
-					Awaited<ReturnType<typeof getApiTenants>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = Error>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiTenants>>,
-					TError,
-					Awaited<ReturnType<typeof getApiTenants>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenants>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenants>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = Error>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get all tenants in the system
  */
 
 export function useGetApiTenants<TData = Awaited<ReturnType<typeof getApiTenants>>, TError = Error>(
-	options?: {
-		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiTenants>>, TError, TData>>;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetApiTenantsQueryOptions(options);
+  const queryOptions = getGetApiTenantsQueryOptions(options);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-	query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey;
 
-	return query;
+  return query;
 }
 
 /**
  * @summary Create a new tenant
  */
 export const postApiTenants = (
-	createNewTenantRequest: CreateNewTenantRequest,
-	signal?: AbortSignal
+  createNewTenantRequest: CreateNewTenantRequest,
+  signal?: AbortSignal
 ) => {
-	return customAxiosRequest<NewTenantCreated>({
-		url: `/api/tenants`,
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		data: createNewTenantRequest,
-		signal
-	});
+  return customAxiosRequest<NewTenantCreated>({
+    url: `/api/tenants`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: createNewTenantRequest,
+    signal
+  });
 };
 
 export const getPostApiTenantsMutationOptions = <TError = Error, TContext = unknown>(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof postApiTenants>>,
-		TError,
-		{ data: CreateNewTenantRequest },
-		TContext
-	>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiTenants>>,
+    TError,
+    { data: CreateNewTenantRequest },
+    TContext
+  >;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof postApiTenants>>,
-	TError,
-	{ data: CreateNewTenantRequest },
-	TContext
+  Awaited<ReturnType<typeof postApiTenants>>,
+  TError,
+  { data: CreateNewTenantRequest },
+  TContext
 > => {
-	const mutationKey = ['postApiTenants'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
+  const mutationKey = ['postApiTenants'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof postApiTenants>>,
-		{ data: CreateNewTenantRequest }
-	> = props => {
-		const { data } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiTenants>>,
+    { data: CreateNewTenantRequest }
+  > = props => {
+    const { data } = props ?? {};
 
-		return postApiTenants(data);
-	};
+    return postApiTenants(data);
+  };
 
-	return { mutationFn, ...mutationOptions };
+  return { mutationFn, ...mutationOptions };
 };
 
 export type PostApiTenantsMutationResult = NonNullable<Awaited<ReturnType<typeof postApiTenants>>>;
@@ -178,201 +178,201 @@ export type PostApiTenantsMutationError = Error;
  * @summary Create a new tenant
  */
 export const usePostApiTenants = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof postApiTenants>>,
-			TError,
-			{ data: CreateNewTenantRequest },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiTenants>>,
+      TError,
+      { data: CreateNewTenantRequest },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof postApiTenants>>,
-	TError,
-	{ data: CreateNewTenantRequest },
-	TContext
+  Awaited<ReturnType<typeof postApiTenants>>,
+  TError,
+  { data: CreateNewTenantRequest },
+  TContext
 > => {
-	const mutationOptions = getPostApiTenantsMutationOptions(options);
+  const mutationOptions = getPostApiTenantsMutationOptions(options);
 
-	return useMutation(mutationOptions, queryClient);
+  return useMutation(mutationOptions, queryClient);
 };
 /**
  * @summary Get a tenant by Id
  */
 export const getApiTenantsTenantId = (tenantId: string, signal?: AbortSignal) => {
-	return customAxiosRequest<ApiTenantModel>({
-		url: `/api/tenants/${tenantId}`,
-		method: 'GET',
-		signal
-	});
+  return customAxiosRequest<ApiTenantModel>({
+    url: `/api/tenants/${tenantId}`,
+    method: 'GET',
+    signal
+  });
 };
 
 export const getGetApiTenantsTenantIdQueryKey = (tenantId: string) => {
-	return [`/api/tenants/${tenantId}`] as const;
+  return [`/api/tenants/${tenantId}`] as const;
 };
 
 export const getGetApiTenantsTenantIdQueryOptions = <
-	TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+  TError = Error
 >(
-	tenantId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
-		>;
-	}
+  tenantId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
+    >;
+  }
 ) => {
-	const { query: queryOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getGetApiTenantsTenantIdQueryKey(tenantId);
+  const queryKey = queryOptions?.queryKey ?? getGetApiTenantsTenantIdQueryKey(tenantId);
 
-	const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenantsTenantId>>> = ({ signal }) =>
-		getApiTenantsTenantId(tenantId, signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiTenantsTenantId>>> = ({ signal }) =>
+    getApiTenantsTenantId(tenantId, signal);
 
-	return { queryKey, queryFn, enabled: !!tenantId, ...queryOptions } as UseQueryOptions<
-		Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-		TError,
-		TData
-	> & { queryKey: DataTag<QueryKey, TData, TError> };
+  return { queryKey, queryFn, enabled: !!tenantId, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
 export type GetApiTenantsTenantIdQueryResult = NonNullable<
-	Awaited<ReturnType<typeof getApiTenantsTenantId>>
+  Awaited<ReturnType<typeof getApiTenantsTenantId>>
 >;
 export type GetApiTenantsTenantIdQueryError = Error;
 
 export function useGetApiTenantsTenantId<
-	TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+  TError = Error
 >(
-	tenantId: string,
-	options: {
-		query: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
-		> &
-			Pick<
-				DefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-					TError,
-					Awaited<ReturnType<typeof getApiTenantsTenantId>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  tenantId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenantsTenantId>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiTenantsTenantId<
-	TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+  TError = Error
 >(
-	tenantId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
-		> &
-			Pick<
-				UndefinedInitialDataOptions<
-					Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-					TError,
-					Awaited<ReturnType<typeof getApiTenantsTenantId>>
-				>,
-				'initialData'
-			>;
-	},
-	queryClient?: QueryClient
+  tenantId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+          TError,
+          Awaited<ReturnType<typeof getApiTenantsTenantId>>
+        >,
+        'initialData'
+      >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 export function useGetApiTenantsTenantId<
-	TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+  TError = Error
 >(
-	tenantId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  tenantId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get a tenant by Id
  */
 
 export function useGetApiTenantsTenantId<
-	TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
-	TError = Error
+  TData = Awaited<ReturnType<typeof getApiTenantsTenantId>>,
+  TError = Error
 >(
-	tenantId: string,
-	options?: {
-		query?: Partial<
-			UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
-		>;
-	},
-	queryClient?: QueryClient
+  tenantId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getApiTenantsTenantId>>, TError, TData>
+    >;
+  },
+  queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getGetApiTenantsTenantIdQueryOptions(tenantId, options);
+  const queryOptions = getGetApiTenantsTenantIdQueryOptions(tenantId, options);
 
-	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-		queryKey: DataTag<QueryKey, TData, TError>;
-	};
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
-	query.queryKey = queryOptions.queryKey;
+  query.queryKey = queryOptions.queryKey;
 
-	return query;
+  return query;
 }
 
 /**
  * @summary Update an existing tenant
  */
 export const putApiTenantsTenantId = (
-	tenantId: string,
-	updateTenantRequest: UpdateTenantRequest
+  tenantId: string,
+  updateTenantRequest: UpdateTenantRequest
 ) => {
-	return customAxiosRequest<TenantUpdated>({
-		url: `/api/tenants/${tenantId}`,
-		method: 'PUT',
-		headers: { 'Content-Type': 'application/json' },
-		data: updateTenantRequest
-	});
+  return customAxiosRequest<TenantUpdated>({
+    url: `/api/tenants/${tenantId}`,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    data: updateTenantRequest
+  });
 };
 
 export const getPutApiTenantsTenantIdMutationOptions = <
-	TError = Error,
-	TContext = unknown
+  TError = Error,
+  TContext = unknown
 >(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof putApiTenantsTenantId>>,
-		TError,
-		{ tenantId: string; data: UpdateTenantRequest },
-		TContext
-	>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putApiTenantsTenantId>>,
+    TError,
+    { tenantId: string; data: UpdateTenantRequest },
+    TContext
+  >;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof putApiTenantsTenantId>>,
-	TError,
-	{ tenantId: string; data: UpdateTenantRequest },
-	TContext
+  Awaited<ReturnType<typeof putApiTenantsTenantId>>,
+  TError,
+  { tenantId: string; data: UpdateTenantRequest },
+  TContext
 > => {
-	const mutationKey = ['putApiTenantsTenantId'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
+  const mutationKey = ['putApiTenantsTenantId'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof putApiTenantsTenantId>>,
-		{ tenantId: string; data: UpdateTenantRequest }
-	> = props => {
-		const { tenantId, data } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putApiTenantsTenantId>>,
+    { tenantId: string; data: UpdateTenantRequest }
+  > = props => {
+    const { tenantId, data } = props ?? {};
 
-		return putApiTenantsTenantId(tenantId, data);
-	};
+    return putApiTenantsTenantId(tenantId, data);
+  };
 
-	return { mutationFn, ...mutationOptions };
+  return { mutationFn, ...mutationOptions };
 };
 
 export type PutApiTenantsTenantIdMutationResult = NonNullable<
-	Awaited<ReturnType<typeof putApiTenantsTenantId>>
+  Awaited<ReturnType<typeof putApiTenantsTenantId>>
 >;
 export type PutApiTenantsTenantIdMutationBody = UpdateTenantRequest;
 export type PutApiTenantsTenantIdMutationError = Error;
@@ -381,72 +381,72 @@ export type PutApiTenantsTenantIdMutationError = Error;
  * @summary Update an existing tenant
  */
 export const usePutApiTenantsTenantId = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof putApiTenantsTenantId>>,
-			TError,
-			{ tenantId: string; data: UpdateTenantRequest },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putApiTenantsTenantId>>,
+      TError,
+      { tenantId: string; data: UpdateTenantRequest },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof putApiTenantsTenantId>>,
-	TError,
-	{ tenantId: string; data: UpdateTenantRequest },
-	TContext
+  Awaited<ReturnType<typeof putApiTenantsTenantId>>,
+  TError,
+  { tenantId: string; data: UpdateTenantRequest },
+  TContext
 > => {
-	const mutationOptions = getPutApiTenantsTenantIdMutationOptions(options);
+  const mutationOptions = getPutApiTenantsTenantIdMutationOptions(options);
 
-	return useMutation(mutationOptions, queryClient);
+  return useMutation(mutationOptions, queryClient);
 };
 /**
  * @summary Assign a user to a tenant
  */
 export const putApiTenantsTenantIdUsersUserId = (tenantId: string, userId: string) => {
-	return customAxiosRequest<UserAssignedToTenant>({
-		url: `/api/tenants/${tenantId}/users/${userId}`,
-		method: 'PUT'
-	});
+  return customAxiosRequest<UserAssignedToTenant>({
+    url: `/api/tenants/${tenantId}/users/${userId}`,
+    method: 'PUT'
+  });
 };
 
 export const getPutApiTenantsTenantIdUsersUserIdMutationOptions = <
-	TError = Error,
-	TContext = unknown
+  TError = Error,
+  TContext = unknown
 >(options?: {
-	mutation?: UseMutationOptions<
-		Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
-		TError,
-		{ tenantId: string; userId: string },
-		TContext
-	>;
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
+    TError,
+    { tenantId: string; userId: string },
+    TContext
+  >;
 }): UseMutationOptions<
-	Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
-	TError,
-	{ tenantId: string; userId: string },
-	TContext
+  Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
+  TError,
+  { tenantId: string; userId: string },
+  TContext
 > => {
-	const mutationKey = ['putApiTenantsTenantIdUsersUserId'];
-	const { mutation: mutationOptions } = options
-		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
-			? options
-			: { ...options, mutation: { ...options.mutation, mutationKey } }
-		: { mutation: { mutationKey } };
+  const mutationKey = ['putApiTenantsTenantIdUsersUserId'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-	const mutationFn: MutationFunction<
-		Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
-		{ tenantId: string; userId: string }
-	> = props => {
-		const { tenantId, userId } = props ?? {};
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
+    { tenantId: string; userId: string }
+  > = props => {
+    const { tenantId, userId } = props ?? {};
 
-		return putApiTenantsTenantIdUsersUserId(tenantId, userId);
-	};
+    return putApiTenantsTenantIdUsersUserId(tenantId, userId);
+  };
 
-	return { mutationFn, ...mutationOptions };
+  return { mutationFn, ...mutationOptions };
 };
 
 export type PutApiTenantsTenantIdUsersUserIdMutationResult = NonNullable<
-	Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>
+  Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>
 >;
 
 export type PutApiTenantsTenantIdUsersUserIdMutationError = Error;
@@ -455,22 +455,22 @@ export type PutApiTenantsTenantIdUsersUserIdMutationError = Error;
  * @summary Assign a user to a tenant
  */
 export const usePutApiTenantsTenantIdUsersUserId = <TError = Error, TContext = unknown>(
-	options?: {
-		mutation?: UseMutationOptions<
-			Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
-			TError,
-			{ tenantId: string; userId: string },
-			TContext
-		>;
-	},
-	queryClient?: QueryClient
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
+      TError,
+      { tenantId: string; userId: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient
 ): UseMutationResult<
-	Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
-	TError,
-	{ tenantId: string; userId: string },
-	TContext
+  Awaited<ReturnType<typeof putApiTenantsTenantIdUsersUserId>>,
+  TError,
+  { tenantId: string; userId: string },
+  TContext
 > => {
-	const mutationOptions = getPutApiTenantsTenantIdUsersUserIdMutationOptions(options);
+  const mutationOptions = getPutApiTenantsTenantIdUsersUserIdMutationOptions(options);
 
-	return useMutation(mutationOptions, queryClient);
+  return useMutation(mutationOptions, queryClient);
 };
