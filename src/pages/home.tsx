@@ -30,10 +30,10 @@ export const HomePage = () => {
               Manage user accounts, permissions, and authentication settings.
             </p>
             <Link
-              to="/profile"
+              to="/users"
               className="inline-block w-full rounded bg-purple-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-purple-700"
             >
-              View Profile
+              View Users
             </Link>
           </div>
         </div>

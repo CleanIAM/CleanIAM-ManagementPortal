@@ -5,7 +5,8 @@ import {
   usePostApiScopes,
   usePutApiScopesScopeName
 } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
-import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
+import { useGetApiApplications } from '@/lib/api/generated/applications-api/applications-api';
+import { Scope, ApiApplicationModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +16,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { MultiSelectField } from '@/components/form/MultiSelectField';
-import { mockApplications } from '@/lib/mock/applications';
 
 // Define Zod schema for form validation
 const ScopeFormSchema = z.object({
@@ -35,12 +35,26 @@ interface ScopeFormProps {
 }
 
 export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel }) => {
-  // Convert application objects to options for the MultiSelectField with ID included in label
-  const applicationOptions = mockApplications.map(app => ({
-    value: app.id,
-    label: `${app.name}`,
-    tooltip: `[${app.id}] ${app.description ? ` ${app.description}` : ''}`
-  }));
+  // Fetch applications
+  const {
+    data: applicationsResponse,
+    isLoading: isApplicationsLoading,
+    isError: isApplicationsError
+  } = useGetApiApplications();
+
+  // Process applications into options for MultiSelectField
+  const applicationOptions = React.useMemo(() => {
+    if (isApplicationsLoading || isApplicationsError || !applicationsResponse?.data) {
+      return [];
+    }
+
+    // Convert application objects to options for the MultiSelectField with ID included in label
+    return applicationsResponse.data.map((app: ApiApplicationModel) => ({
+      value: app.clientId,
+      label: app.displayName || app.clientId,
+      tooltip: `[${app.clientId}] No description available`
+    }));
+  }, [applicationsResponse?.data, isApplicationsLoading, isApplicationsError]);
 
   // Initialize form with react-hook-form and zod validation
   const {
@@ -181,14 +195,22 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
         <MultiSelectField
           name="resources"
           label="Applications"
-          options={applicationOptions}
+          options={
+            isApplicationsLoading
+              ? 'Loading applications...'
+              : isApplicationsError
+                ? 'Error loading applications'
+                : applicationOptions.length === 0
+                  ? 'No applications found'
+                  : applicationOptions
+          }
           setValue={setValue}
           watch={watch}
           error={errors.resources}
-          isLoading={false}
+          isLoading={isApplicationsLoading}
           className="mb-4"
         />
-        <div className="text-xs text-gray-500">Select applications that this scope applies to</div>
+        <div className="text-xs text-gray-500">Select applications that this scope applies to.</div>
       </div>
 
       <div className="flex justify-end space-x-2 pt-4">

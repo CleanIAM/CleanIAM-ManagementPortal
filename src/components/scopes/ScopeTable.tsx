@@ -3,8 +3,6 @@ import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info } from 'lucide-react';
 import { mockApplications } from '@/lib/mock/applications';
 
 // Extend the Scope type to include isDefault flag
@@ -49,44 +47,30 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   // Format resources for display with overflow handling
   const formatResources = (resources: string[]) => {
     if (resources.length === 0) {
-      return <span className="text-gray-400 italic">No applications</span>;
+      return <span className="italic text-gray-400">No resources</span>;
     }
 
     // Get application names
     const appNames = resources.map(getApplicationName);
-    
+
     // Show first 2 applications and indicate if there are more
     const visibleApps = appNames.slice(0, 2);
     const hasMore = appNames.length > 2;
-    
+
     return (
       <div className="flex items-center">
-        <div className="flex flex-wrap gap-1 max-w-[300px]">
+        <div className="flex max-w-[300px] flex-wrap gap-1">
           {visibleApps.map((appName, index) => (
             <Badge key={index} variant="outline" className="px-2 py-0.5 text-xs">
               {appName}
             </Badge>
           ))}
+          {hasMore && (
+            <Badge key={'...'} variant="outline" className="px-2 py-0.5 text-xs">
+              ...
+            </Badge>
+          )}
         </div>
-        {hasMore && (
-          <TooltipProvider>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <div className="ml-2 cursor-help">
-                  <Info className="h-4 w-4 text-gray-400" />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="font-medium mb-1">All Applications:</p>
-                <ul className="list-disc pl-4 space-y-1">
-                  {appNames.map((appName, index) => (
-                    <li key={index}>{appName}</li>
-                  ))}
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
       </div>
     );
   };
@@ -114,7 +98,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
             >
-              Applications
+              Resources
             </th>
             <th
               scope="col"
@@ -141,21 +125,22 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
                 <div className="text-sm font-medium text-gray-900">
                   {getDisplayName(scope)}
                   {scope.isDefault && (
-                    <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-100 text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="ml-2 bg-blue-100 text-xs text-blue-800 hover:bg-blue-100"
+                    >
                       Default
                     </Badge>
                   )}
                 </div>
-                <div className="text-xs text-gray-500 font-mono">{scope.name}</div>
+                <div className="font-mono text-xs text-gray-500">{scope.name}</div>
               </td>
-              <td className="px-6 py-4">
-                {formatResources(scope.resources)}
-              </td>
+              <td className="px-6 py-4">{formatResources(scope.resources)}</td>
               <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <ScopeActions 
-                  scope={scope} 
-                  isDefault={scope.isDefault} 
-                  onEditDialogStateChange={handleEditDialogStateChange} 
+                <ScopeActions
+                  scope={scope}
+                  isDefault={scope.isDefault}
+                  onEditDialogStateChange={handleEditDialogStateChange}
                 />
               </td>
             </tr>
