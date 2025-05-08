@@ -1,19 +1,10 @@
 import React, { useState } from 'react';
 import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
 import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 // Extend the Scope type to include isDefault flag
 interface ExtendedScope extends Scope {
@@ -51,16 +42,16 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   // Format resources for display with overflow handling
   const formatResources = (resources: string[]) => {
     if (resources.length === 0) {
-      return <span className="italic text-gray-400">No resources</span>;
+      return <span className="text-gray-400 italic">No resources</span>;
     }
 
     // Show first 2 resources and indicate if there are more
     const visibleResources = resources.slice(0, 2);
     const hasMore = resources.length > 2;
-
+    
     return (
       <div className="flex items-center">
-        <div className="flex max-w-[300px] flex-wrap gap-1 overflow-hidden">
+        <div className="flex flex-wrap gap-1 max-w-[300px]">
           {visibleResources.map(resource => (
             <Badge key={resource} variant="outline" className="px-2 py-0.5 text-xs">
               {resource}
@@ -76,8 +67,8 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
                 </div>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="mb-1 font-medium">All Resources:</p>
-                <ul className="list-disc space-y-1 pl-4">
+                <p className="font-medium mb-1">All Resources:</p>
+                <ul className="list-disc pl-4 space-y-1">
                   {resources.map(resource => (
                     <li key={resource}>{resource}</li>
                   ))}
@@ -93,74 +84,74 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   if (scopes.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-gray-500">No scopes found</p>
+        <p className="mb-4 text-gray-500">No scopes found</p>
       </div>
     );
   }
 
-  // Calculate optimal column widths
-  const nameColumnWidth = '25%';
-  const resourcesColumnWidth = '60%';
-  const actionsColumnWidth = '15%';
-
   return (
     <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead style={{ width: nameColumnWidth }} className="pr-0">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+            >
               Name
-            </TableHead>
-            <TableHead style={{ width: resourcesColumnWidth }} className="pl-2">
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+            >
               Resources
-            </TableHead>
-            <TableHead style={{ width: actionsColumnWidth }} className="text-right">
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+            >
               Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+            </th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 bg-white">
           {scopes.map(scope => (
-            <TableRow
+            <tr
               key={scope.name}
               className="cursor-pointer hover:bg-gray-50"
               onClick={e => {
                 // Prevent row click when clicking on the actions column or when any edit dialog is open
-                if (
-                  (e.target as HTMLElement).closest('[data-actions-column]') ||
-                  isAnyEditDialogOpen
-                ) {
+                if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
                   return;
                 }
                 handleRowClick(scope);
               }}
             >
-              <TableCell className="pr-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{getDisplayName(scope)}</span>
+              <td className="whitespace-nowrap px-6 py-4">
+                <div className="text-sm font-medium text-gray-900">
+                  {getDisplayName(scope)}
                   {scope.isDefault && (
-                    <Badge
-                      variant="secondary"
-                      className="bg-blue-100 text-xs text-blue-800 hover:bg-blue-100"
-                    >
+                    <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-100 text-xs">
                       Default
                     </Badge>
                   )}
                 </div>
-                <div className="font-mono text-xs text-gray-500">{scope.name}</div>
-              </TableCell>
-              <TableCell className="pl-2">{formatResources(scope.resources)}</TableCell>
-              <TableCell className="text-right" data-actions-column="true">
-                <ScopeActions
-                  scope={scope}
-                  isDefault={scope.isDefault}
-                  onEditDialogStateChange={handleEditDialogStateChange}
+                <div className="text-xs text-gray-500 font-mono">{scope.name}</div>
+              </td>
+              <td className="px-6 py-4">
+                {formatResources(scope.resources)}
+              </td>
+              <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
+                <ScopeActions 
+                  scope={scope} 
+                  isDefault={scope.isDefault} 
+                  onEditDialogStateChange={handleEditDialogStateChange} 
                 />
-              </TableCell>
-            </TableRow>
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
 
       {/* Scope Info Dialog */}
       <ScopeInfoDialog
