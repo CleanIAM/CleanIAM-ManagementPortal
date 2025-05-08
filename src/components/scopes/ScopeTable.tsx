@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ScopeActions } from './ScopeActions';
-import { Badge } from '@/components/ui/badge';
+import { ScopeInfoDialog } from './ScopeInfoDialog';
 
 interface ScopeTableProps {
   scopes: Scope[];
 }
 
 export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
+  // Track if an edit dialog is currently open in any row
+  const [isAnyEditDialogOpen, setIsAnyEditDialogOpen] = useState(false);
+
+  // Create a callback function to be passed down to ScopeActions
+  const handleEditDialogStateChange = (isOpen: boolean) => {
+    setIsAnyEditDialogOpen(isOpen);
+  };
+
+  // State for managing the selected scope and dialog visibility
+  const [selectedScope, setSelectedScope] = useState<Scope | null>(null);
+  const [isInfoDialogOpen, setIsInfoDialogOpen] = useState(false);
+
+  // Handle row click
+  const handleRowClick = (scope: Scope) => {
+    setSelectedScope(scope);
+    setIsInfoDialogOpen(true);
+  };
+
   if (scopes.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -24,37 +42,38 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Display Name</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Resources</TableHead>
             <TableHead className="w-16 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {scopes.map(scope => (
-            <TableRow key={scope.name}>
+            <TableRow 
+              key={scope.name}
+              className="cursor-pointer hover:bg-gray-50"
+              onClick={e => {
+                // Prevent row click when clicking on the actions column or when any edit dialog is open
+                if ((e.target as HTMLElement).closest('[data-actions-column]') || isAnyEditDialogOpen) {
+                  return;
+                }
+                handleRowClick(scope);
+              }}
+            >
               <TableCell className="font-medium">{scope.name}</TableCell>
               <TableCell>{scope.displayName}</TableCell>
-              <TableCell>{scope.description || '-'}</TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  {scope.resources.length > 0 ? (
-                    scope.resources.map(resource => (
-                      <Badge key={resource} variant="outline" className="mr-1 mb-1">
-                        {resource}
-                      </Badge>
-                    ))
-                  ) : (
-                    <span className="text-gray-400">No resources</span>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                <ScopeActions scope={scope} />
+              <TableCell className="text-right" data-actions-column="true">
+                <ScopeActions scope={scope} onEditDialogStateChange={handleEditDialogStateChange} />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Scope Info Dialog */}
+      <ScopeInfoDialog
+        scope={selectedScope}
+        isOpen={isInfoDialogOpen}
+        onOpenChange={setIsInfoDialogOpen}
+      />
     </div>
   );
 };

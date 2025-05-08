@@ -18,12 +18,21 @@ import { ScopeForm } from './ScopeForm';
 
 interface ScopeActionsProps {
   scope: Scope;
+  onEditDialogStateChange?: (isOpen: boolean) => void;
 }
 
-export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope }) => {
+export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope, onEditDialogStateChange }) => {
   // State for dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  // Update parent component when edit dialog state changes
+  const handleEditDialogOpen = (isOpen: boolean) => {
+    setIsEditDialogOpen(isOpen);
+    if (onEditDialogStateChange) {
+      onEditDialogStateChange(isOpen);
+    }
+  };
 
   const { refetch } = useGetApiScopes();
 
@@ -43,7 +52,7 @@ export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope }) => {
   // Handle edit scope
   const handleEditScope = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsEditDialogOpen(true);
+    handleEditDialogOpen(true);
   };
 
   // Handle delete scope
@@ -91,7 +100,7 @@ export const ScopeActions: React.FC<ScopeActionsProps> = ({ scope }) => {
       </DropdownMenu>
 
       {/* Edit Scope Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog open={isEditDialogOpen} onOpenChange={handleEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Scope</DialogTitle>
