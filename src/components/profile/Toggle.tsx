@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Loader } from '@/components/public/Loader';
 
 interface ToggleProps {
   isChecked: boolean;
@@ -7,6 +8,7 @@ interface ToggleProps {
   disabled?: boolean;
   id?: string;
   tooltip?: string;
+  isLoading?: boolean;
 }
 
 export const Toggle: React.FC<ToggleProps> = ({ 
@@ -14,7 +16,8 @@ export const Toggle: React.FC<ToggleProps> = ({
   onChange, 
   disabled = false,
   id = "toggle",
-  tooltip
+  tooltip,
+  isLoading = false
 }) => {
   const toggleElement = (
     <div className="relative inline-block h-6 w-12">
@@ -24,23 +27,27 @@ export const Toggle: React.FC<ToggleProps> = ({
         className="sr-only" 
         checked={isChecked}
         onChange={(e) => onChange(e.target.checked)}
-        disabled={disabled}
+        disabled={disabled || isLoading}
       />
       <label
         htmlFor={id}
         className={`block h-6 w-12 cursor-pointer rounded-full transition-colors ${
           isChecked ? 'bg-green-500' : 'bg-gray-300'
-        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        } ${(disabled || isLoading) ? 'opacity-50 cursor-not-allowed' : ''}`}
       ></label>
       <span 
         className={`absolute left-1 top-1 h-4 w-4 transform rounded-full bg-white transition-transform ${
           isChecked ? 'translate-x-6' : ''
-        }`}
-      ></span>
+        } ${isLoading ? 'flex items-center justify-center' : ''}`}
+      >
+        {isLoading && (
+          <Loader className="h-3 w-3 text-gray-500" />
+        )}
+      </span>
     </div>
   );
 
-  if (tooltip && disabled) {
+  if ((tooltip && disabled) || (tooltip && isLoading)) {
     return (
       <Tooltip>
         <TooltipTrigger asChild>

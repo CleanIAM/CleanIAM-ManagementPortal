@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Toggle } from './Toggle';
+import { MfaSwitch } from './mfa/MfaSwitch';
 import { MfaConfigDialog } from './mfa/MfaConfigDialog';
 import { MfaResetConfirmDialog } from './mfa/MfaResetConfirmDialog';
+import { MfaToggleConfirmDialog } from './mfa/MfaToggleConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
@@ -26,6 +27,29 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 }) => {
 	const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
 	const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+	const [isToggleDialogOpen, setIsToggleDialogOpen] = useState(false);
+	const [pendingToggleState, setPendingToggleState] = useState(false);
+
+	// Handle MFA toggle request
+	const handleToggleRequest = (enable: boolean) => {
+		// Only prompt for confirmation if MFA is configured
+		if (isMFAConfigured) {
+			setPendingToggleState(enable);
+			setIsToggleDialogOpen(true);
+		}
+	};
+
+	// Confirm MFA toggle
+	const confirmToggle = () => {
+		onMfaToggle(pendingToggleState);
+		setIsToggleDialogOpen(false);
+	};
+
+	// Cancel MFA toggle
+	const cancelToggle = () => {
+		setIsToggleDialogOpen(false);
+	};
+	
 	return (
 		<div className="border-t border-gray-200 bg-gray-50 p-6">
 			<h3 className="mb-4 text-lg font-semibold text-gray-800">Security Settings</h3>
@@ -46,7 +70,6 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<div>
-										{' '}
 										{/* Wrapper div needed for disabled button in tooltip */}
 										<Button
 											variant="outline"
@@ -71,7 +94,6 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<div>
-										{' '}
 										{/* Wrapper div needed for disabled button in tooltip */}
 										<Button
 											variant="outline"
@@ -92,24 +114,26 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 								)}
 							</Tooltip>
 						)}
-						<Toggle
-							isChecked={isMFAEnabled}
-							onChange={onMfaToggle}
-							disabled={isMfaUpdating || isMfaResetting || !isMFAConfigured}
-							id="mfa-toggle"
-							tooltip={
-								!isMFAConfigured
-									? 'You need to configure MFA before you can enable it'
-									: isMfaUpdating
-										? 'MFA settings are being updated...'
-										: isMfaResetting
-											? 'MFA configuration is being reset...'
-											: undefined
-							}
+						<MfaSwitch
+						checked={isMFAEnabled}
+						onCheckedChange={handleToggleRequest}
+						disabled={isMfaResetting || !isMFAConfigured}
+						loading={isMfaUpdating}
+						id="mfa-toggle"
+						tooltip={
+						!isMFAConfigured
+						? 'You need to configure MFA before you can enable it'
+						: isMfaUpdating
+						? 'MFA settings are being updated...'
+						: isMfaResetting
+						? 'MFA configuration is being reset...'
+						: undefined
+						}
 						/>
 					</div>
 				</div>
 			</div>
+			
 			{/* MFA Configuration Dialog */}
 			<MfaConfigDialog
 				isOpen={isConfigDialogOpen}
@@ -126,6 +150,15 @@ export const ProfileSecuritySettings: React.FC<ProfileSecuritySettingsProps> = (
 					setIsResetDialogOpen(false);
 				}}
 				isDeleting={isMfaResetting}
+			/>
+
+			{/* MFA Toggle Confirmation Dialog */}
+			<MfaToggleConfirmDialog
+				isOpen={isToggleDialogOpen}
+				onClose={cancelToggle}
+				onConfirm={confirmToggle}
+				isUpdating={isMfaUpdating}
+				isEnabling={pendingToggleState}
 			/>
 		</div>
 	);
