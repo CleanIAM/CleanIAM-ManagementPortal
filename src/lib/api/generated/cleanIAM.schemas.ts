@@ -479,7 +479,7 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 export const UserRole = {
 	User: 'User',
 	Admin: 'Admin',
-	SuperAdmin: 'SuperAdmin'
+	MasterAdmin: 'MasterAdmin'
 } as const;
 
 export interface UserUpdated {

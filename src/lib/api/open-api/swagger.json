@@ -4726,7 +4726,7 @@
         "enum": [
           "User",
           "Admin",
-          "SuperAdmin"
+          "MasterAdmin"
         ],
         "type": "string"
       },
