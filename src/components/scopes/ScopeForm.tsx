@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { FormButton } from '../form';
 import {
+  useGetApiScopes,
   usePostApiScopes,
   usePutApiScopesScopeName
 } from '@/lib/api/generated/scopes-api-endpoint/scopes-api-endpoint';
@@ -59,6 +60,8 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
     }
   });
 
+  const { refetch } = useGetApiScopes();
+
   // Set initial form data when scope changes
   useEffect(() => {
     if (scope) {
@@ -76,6 +79,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
     mutation: {
       onSuccess: () => {
         toast.success('Scope created successfully');
+        refetch();
         onSuccess();
       },
       onError: error => {
@@ -89,6 +93,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
     mutation: {
       onSuccess: () => {
         toast.success('Scope updated successfully');
+        refetch();
         onSuccess();
       },
       onError: error => {
