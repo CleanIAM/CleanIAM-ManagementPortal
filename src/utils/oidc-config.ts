@@ -7,7 +7,7 @@ export const oidcConfig: AuthProviderProps = {
   redirect_uri: 'https://localhost:3001/auth/signin-callback',
   silent_redirect_uri: 'https://localhost:3001/auth/signin-callback',
   response_type: 'code',
-  scope: 'openid profile roles',
+  scope: 'openid profile roles email',
   onSigninCallback: (user: User | undefined) => {
     console.log('user', user);
   },
