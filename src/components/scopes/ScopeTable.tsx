@@ -4,6 +4,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 
 // Extend the Scope type to include isDefault flag
 interface ExtendedScope extends Scope {
@@ -33,6 +35,53 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
     setIsInfoDialogOpen(true);
   };
 
+  // Get display name with fallback to name
+  const getDisplayName = (scope: ExtendedScope) => {
+    return scope.displayName || scope.name;
+  };
+
+  // Format resources for display with overflow handling
+  const formatResources = (resources: string[]) => {
+    if (resources.length === 0) {
+      return <span className="text-gray-400 italic">No resources</span>;
+    }
+
+    // Show first 2 resources and indicate if there are more
+    const visibleResources = resources.slice(0, 2);
+    const hasMore = resources.length > 2;
+    
+    return (
+      <div className="flex items-center">
+        <div className="flex flex-wrap gap-1 max-w-[300px] overflow-hidden">
+          {visibleResources.map(resource => (
+            <Badge key={resource} variant="outline" className="px-2 py-0.5 text-xs">
+              {resource}
+            </Badge>
+          ))}
+        </div>
+        {hasMore && (
+          <TooltipProvider>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <div className="ml-2 cursor-help">
+                  <Info className="h-4 w-4 text-gray-400" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="font-medium mb-1">All Resources:</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  {resources.map(resource => (
+                    <li key={resource}>{resource}</li>
+                  ))}
+                </ul>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </div>
+    );
+  };
+
   if (scopes.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -47,8 +96,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Display Name</TableHead>
-            <TableHead>Type</TableHead>
+            <TableHead>Resources</TableHead>
             <TableHead className="w-16 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -65,15 +113,18 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
                 handleRowClick(scope);
               }}
             >
-              <TableCell className="font-medium">{scope.name}</TableCell>
-              <TableCell>{scope.displayName}</TableCell>
               <TableCell>
-                {scope.isDefault && (
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                    Default
-                  </Badge>
-                )}
+                <div className="flex items-center gap-2">
+                  <span className="font-medium">{getDisplayName(scope)}</span>
+                  {scope.isDefault && (
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100 text-xs">
+                      Default
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-xs text-gray-500 font-mono">{scope.name}</div>
               </TableCell>
+              <TableCell>{formatResources(scope.resources)}</TableCell>
               <TableCell className="text-right" data-actions-column="true">
                 <ScopeActions 
                   scope={scope} 
