@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   useGetApiApplications,
   useDeleteApiApplicationsId
@@ -12,9 +12,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '../components/ui/dialog';
-
-import { ApplicationBanner } from '@/components/public/ApplicationBanner';
 import { Loader } from '@/components/public/Loader';
+import { ApplicationTable } from '@/components/applications/ApplicationTable';
 
 export const ApplicationsPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -29,7 +28,12 @@ export const ApplicationsPage = () => {
   } = useGetApiApplications();
 
   // Get applications array from response
-  const applications = applicationsResponse?.data || [];
+  const applications = useMemo(() => {
+    if (isLoading || isError || applicationsResponse?.status !== 200) {
+      return [];
+    }
+    return applicationsResponse?.data || [];
+  }, [isError, isLoading, applicationsResponse?.data, applicationsResponse?.status]);
 
   // Delete application mutation
   const deleteApplicationMutation = useDeleteApiApplicationsId({
@@ -51,7 +55,7 @@ export const ApplicationsPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-8">
         <h1 className="mb-2 text-3xl font-bold text-blue-800">Applications</h1>
         <p className="text-gray-600">Manage your OpenID Connect applications</p>
@@ -72,26 +76,15 @@ export const ApplicationsPage = () => {
         </div>
       ) : (
         <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
-          {applications.length === 0 ? (
-            <div className="py-8 text-center">
-              <p className="mb-4 text-gray-500">No applications found</p>
-              <FormButton onClick={() => setIsAddModalOpen(true)}>
-                Add Your First Application
-              </FormButton>
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 gap-6">
-                {applications.map(app => (
-                  <ApplicationBanner app={app} key={app.id} onDelete={handleDeleteApplication} />
-                ))}
-              </div>
+          <div className="mb-4 flex justify-end">
+            <FormButton onClick={() => setIsAddModalOpen(true)}>Add Application</FormButton>
+          </div>
 
-              <div className="mt-6 flex justify-end">
-                <FormButton onClick={() => setIsAddModalOpen(true)}>Add Application</FormButton>
-              </div>
-            </>
-          )}
+          <ApplicationTable
+            applications={applications}
+            onDelete={handleDeleteApplication}
+            onRefetch={refetch}
+          />
         </div>
       )}
 
@@ -99,8 +92,8 @@ export const ApplicationsPage = () => {
       <Dialog open={isAddModalOpen} onOpenChange={handleCloseApplicationDialog}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle>{'Add New Application'}</DialogTitle>
-            <DialogDescription>{'Create a new OpenID Connect application'}</DialogDescription>
+            <DialogTitle>Add New Application</DialogTitle>
+            <DialogDescription>Create a new OpenID Connect application</DialogDescription>
           </DialogHeader>
 
           <div className="max-h-[80vh] overflow-y-auto py-4 pr-2">

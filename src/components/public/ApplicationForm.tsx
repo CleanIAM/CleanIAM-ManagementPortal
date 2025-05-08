@@ -196,9 +196,9 @@ export const ApplicationForm = ({
 
       if (scopesResponse.data) {
         return scopesResponse.data.map(scope => ({
-          value: scope.value,
-          label: scope.value,
-          tooltip: scope.tooltip
+          value: scope.displayName || scope.name,
+          label: scope.name,
+          tooltip: `[${scope.name}] ${scope.description || 'No description available'}`
         }));
       }
 
