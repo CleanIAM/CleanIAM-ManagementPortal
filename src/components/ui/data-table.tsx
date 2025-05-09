@@ -1,3 +1,4 @@
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from "react";
 import {
   ColumnDef,
@@ -24,6 +25,7 @@ interface DataTableProps<TData, TValue> {
   searchFunction?: (row: TData, searchTerm: string) => boolean;
   onRowClick?: (row: TData) => void;
   isRowClickDisabled?: boolean;
+  defaultPageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
@@ -34,12 +36,15 @@ export function DataTable<TData, TValue>({
   searchFunction,
   onRowClick,
   isRowClickDisabled = false,
+  defaultPageSize = 10,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   
   const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  const pageSizeOptions = [10, 20, 30, 50, 100];
 
   const table = useReactTable({
     data,
@@ -66,7 +71,7 @@ export function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: defaultPageSize,
       },
     },
   });
@@ -132,6 +137,26 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex items-center space-x-2">
+          <p className="text-sm text-gray-500">Rows per page</p>
+          <Select
+            value={`${table.getState().pagination.pageSize}`}
+            onValueChange={(value) => {
+              table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger className="h-8 w-[70px]">
+              <SelectValue placeholder={table.getState().pagination.pageSize} />
+            </SelectTrigger>
+            <SelectContent side="top">
+              {pageSizeOptions.map((pageSize) => (
+                <SelectItem key={pageSize} value={`${pageSize}`}>
+                  {pageSize}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="text-sm text-gray-500">
           Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
           {Math.min(
