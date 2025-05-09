@@ -4,6 +4,9 @@ import { UserRoleBadges } from './UserRoleBadges';
 import { UserStatus } from './UserStatus';
 import { UserActions } from './UserActions';
 import { UserInfoDialog } from './UserInfoDialog';
+import { DataTable } from '@/components/ui/data-table';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 interface UserTableProps {
   users: ApiUserModel[];
@@ -24,6 +27,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
   const handleAssignDialogStateChange = (isOpen: boolean) => {
     setIsAnyAssignDialogOpen(isOpen);
   };
+  
   // State for managing the selected user and dialog visibility
   const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
   const [isInfoDialogOpen, setInfoIsDialogOpen] = useState(false);
@@ -33,6 +37,73 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
     setSelectedUser(user);
     setInfoIsDialogOpen(true);
   };
+
+  const columns: ColumnDef<ApiUserModel>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="text-sm font-medium text-gray-900">
+            {user.firstName} {user.lastName}
+          </div>
+        );
+      },
+      sortingFn: (rowA, rowB) => {
+        const fullNameA = `${rowA.original.firstName || ''} ${rowA.original.lastName || ''}`.trim();
+        const fullNameB = `${rowB.original.firstName || ''} ${rowB.original.lastName || ''}`.trim();
+        return fullNameA.localeCompare(fullNameB);
+      },
+    },
+    {
+      accessorKey: 'email',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Email" />
+      ),
+      cell: ({ row }) => {
+        return <div className="text-sm text-gray-500">{row.original.email}</div>;
+      },
+    },
+    {
+      accessorKey: 'roles',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Roles" />
+      ),
+      cell: ({ row }) => {
+        return <UserRoleBadges roles={row.original.roles} />;
+      },
+      enableSorting: false,
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        return <UserStatus user={row.original} />;
+      },
+      enableSorting: false,
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        return (
+          <div className="text-right">
+            <UserActions 
+              user={row.original} 
+              onEditDialogStateChange={handleEditDialogStateChange} 
+              onAssignDialogStateChange={handleAssignDialogStateChange}
+              tenant={tenant} 
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   if (users.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -42,82 +113,16 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Email
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Roles
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Status
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {users.map(user => (
-            <tr
-              key={user.id}
-              className="cursor-pointer hover:bg-gray-50"
-              onClick={e => {
-                // Prevent row click when clicking on the actions column or when any dialog is open
-                if ((e.target as HTMLElement).closest('.actions-column') || isAnyDialogOpen) {
-                  return;
-                }
-                handleRowClick(user);
-              }}
-            >
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="text-sm font-medium text-gray-900">
-                  {user.firstName} {user.lastName}
-                </div>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="text-sm text-gray-500">{user.email}</div>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <UserRoleBadges roles={user.roles} />
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                {/* In a real app, we'd have an isDisabled flag - mocked for demonstration */}
-                <UserStatus user={user} />
-              </td>
-              <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <UserActions 
-                  user={user} 
-                  onEditDialogStateChange={handleEditDialogStateChange} 
-                  onAssignDialogStateChange={handleAssignDialogStateChange}
-                  tenant={tenant} 
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <DataTable 
+        columns={columns}
+        data={users}
+        searchColumn="email"
+        searchPlaceholder="Filter by email..."
+        onRowClick={handleRowClick}
+        isRowClickDisabled={isAnyDialogOpen}
+      />
+      
       {/* User Dialog */}
       <UserInfoDialog
         user={selectedUser}

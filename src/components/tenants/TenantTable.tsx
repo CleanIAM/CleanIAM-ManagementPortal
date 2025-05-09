@@ -6,6 +6,9 @@ import { Badge } from '@/components/public/Badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { LockIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 // Pattern for empty GUID (all zeros)
 const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
@@ -38,6 +41,72 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
     return tenant.id === EMPTY_GUID;
   };
 
+  const columns: ColumnDef<ApiTenantModel>[] = [
+    {
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Tenant ID" />
+      ),
+      cell: ({ row }) => {
+        return <div className="font-mono text-sm text-gray-500">{row.original.id}</div>;
+      },
+    },
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => {
+        const tenant = row.original;
+        const isDefault = isDefaultTenant(tenant);
+        return (
+          <div className="flex items-center">
+            <div className="text-sm font-medium text-gray-900">{tenant.name}</div>
+            {isDefault && (
+              <div className="ml-2 flex items-center">
+                <Badge className="bg-blue-100 text-blue-800" value="Default" />
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        const tenant = row.original;
+        const isDefault = isDefaultTenant(tenant);
+        
+        return (
+          <div className="text-right">
+            {isDefault ? (
+              <TooltipProvider>
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <div className="flex justify-end">
+                      <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
+                        <span className="sr-only">Tenant actions</span>
+                        <LockIcon className="h-4 w-4 text-gray-400" />
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>Default tenant cannot be modified or deleted</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ) : (
+              <TenantActions
+                tenant={tenant}
+                onEditDialogStateChange={handleEditDialogStateChange}
+              />
+            )}
+          </div>
+        );
+      },
+    },
+  ];
+
   if (tenants.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -47,84 +116,16 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Tenant ID
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {tenants.map(tenant => (
-            <tr
-              key={tenant.id}
-              className={`cursor-pointer hover:bg-gray-50 ${isDefaultTenant(tenant) ? 'bg-blue-50' : ''}`}
-              onClick={e => {
-                // Prevent row click when clicking on the actions column or when any edit dialog is open
-                if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
-                  return;
-                }
-                handleRowClick(tenant);
-              }}
-            >
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="font-mono text-sm text-gray-500">{tenant.id}</div>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="flex items-center">
-                  <div className="text-sm font-medium text-gray-900">{tenant.name}</div>
-                  {isDefaultTenant(tenant) && (
-                    <div className="ml-2 flex items-center">
-                      <Badge className="bg-blue-100 text-blue-800" value="Default" />
-                    </div>
-                  )}
-                </div>
-              </td>
-              <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                {isDefaultTenant(tenant) ? (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={300}>
-                      <TooltipTrigger asChild>
-                        <div className="flex justify-end">
-                          <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
-                            <span className="sr-only">Tenant actions</span>
-                            <LockIcon className="h-4 w-4 text-gray-400" />
-                          </Button>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="left">
-                        <p>Default tenant cannot be modified or deleted</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ) : (
-                  <TenantActions
-                    tenant={tenant}
-                    onEditDialogStateChange={handleEditDialogStateChange}
-                  />
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <DataTable 
+        columns={columns}
+        data={tenants}
+        searchColumn="name"
+        searchPlaceholder="Filter by tenant name..."
+        onRowClick={handleRowClick}
+        isRowClickDisabled={isAnyEditDialogOpen}
+      />
+      
       {/* Tenant Info Dialog */}
       <TenantInfoDialog
         tenant={selectedTenant}

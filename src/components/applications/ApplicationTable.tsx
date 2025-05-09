@@ -2,9 +2,18 @@ import React, { useState } from 'react';
 import { ApiApplicationModel } from '@/lib/api/generated/cleanIAM.schemas';
 import { ApplicationActions } from './ApplicationActions';
 import { ApplicationInfoDialog } from './ApplicationInfoDialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '@/components/ui/dialog';
 import { ApplicationForm } from '@/components/public/ApplicationForm';
 import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/ui/data-table';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 interface ApplicationTableProps {
   applications: ApiApplicationModel[];
@@ -12,8 +21,8 @@ interface ApplicationTableProps {
   onRefetch: () => void;
 }
 
-export const ApplicationTable: React.FC<ApplicationTableProps> = ({ 
-  applications, 
+export const ApplicationTable: React.FC<ApplicationTableProps> = ({
+  applications,
   onDelete,
   onRefetch
 }) => {
@@ -36,6 +45,75 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
     setIsInfoDialogOpen(true);
   };
 
+  const columns: ColumnDef<ApiApplicationModel>[] = [
+    {
+      accessorKey: 'displayName',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+      cell: ({ row }) => {
+        return (
+          <div className="text-sm font-medium text-gray-900">
+            {row.original.displayName || 'Unnamed Application'}
+          </div>
+        );
+      }
+    },
+    {
+      accessorKey: 'clientId',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Client ID" />,
+      cell: ({ row }) => {
+        return <div className="text-sm text-gray-500">{row.original.clientId}</div>;
+      }
+    },
+    {
+      accessorKey: 'applicationType',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+      cell: ({ row }) => {
+        return (
+          <div className="flex space-x-2">
+            <Badge variant="outline" className="bg-blue-50">
+              {row.original.applicationType}
+            </Badge>
+            <Badge variant="outline" className="bg-blue-50">
+              {row.original.clientType}
+            </Badge>
+          </div>
+        );
+      },
+      enableSorting: false
+    },
+    {
+      accessorKey: 'redirectUris',
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Redirect URIs" />,
+      cell: ({ row }) => {
+        const redirectUris = row.original.redirectUris || [];
+        return (
+          <div className="max-h-10 overflow-hidden text-sm text-gray-500">
+            {redirectUris.length > 0 ? redirectUris[0] : 'No redirect URIs'}
+            {redirectUris.length > 1 && (
+              <span className="ml-1 text-xs text-gray-400">(+{redirectUris.length - 1} more)</span>
+            )}
+          </div>
+        );
+      },
+      enableSorting: false
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        return (
+          <div className="text-right">
+            <ApplicationActions
+              application={row.original}
+              onDelete={onDelete}
+              onRefetch={onRefetch}
+              onEditDialogStateChange={handleEditDialogStateChange}
+            />
+          </div>
+        );
+      }
+    }
+  ];
+
   if (applications.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -45,114 +123,32 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Client ID
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Type
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Redirect URIs
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {applications.map(application => (
-            <tr
-              key={application.id}
-              className="cursor-pointer hover:bg-gray-50"
-              onClick={e => {
-                // Prevent row click when clicking on the actions column or when any edit dialog is open
-                if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
-                  return;
-                }
-                handleRowClick(application);
-              }}
-            >
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="text-sm font-medium text-gray-900">
-                  {application.displayName || 'Unnamed Application'}
-                </div>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="text-sm text-gray-500">{application.clientId}</div>
-              </td>
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="flex space-x-2">
-                  <Badge variant="outline" className="bg-blue-50">
-                    {application.applicationType}
-                  </Badge>
-                  <Badge variant="outline" className="bg-blue-50">
-                    {application.clientType}
-                  </Badge>
-                </div>
-              </td>
-              <td className="px-6 py-4">
-                <div className="max-h-10 overflow-hidden text-sm text-gray-500">
-                  {application.redirectUris && application.redirectUris.length > 0 
-                    ? application.redirectUris[0]
-                    : 'No redirect URIs'}
-                  {application.redirectUris && application.redirectUris.length > 1 && (
-                    <span className="ml-1 text-xs text-gray-400">
-                      (+{application.redirectUris.length - 1} more)
-                    </span>
-                  )}
-                </div>
-              </td>
-              <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <ApplicationActions 
-                  application={application} 
-                  onDelete={onDelete}
-                  onRefetch={onRefetch}
-                  onEditDialogStateChange={handleEditDialogStateChange} 
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
+    <div>
+      <DataTable
+        columns={columns}
+        data={applications}
+        searchColumn="displayName"
+        searchPlaceholder="Filter by application name..."
+        onRowClick={handleRowClick}
+        isRowClickDisabled={isAnyEditDialogOpen}
+      />
+
       {/* Application Dialog */}
       <ApplicationInfoDialog
         application={selectedApplication}
         isOpen={isInfoDialogOpen}
         onOpenChange={setIsInfoDialogOpen}
-        onEdit={(application) => {
+        onEdit={application => {
           setIsEditDialogOpen(true);
           setIsAnyEditDialogOpen(true);
         }}
       />
-      
+
       {/* Edit Dialog - will show up when edit button in info dialog is clicked */}
       {selectedApplication && (
         <Dialog
           open={isEditDialogOpen}
-          onOpenChange={(open) => {
+          onOpenChange={open => {
             setIsEditDialogOpen(open);
             setIsAnyEditDialogOpen(open);
             if (!open) {
@@ -163,7 +159,9 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
         >
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>{selectedApplication.displayName || selectedApplication.clientId}</DialogTitle>
+              <DialogTitle>
+                {selectedApplication.displayName || selectedApplication.clientId}
+              </DialogTitle>
               <DialogDescription>
                 Edit the details of your existing OpenID Connect application
               </DialogDescription>

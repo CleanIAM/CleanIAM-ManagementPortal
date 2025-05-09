@@ -4,6 +4,9 @@ import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
 import { mockApplications } from '@/lib/mock/applications';
+import { DataTable } from '@/components/ui/data-table';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
 
 // Extend the Scope type to include isDefault flag
 interface ExtendedScope extends Scope {
@@ -75,6 +78,61 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
     );
   };
 
+  const columns: ColumnDef<ExtendedScope>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => {
+        const scope = row.original;
+        return (
+          <>
+            <div className="text-sm font-medium text-gray-900">
+              {getDisplayName(scope)}
+              {scope.isDefault && (
+                <Badge
+                  variant="secondary"
+                  className="ml-2 bg-blue-100 text-xs text-blue-800 hover:bg-blue-100"
+                >
+                  Default
+                </Badge>
+              )}
+            </div>
+            <div className="font-mono text-xs text-gray-500">{scope.name}</div>
+          </>
+        );
+      },
+      sortingFn: (rowA, rowB) => {
+        const nameA = getDisplayName(rowA.original);
+        const nameB = getDisplayName(rowB.original);
+        return nameA.localeCompare(nameB);
+      },
+    },
+    {
+      accessorKey: 'resources',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Resources" />
+      ),
+      cell: ({ row }) => formatResources(row.original.resources),
+      enableSorting: false,
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => {
+        return (
+          <div className="text-right">
+            <ScopeActions
+              scope={row.original}
+              isDefault={row.original.isDefault}
+              onEditDialogStateChange={handleEditDialogStateChange}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   if (scopes.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -84,70 +142,16 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Name
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Resources
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {scopes.map(scope => (
-            <tr
-              key={scope.name}
-              className="cursor-pointer hover:bg-gray-50"
-              onClick={e => {
-                // Prevent row click when clicking on the actions column or when any edit dialog is open
-                if ((e.target as HTMLElement).closest('.actions-column') || isAnyEditDialogOpen) {
-                  return;
-                }
-                handleRowClick(scope);
-              }}
-            >
-              <td className="whitespace-nowrap px-6 py-4">
-                <div className="text-sm font-medium text-gray-900">
-                  {getDisplayName(scope)}
-                  {scope.isDefault && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 bg-blue-100 text-xs text-blue-800 hover:bg-blue-100"
-                    >
-                      Default
-                    </Badge>
-                  )}
-                </div>
-                <div className="font-mono text-xs text-gray-500">{scope.name}</div>
-              </td>
-              <td className="px-6 py-4">{formatResources(scope.resources)}</td>
-              <td className="actions-column whitespace-nowrap px-6 py-4 text-right">
-                <ScopeActions
-                  scope={scope}
-                  isDefault={scope.isDefault}
-                  onEditDialogStateChange={handleEditDialogStateChange}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+    <div>
+      <DataTable 
+        columns={columns}
+        data={scopes}
+        searchColumn="name"
+        searchPlaceholder="Filter by scope name..."
+        onRowClick={handleRowClick}
+        isRowClickDisabled={isAnyEditDialogOpen}
+      />
+      
       {/* Scope Info Dialog */}
       <ScopeInfoDialog
         scope={selectedScope}
