@@ -117,8 +117,13 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
       <DataTable 
         columns={columns}
         data={users}
-        searchColumn="email"
-        searchPlaceholder="Filter by email..."
+        searchPlaceholder="Search users by name or email..."
+        searchFunction={(user, searchTerm) => {
+          const term = searchTerm.toLowerCase();
+          const fullName = `${user.firstName || ''} ${user.lastName || ''}`.toLowerCase().trim();
+          const email = (user.email || '').toLowerCase();
+          return fullName.includes(term) || email.includes(term);
+        }}
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyDialogOpen}
       />

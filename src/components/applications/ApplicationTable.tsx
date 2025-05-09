@@ -124,11 +124,16 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
 
   return (
     <div>
-      <DataTable
-        columns={columns}
-        data={applications}
-        searchColumn="displayName"
-        searchPlaceholder="Filter by application name..."
+      <DataTable 
+      columns={columns}
+      data={applications}
+      searchPlaceholder="Search by name or client ID..."
+      searchFunction={(application, searchTerm) => {
+        const term = searchTerm.toLowerCase();
+        const displayName = (application.displayName || '').toLowerCase();
+          const clientId = (application.clientId || '').toLowerCase();
+          return displayName.includes(term) || clientId.includes(term);
+        }}
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyEditDialogOpen}
       />

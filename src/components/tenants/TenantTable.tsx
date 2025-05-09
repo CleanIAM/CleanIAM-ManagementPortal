@@ -120,8 +120,13 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
       <DataTable 
         columns={columns}
         data={tenants}
-        searchColumn="name"
-        searchPlaceholder="Filter by tenant name..."
+        searchPlaceholder="Search by tenant ID or name..."
+        searchFunction={(tenant, searchTerm) => {
+          const term = searchTerm.toLowerCase();
+          const name = (tenant.name || '').toLowerCase();
+          const id = (tenant.id || '').toLowerCase();
+          return name.includes(term) || id.includes(term);
+        }}
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyEditDialogOpen}
       />

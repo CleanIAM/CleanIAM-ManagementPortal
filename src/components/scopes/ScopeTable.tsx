@@ -146,8 +146,20 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
       <DataTable 
         columns={columns}
         data={scopes}
-        searchColumn="name"
-        searchPlaceholder="Filter by scope name..."
+        searchPlaceholder="Search by scope name or resources..."
+        searchFunction={(scope, searchTerm) => {
+          const term = searchTerm.toLowerCase();
+          const name = (scope.name || '').toLowerCase();
+          const displayName = (scope.displayName || '').toLowerCase();
+          
+          // Search in resources
+          const resourcesMatch = scope.resources.some(resource => {
+            const appName = getApplicationName(resource).toLowerCase();
+            return appName.includes(term);
+          });
+          
+          return name.includes(term) || displayName.includes(term) || resourcesMatch;
+        }}
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyEditDialogOpen}
       />

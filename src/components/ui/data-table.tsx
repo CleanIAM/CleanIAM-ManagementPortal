@@ -21,6 +21,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchPlaceholder?: string;
   searchColumn?: string;
+  searchFunction?: (row: TData, searchTerm: string) => boolean;
   onRowClick?: (row: TData) => void;
   isRowClickDisabled?: boolean;
 }
@@ -30,6 +31,7 @@ export function DataTable<TData, TValue>({
   data,
   searchPlaceholder = "Search...",
   searchColumn,
+  searchFunction,
   onRowClick,
   isRowClickDisabled = false,
 }: DataTableProps<TData, TValue>) {
@@ -37,6 +39,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   
+  const [globalFilter, setGlobalFilter] = useState<string>("");
+
   const table = useReactTable({
     data,
     columns,
@@ -47,10 +51,18 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, columnId, filterValue) => {
+      if (searchFunction) {
+        return searchFunction(row.original, filterValue);
+      }
+      return true;
+    },
     state: {
       sorting,
       columnFilters,
       columnVisibility,
+      globalFilter,
     },
     initialState: {
       pagination: {
@@ -61,18 +73,20 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {searchColumn && (
-        <div className="flex items-center py-4">
-          <Input
-            placeholder={searchPlaceholder}
-            value={(table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(searchColumn)?.setFilterValue(event.target.value)
+      <div className="flex items-center py-4">
+        <Input
+          placeholder={searchPlaceholder}
+          value={(searchFunction ? table.getState().globalFilter : (table.getColumn(searchColumn || '')?.getFilterValue() as string)) ?? ""}
+          onChange={(event) => {
+            if (searchFunction) {
+              table.setGlobalFilter(event.target.value);
+            } else if (searchColumn) {
+              table.getColumn(searchColumn)?.setFilterValue(event.target.value);
             }
-            className="max-w-xs"
-          />
-        </div>
-      )}
+          }}
+          className="max-w-xs"
+        />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
