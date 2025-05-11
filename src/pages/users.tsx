@@ -69,10 +69,14 @@ export const UsersPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mb-8">
+        <h1 className="mb-2 text-3xl font-bold text-blue-800">Users</h1>
+        <p className="text-gray-600">Manage users in your application</p>
+      </div>
+
       <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="mb-2 text-3xl font-bold text-blue-800">Users</h1>
-          <p className="text-gray-600">Manage users in your application</p>
+        <div className="flex-grow">  
+          {/* Empty div to balance the flex layout when tenant selector is present */}
         </div>
 
         {isMasterAdmin && tenants.length > 0 && (
@@ -83,7 +87,7 @@ export const UsersPage = () => {
                 <SelectValue placeholder="My tenant" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="My tenant">My tenant</SelectItem>
+                <SelectItem value="">My tenant</SelectItem>
                 {tenants.map(tenant => (
                   <SelectItem key={tenant.id} value={tenant.id}>
                     {tenant.name}

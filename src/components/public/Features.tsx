@@ -14,7 +14,7 @@ const FeatureCard = ({ title, description, icon }: FeatureProps) => (
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-blue-500 text-white">
         {icon}
       </div>
-      <CardTitle>{title}</CardTitle>
+      <CardTitle className="h-9">{title}</CardTitle>
     </CardHeader>
     <CardContent>
       <CardDescription>{description}</CardDescription>
@@ -66,7 +66,7 @@ export const Features = () => {
     },
     {
       title: 'Multi-factor Authentication',
-      description: 'Add an extra layer of security with support for various MFA methods.',
+      description: 'Add an extra layer of security with support with MFA.',
       icon: (
         <svg
           className="h-6 w-6"
