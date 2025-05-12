@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog';
-import { ApplicationForm } from '@/components/public/ApplicationForm';
-import { DeleteApplicationConfirmDialog } from '@/components/public/DeleteApplicationConfirmDialog';
+import { ApplicationForm } from '@/components/applications/ApplicationForm';
+import { DeleteApplicationConfirmDialog } from '@/components/applications/DeleteApplicationConfirmDialog';
 import { MoreHorizontal, Edit, Trash } from 'lucide-react';
 import {
   DropdownMenu,

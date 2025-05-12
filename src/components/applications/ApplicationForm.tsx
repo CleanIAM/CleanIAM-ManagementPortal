@@ -26,7 +26,7 @@ import {
   DialogFooter
 } from '../ui/dialog';
 import { AlertCircleIcon, InformationCircleIcon } from 'hugeicons-react';
-import { TextWithCopy } from './TextWithCopy';
+import { TextWithCopy } from '../public/TextWithCopy';
 
 // Define the validation schema with Zod
 const applicationSchema = z.object({

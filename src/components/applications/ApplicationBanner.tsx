@@ -3,9 +3,9 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../ui/dialog';
 import { Delete02Icon, LaptopProgrammingIcon, PencilEdit01Icon } from 'hugeicons-react';
 import { DialogHeader } from '../ui/dialog';
-import { ApplicationForm } from './ApplicationForm';
 import { useState } from 'react';
 import { useGetApiApplications } from '@/lib/api/generated/applications-api/applications-api';
+import { ApplicationForm } from './ApplicationForm';
 import { DeleteApplicationConfirmDialog } from './DeleteApplicationConfirmDialog';
 type ApplicationBannerProps = {
   app: ApiApplicationModel;

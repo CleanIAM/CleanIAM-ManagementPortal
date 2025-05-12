@@ -3,7 +3,7 @@ import {
   useGetApiApplications,
   useDeleteApiApplicationsId
 } from '../lib/api/generated/applications-api/applications-api';
-import { ApplicationForm } from '../components/public/ApplicationForm';
+import { ApplicationForm } from '../components/applications/ApplicationForm';
 import { FormButton } from '../components/form';
 import {
   Dialog,

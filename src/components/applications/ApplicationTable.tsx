@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog';
-import { ApplicationForm } from '@/components/public/ApplicationForm';
+import { ApplicationForm } from '@/components/applications/ApplicationForm';
 import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
