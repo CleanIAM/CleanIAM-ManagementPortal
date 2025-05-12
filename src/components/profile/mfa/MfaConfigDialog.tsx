@@ -35,7 +35,7 @@ export const MfaConfigDialog: React.FC<MfaConfigDialogProps> = ({
     isLoading: isQrLoading,
     isError: isQrError,
     error: qrError
-  } = useGetApiUserMfaConfiguration({
+  } = useGetApiUserMfaConfiguration(undefined, {
     query: {
       enabled: isOpen // Only fetch when dialog is open
     }

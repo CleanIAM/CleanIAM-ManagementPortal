@@ -424,16 +424,10 @@ export interface UpdateUserSimpleRequest {
 export interface UserAssignedToTenant {
   /** Id of the new tenant */
   newTenantId: string;
-  /** Id of the old tenant */
-  oldTenantId: string;
   /** New tenant name */
   tenantName: string;
   /** Id of the user */
   userId: string;
-  /** First name of the user */
-  userFirstName: string;
-  /** Last name of the user */
-  userLastName: string;
 }
 
 export interface UserDeleted {

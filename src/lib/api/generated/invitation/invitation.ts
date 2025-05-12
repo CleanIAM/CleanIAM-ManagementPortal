@@ -29,6 +29,9 @@ import type {
 
 import { customAxiosRequest } from '../../mutator/axios/custom-axios';
 
+/**
+ * @summary Show the invitation page for a user to set up their account
+ */
 export const getInvitationsRequestId = (
   requestId: string,
   params?: GetInvitationsRequestIdParams,
@@ -136,6 +139,9 @@ export function useGetInvitationsRequestId<
   },
   queryClient?: QueryClient
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Show the invitation page for a user to set up their account
+ */
 
 export function useGetInvitationsRequestId<
   TData = Awaited<ReturnType<typeof getInvitationsRequestId>>,
@@ -161,6 +167,9 @@ export function useGetInvitationsRequestId<
   return query;
 }
 
+/**
+ * @summary Handle the user setting up their account after receiving an invitation
+ */
 export const postInvitationsRequestId = (
   requestId: string,
   postInvitationsRequestIdBody: PostInvitationsRequestIdBody,
@@ -235,6 +244,9 @@ export type PostInvitationsRequestIdMutationResult = NonNullable<
 export type PostInvitationsRequestIdMutationBody = PostInvitationsRequestIdBody;
 export type PostInvitationsRequestIdMutationError = unknown;
 
+/**
+ * @summary Handle the user setting up their account after receiving an invitation
+ */
 export const usePostInvitationsRequestId = <TError = unknown, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<

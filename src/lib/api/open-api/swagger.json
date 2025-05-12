@@ -1211,10 +1211,12 @@
         "tags": [
           "Invitation"
         ],
+        "summary": "Show the invitation page for a user to set up their account",
         "parameters": [
           {
             "name": "requestId",
             "in": "path",
+            "description": "Id og te signin request",
             "required": true,
             "schema": {
               "type": "string",
@@ -1241,10 +1243,12 @@
         "tags": [
           "Invitation"
         ],
+        "summary": "Handle the user setting up their account after receiving an invitation",
         "parameters": [
           {
             "name": "requestId",
             "in": "path",
+            "description": "Id og te signin request",
             "required": true,
             "schema": {
               "type": "string",
@@ -1559,7 +1563,7 @@
     "/api/scopes": {
       "get": {
         "tags": [
-          "ScopesApiEndpoint"
+          "Scopes"
         ],
         "summary": "Get the list of all scopes.",
         "parameters": [
@@ -1627,7 +1631,7 @@
       },
       "post": {
         "tags": [
-          "ScopesApiEndpoint"
+          "Scopes"
         ],
         "summary": "Create a new scope.",
         "parameters": [
@@ -1727,7 +1731,7 @@
     "/api/scopes/default": {
       "get": {
         "tags": [
-          "ScopesApiEndpoint"
+          "Scopes"
         ],
         "summary": "Get the list of default scopes.",
         "parameters": [
@@ -1797,7 +1801,7 @@
     "/api/scopes/{scopeName}": {
       "put": {
         "tags": [
-          "ScopesApiEndpoint"
+          "Scopes"
         ],
         "summary": "Update a scope.",
         "parameters": [
@@ -1904,7 +1908,7 @@
       },
       "delete": {
         "tags": [
-          "ScopesApiEndpoint"
+          "Scopes"
         ],
         "summary": "Delete a scope.",
         "parameters": [
@@ -2703,7 +2707,7 @@
     "/api/user": {
       "get": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Get user info for the current user",
         "parameters": [
@@ -2782,7 +2786,7 @@
       },
       "put": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Update user info for the current user",
         "parameters": [
@@ -2903,7 +2907,7 @@
     "/api/user/mfa/enabled": {
       "put": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Enable or disable MFA for the current user",
         "parameters": [
@@ -3023,7 +3027,7 @@
     "/api/user/mfa/configuration": {
       "get": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Generate a QR code for MFA connection",
         "parameters": [
@@ -3122,7 +3126,7 @@
       },
       "post": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Validate Totp and if valid, configure MFA for the user",
         "parameters": [
@@ -3223,7 +3227,7 @@
       },
       "delete": {
         "tags": [
-          "UserApiEndpoint"
+          "UserApi"
         ],
         "summary": "Remove mfa configuration command for user and disable mfa.",
         "parameters": [
@@ -5131,22 +5135,14 @@
       "UserAssignedToTenant": {
         "required": [
           "newTenantId",
-          "oldTenantId",
           "tenantName",
-          "userId",
-          "userFirstName",
-          "userLastName"
+          "userId"
         ],
         "type": "object",
         "properties": {
           "newTenantId": {
             "type": "string",
             "description": "Id of the new tenant",
-            "format": "uuid"
-          },
-          "oldTenantId": {
-            "type": "string",
-            "description": "Id of the old tenant",
             "format": "uuid"
           },
           "tenantName": {
@@ -5157,14 +5153,6 @@
             "type": "string",
             "description": "Id of the user",
             "format": "uuid"
-          },
-          "userFirstName": {
-            "type": "string",
-            "description": "First name of the user"
-          },
-          "userLastName": {
-            "type": "string",
-            "description": "Last name of the user"
           }
         },
         "additionalProperties": false,
