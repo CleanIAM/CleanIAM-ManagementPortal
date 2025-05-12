@@ -30,7 +30,7 @@ export const NavbarLinks = () => {
 
   // Define links with role requirements
   const links: NavLinkProps[] = [
-    { to: '/home', label: 'Dashboard' }, // Available to all authenticated users
+    { to: '/home', label: 'Dashboard', roles: [UserRole.Admin, UserRole.MasterAdmin] },
     { to: '/applications', label: 'Applications', roles: [UserRole.Admin, UserRole.MasterAdmin] },
     { to: '/scopes', label: 'Scopes', roles: [UserRole.Admin, UserRole.MasterAdmin] },
     { to: '/users', label: 'Users', roles: [UserRole.Admin, UserRole.MasterAdmin] },

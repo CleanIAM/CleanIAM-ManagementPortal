@@ -1,6 +1,13 @@
-import { Link } from 'react-router-dom';
+import { UserRole } from '@/lib/api/generated/cleanIAM.schemas';
+import { useRoles } from '@/lib/hooks/useRoles';
+import { Link, Navigate } from 'react-router-dom';
 
 export const HomePage = () => {
+  const roles = useRoles();
+  const isAdmin = roles.includes(UserRole.Admin) || roles.includes(UserRole.MasterAdmin);
+  if (!isAdmin) {
+    return <Navigate to="/profile" />;
+  }
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-6 text-3xl font-bold text-blue-800">Welcome to CleanIAM</h1>
