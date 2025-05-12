@@ -24,7 +24,7 @@ import { useRoles } from '@/lib/hooks/useRoles';
 
 export const UsersPage = () => {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
-  const [selectedTenant, setSelectedTenant] = useState<string>('');
+  const [selectedTenant, setSelectedTenant] = useState<string>('default');
 
   // Get user roles
   const userRoles = useRoles();
@@ -50,7 +50,9 @@ export const UsersPage = () => {
     isError,
     error,
     refetch
-  } = useGetApiUsers(selectedTenant ? { tenant: selectedTenant } : undefined);
+  } = useGetApiUsers(
+    selectedTenant && selectedTenant !== 'default' ? { tenant: selectedTenant } : undefined
+  );
 
   // Get users array from response with proper error handling
   const users = useMemo(() => {
@@ -75,7 +77,7 @@ export const UsersPage = () => {
       </div>
 
       <div className="mb-8 flex items-center justify-between">
-        <div className="flex-grow">  
+        <div className="flex-grow">
           {/* Empty div to balance the flex layout when tenant selector is present */}
         </div>
 
@@ -87,7 +89,7 @@ export const UsersPage = () => {
                 <SelectValue placeholder="My tenant" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">My tenant</SelectItem>
+                <SelectItem value="default">My tenant</SelectItem>
                 {tenants.map(tenant => (
                   <SelectItem key={tenant.id} value={tenant.id}>
                     {tenant.name}
@@ -135,7 +137,7 @@ export const UsersPage = () => {
                 refetch();
               }}
               onCancel={handleCloseEditUserDialog}
-              tenant={selectedTenant || undefined}
+              tenant={selectedTenant !== 'default' ? selectedTenant : undefined}
             />
           </div>
         </DialogContent>

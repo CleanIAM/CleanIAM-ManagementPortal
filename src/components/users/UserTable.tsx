@@ -23,11 +23,11 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
   const handleEditDialogStateChange = (isOpen: boolean) => {
     setIsAnyEditDialogOpen(isOpen);
   };
-  
+
   const handleAssignDialogStateChange = (isOpen: boolean) => {
     setIsAnyAssignDialogOpen(isOpen);
   };
-  
+
   // State for managing the selected user and dialog visibility
   const [selectedUser, setSelectedUser] = useState<ApiUserModel | null>(null);
   const [isInfoDialogOpen, setInfoIsDialogOpen] = useState(false);
@@ -41,9 +41,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
   const columns: ColumnDef<ApiUserModel>[] = [
     {
       accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const user = row.original;
         return (
@@ -56,52 +54,46 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
         const fullNameA = `${rowA.original.firstName || ''} ${rowA.original.lastName || ''}`.trim();
         const fullNameB = `${rowB.original.firstName || ''} ${rowB.original.lastName || ''}`.trim();
         return fullNameA.localeCompare(fullNameB);
-      },
+      }
     },
     {
       accessorKey: 'email',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
       cell: ({ row }) => {
         return <div className="text-sm text-gray-500">{row.original.email}</div>;
-      },
+      }
     },
     {
       accessorKey: 'roles',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Roles" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Roles" />,
       cell: ({ row }) => {
         return <UserRoleBadges roles={row.original.roles} />;
       },
-      enableSorting: false,
+      enableSorting: false
     },
     {
       accessorKey: 'status',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
       cell: ({ row }) => {
         return <UserStatus user={row.original} />;
       },
-      enableSorting: false,
+      enableSorting: false
     },
     {
       id: 'actions',
       cell: ({ row }) => {
         return (
           <div className="text-right">
-            <UserActions 
-              user={row.original} 
-              onEditDialogStateChange={handleEditDialogStateChange} 
+            <UserActions
+              user={row.original}
+              onEditDialogStateChange={handleEditDialogStateChange}
               onAssignDialogStateChange={handleAssignDialogStateChange}
-              tenant={tenant} 
+              tenant={tenant}
             />
           </div>
         );
-      },
-    },
+      }
+    }
   ];
 
   if (users.length === 0) {
@@ -114,7 +106,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
 
   return (
     <div>
-      <DataTable 
+      <DataTable
         columns={columns}
         data={users}
         searchPlaceholder="Search users by name or email..."
@@ -127,7 +119,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyDialogOpen}
       />
-      
+
       {/* User Dialog */}
       <UserInfoDialog
         user={selectedUser}
