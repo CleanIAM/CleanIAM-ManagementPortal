@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { convertFieldError } from '../../utils/errorUtils';
 import { FormButton } from '../form';
 import {
   useGetApiScopes,
@@ -199,6 +200,8 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
         <MultiSelectField
           name="resources"
           label="Applications"
+          dialogTitle="Select Applications"
+          dialogDescription="Choose applications that this scope applies to"
           options={
             isApplicationsLoading
               ? 'Loading applications...'
@@ -210,7 +213,7 @@ export const ScopeForm: React.FC<ScopeFormProps> = ({ scope, onSuccess, onCancel
           }
           setValue={setValue}
           watch={watch}
-          error={errors.resources}
+          error={convertFieldError(errors.resources)}
           isLoading={isApplicationsLoading}
           className="mb-4"
         />

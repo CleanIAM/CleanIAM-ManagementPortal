@@ -100,7 +100,7 @@ export const ProfilePage = () => {
 
   // Handle MFA reset
   const handleMfaReset = () => {
-    resetMfaMutation.mutate();
+    resetMfaMutation.mutate({});
   };
 
   // Handle edit toggle

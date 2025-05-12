@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { convertFieldError } from '../../utils/errorUtils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useMemo, useState } from 'react';
@@ -267,7 +268,7 @@ export const ApplicationForm = ({
           isInputValid={isValidUrl}
           validatorMessage="Invalid URL format"
           watch={watch}
-          error={errors.redirectUris}
+          error={convertFieldError(errors.redirectUris)}
           placeholder="https://example.com/callback"
         />
 
@@ -278,17 +279,19 @@ export const ApplicationForm = ({
           isInputValid={isValidUrl}
           validatorMessage="Invalid URL format"
           watch={watch}
-          error={errors.postLogoutRedirectUris}
+          error={convertFieldError(errors.postLogoutRedirectUris)}
           placeholder="https://example.com"
         />
 
         <MultiSelectField
           name="scopes"
           label="Scopes"
+          dialogTitle="Select Scopes"
+          dialogDescription="Choose the scopes required for your application"
           options={scopeOptions}
           setValue={setValue}
           watch={watch}
-          error={errors.scopes}
+          error={convertFieldError(errors.scopes)}
           isLoading={isLoadingScopes}
         />
 

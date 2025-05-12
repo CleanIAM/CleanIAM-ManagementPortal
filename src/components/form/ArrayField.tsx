@@ -1,6 +1,13 @@
 import { Cancel01Icon } from 'hugeicons-react';
 import React, { useState } from 'react';
-import { FieldValues, Path, FieldError, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import {
+  FieldValues,
+  Path,
+  FieldError,
+  UseFormSetValue,
+  UseFormWatch
+} from 'react-hook-form';
+import { ArrayFieldError } from '../../utils/errorUtils';
 import { toast } from 'react-toastify';
 
 interface ArrayFieldProps<T extends FieldValues> {
@@ -10,7 +17,7 @@ interface ArrayFieldProps<T extends FieldValues> {
   isInputValid?: (value: string) => boolean;
   validatorMessage?: string;
   watch: UseFormWatch<T>;
-  error?: FieldError;
+  error?: FieldError | ArrayFieldError | undefined;
   placeholder?: string;
   inputClassName?: string;
   className?: string;
@@ -41,13 +48,13 @@ export const ArrayField = <T extends FieldValues>({
       return;
     }
     if (inputValue && !values.includes(inputValue)) {
-      setValue(name, [...values, inputValue] as any);
+      setValue(name, [...values, inputValue] as unknown as T[Path<T>]);
       setInputValue('');
     }
   };
 
   const removeItem = (item: string) => {
-    setValue(name, values.filter(v => v !== item) as any);
+    setValue(name, values.filter(v => v !== item) as unknown as T[Path<T>]);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

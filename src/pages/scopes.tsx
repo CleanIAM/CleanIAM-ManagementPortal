@@ -14,7 +14,6 @@ import {
 import { Loader } from '@/components/public/Loader';
 import { ScopeForm } from '@/components/scopes/ScopeForm';
 import { ScopeTable } from '@/components/scopes/ScopeTable';
-import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 
 export const ScopesPage = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);

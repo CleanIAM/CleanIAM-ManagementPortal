@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UseFormSetValue, UseFormWatch, FieldValues, Path, FieldError } from 'react-hook-form';
+import { ArrayFieldError } from '../../utils/errorUtils';
 import {
   Dialog,
   DialogContent,
@@ -18,12 +19,12 @@ interface Option {
 interface MultiSelectFieldProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
-  dialogTitle: string | null;
-  dialogDescription: string | null;
+  dialogTitle?: string | null;
+  dialogDescription?: string | null;
   options: Option[] | string;
   setValue: UseFormSetValue<T>;
   watch: UseFormWatch<T>;
-  error?: FieldError;
+  error?: FieldError | ArrayFieldError | undefined;
   isLoading?: boolean;
   className?: string;
 }
@@ -51,13 +52,13 @@ export const MultiSelectField = <T extends FieldValues>({
       ? selectedValues.filter(v => v !== value)
       : [...selectedValues, value];
 
-    setValue(name, newValues as any, { shouldValidate: true });
+    setValue(name, newValues as unknown as T[Path<T>], { shouldValidate: true });
   };
 
   // Handle remove option
   const handleRemoveOption = (value: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setValue(name, selectedValues.filter(v => v !== value) as any, { shouldValidate: true });
+    setValue(name, selectedValues.filter(v => v !== value) as unknown as T[Path<T>], { shouldValidate: true });
   };
 
   return (
@@ -168,7 +169,7 @@ export const MultiSelectField = <T extends FieldValues>({
         </DialogContent>
       </Dialog>
 
-      {error && <p className="mt-1 text-sm text-red-600">{error.message}</p>}
+      {error && <p className="mt-1 text-sm text-red-600">{error.message || 'Invalid value'}</p>}
     </div>
   );
 };

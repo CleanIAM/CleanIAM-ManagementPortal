@@ -124,13 +124,13 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
 
   return (
     <div>
-      <DataTable 
-      columns={columns}
-      data={applications}
-      searchPlaceholder="Search by name or client ID..."
-      searchFunction={(application, searchTerm) => {
-        const term = searchTerm.toLowerCase();
-        const displayName = (application.displayName || '').toLowerCase();
+      <DataTable
+        columns={columns}
+        data={applications}
+        searchPlaceholder="Search by name or client ID..."
+        searchFunction={(application, searchTerm) => {
+          const term = searchTerm.toLowerCase();
+          const displayName = (application.displayName || '').toLowerCase();
           const clientId = (application.clientId || '').toLowerCase();
           return displayName.includes(term) || clientId.includes(term);
         }}
@@ -143,7 +143,7 @@ export const ApplicationTable: React.FC<ApplicationTableProps> = ({
         application={selectedApplication}
         isOpen={isInfoDialogOpen}
         onOpenChange={setIsInfoDialogOpen}
-        onEdit={application => {
+        onEdit={() => {
           setIsEditDialogOpen(true);
           setIsAnyEditDialogOpen(true);
         }}

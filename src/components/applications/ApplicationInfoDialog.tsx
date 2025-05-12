@@ -12,7 +12,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { TextWithCopy } from '@/components/public/TextWithCopy';
-import { Globe, Key, Clock, Globe2, LucideFlame, LucideInfo, LucideUserX2, Edit, ExternalLink } from 'lucide-react';
+import {
+  Globe,
+  Key,
+  Clock,
+  Globe2,
+  LucideFlame,
+  LucideInfo,
+  LucideUserX2,
+  Edit
+} from 'lucide-react';
 
 interface ApplicationInfoDialogProps {
   application: ApiApplicationModel | null;
@@ -211,10 +220,7 @@ export const ApplicationInfoDialog: React.FC<ApplicationInfoDialogProps> = ({
               Edit Application
             </Button>
           )}
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Close
           </Button>
         </DialogFooter>

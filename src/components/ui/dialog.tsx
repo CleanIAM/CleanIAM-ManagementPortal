@@ -27,7 +27,7 @@ function Dialog({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   // Use the custom hook to manage body style
-  useBodyPointerEvents(open);
+  useBodyPointerEvents(open ?? false);
   
   return <DialogPrimitive.Root data-slot="dialog" open={open} {...props} />
 }

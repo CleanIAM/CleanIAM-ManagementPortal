@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, columnId, filterValue) => {
+    globalFilterFn: (row,  filterValue) => {
       if (searchFunction) {
         return searchFunction(row.original, filterValue);
       }

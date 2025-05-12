@@ -35,7 +35,7 @@ export const MfaResetDialog: React.FC<MfaResetDialogProps> = ({ isOpen, onClose,
   });
 
   const handleReset = () => {
-    resetMutation.mutate();
+    resetMutation.mutate({});
   };
 
   return (
