@@ -19,7 +19,11 @@ import { MultiSelectField } from '@/components/form/MultiSelectField';
 
 // Define Zod schema for form validation
 const ScopeFormSchema = z.object({
-  name: z.string().min(3, 'Name must be at least 3 characters long'),
+  name: z
+    .string()
+    .min(3, 'Name must be at least 3 characters long')
+    .refine(s => !s.includes(' '), 'Scope name cannot contain spaces'),
+
   displayName: z.string().min(1, 'Display name is required'),
   description: z.string().optional(),
   resources: z.array(z.string())
