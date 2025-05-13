@@ -23,10 +23,14 @@ const ScopeFormSchema = z.object({
   name: z
     .string()
     .min(3, 'Name must be at least 3 characters long')
+    .max(32, 'Name cannot exceed 32 characters')
     .refine(s => !s.includes(' '), 'Scope name cannot contain spaces'),
 
-  displayName: z.string().min(1, 'Display name is required'),
-  description: z.string().optional(),
+  displayName: z
+    .string()
+    .min(1, 'Display name is required')
+    .max(32, 'Display name cannot exceed 32 characters'),
+  description: z.string().max(256, 'Description cannot exceed 256 characters').optional(),
   resources: z.array(z.string())
 });
 

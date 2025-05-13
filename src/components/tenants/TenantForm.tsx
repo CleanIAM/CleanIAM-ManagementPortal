@@ -16,8 +16,8 @@ import { Loader } from '../public/Loader';
 const tenantFormSchema = z.object({
   name: z
     .string()
-    .min(2, { message: 'Tenant name must be at least 2 characters' })
-    .max(50, { message: 'Tenant name must be less than 50 characters' })
+    .min(3, { message: 'Tenant name must be at least 3 characters' })
+    .max(32, { message: 'Tenant name must be less than 32 characters' })
 });
 
 // TypeScript type for the form values

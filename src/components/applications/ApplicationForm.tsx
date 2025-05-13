@@ -35,7 +35,10 @@ const applicationSchema = z.object({
     .min(1, 'Client ID is required')
     .max(32, 'Client ID must be less than 32 characters')
     .refine(s => !s.includes(' '), 'Client ID cannot contain spaces'),
-  displayName: z.string().min(1, 'Application name is required'),
+  displayName: z
+    .string()
+    .min(1, 'Application name is required')
+    .max(32, 'Application name must be less than 32 characters'),
   applicationType: z.nativeEnum(ApplicationType),
   clientType: z.nativeEnum(ClientType),
   consentType: z.nativeEnum(ConsentType),

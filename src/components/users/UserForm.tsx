@@ -21,11 +21,11 @@ const userFormSchema = z.object({
   firstName: z
     .string()
     .min(2, { message: 'First name must be at least 2 characters' })
-    .max(50, { message: 'First name must be less than 50 characters' }),
+    .max(64, { message: 'First name must be less than 64 characters' }),
   lastName: z
     .string()
     .min(2, { message: 'Last name must be at least 2 characters' })
-    .max(50, { message: 'Last name must be less than 50 characters' }),
+    .max(64, { message: 'Last name must be less than 64 characters' }),
   roles: z.array(z.nativeEnum(UserRole)).min(1, { message: 'At least one role must be selected' })
 });
 
