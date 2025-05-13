@@ -13,10 +13,7 @@ import { TextWithCopy } from '@/components/public/TextWithCopy';
 import { Badge } from '@/components/public/Badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { InfoIcon } from 'lucide-react';
-
-// Pattern for empty GUID (all zeros)
-const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
-
+import { DEFAULT_TENANT_ID } from '@/utils/constants';
 interface TenantInfoDialogProps {
   tenant: ApiTenantModel | null;
   isOpen: boolean;
@@ -32,7 +29,7 @@ export const TenantInfoDialog: React.FC<TenantInfoDialogProps> = ({
 
   // Function to check if tenant is the default tenant
   const isDefaultTenant = (tenant: ApiTenantModel) => {
-    return tenant.id === EMPTY_GUID;
+    return tenant.id === DEFAULT_TENANT_ID;
   };
 
   // Handle edit success

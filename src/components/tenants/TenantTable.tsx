@@ -9,9 +9,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
-
-// Pattern for empty GUID (all zeros)
-const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
+import { DEFAULT_TENANT_ID } from '@/utils/constants';
 
 interface TenantTableProps {
   tenants: ApiTenantModel[];
@@ -38,24 +36,20 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
 
   // Function to check if tenant is the default tenant
   const isDefaultTenant = (tenant: ApiTenantModel) => {
-    return tenant.id === EMPTY_GUID;
+    return tenant.id === DEFAULT_TENANT_ID;
   };
 
   const columns: ColumnDef<ApiTenantModel>[] = [
     {
       accessorKey: 'id',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tenant ID" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Tenant ID" />,
       cell: ({ row }) => {
         return <div className="font-mono text-sm text-gray-500">{row.original.id}</div>;
-      },
+      }
     },
     {
       accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const tenant = row.original;
         const isDefault = isDefaultTenant(tenant);
@@ -69,14 +63,14 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
             )}
           </div>
         );
-      },
+      }
     },
     {
       id: 'actions',
       cell: ({ row }) => {
         const tenant = row.original;
         const isDefault = isDefaultTenant(tenant);
-        
+
         return (
           <div className="text-right">
             {isDefault ? (
@@ -84,7 +78,7 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
                     <div className="flex justify-end">
-                      <Button variant="ghost" className="h-8 w-8 p-0 cursor-not-allowed opacity-50">
+                      <Button variant="ghost" className="h-8 w-8 cursor-not-allowed p-0 opacity-50">
                         <span className="sr-only">Tenant actions</span>
                         <LockIcon className="h-4 w-4 text-gray-400" />
                       </Button>
@@ -103,8 +97,8 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
             )}
           </div>
         );
-      },
-    },
+      }
+    }
   ];
 
   if (tenants.length === 0) {
@@ -117,7 +111,7 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
 
   return (
     <div>
-      <DataTable 
+      <DataTable
         columns={columns}
         data={tenants}
         searchPlaceholder="Search by tenant ID or name..."
@@ -130,7 +124,7 @@ export const TenantTable: React.FC<TenantTableProps> = ({ tenants }) => {
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyEditDialogOpen}
       />
-      
+
       {/* Tenant Info Dialog */}
       <TenantInfoDialog
         tenant={selectedTenant}

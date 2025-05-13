@@ -33,7 +33,7 @@ export const UserProfileMenu = () => {
 
   const handleLogout = async () => {
     try {
-      await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin + '/' });
+      await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin });
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -51,9 +51,7 @@ export const UserProfileMenu = () => {
           <DropdownMenuTrigger className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
             <span className="sr-only">Open user menu</span>
             <Avatar>
-              <AvatarFallback className="bg-blue-200 text-blue-800">
-                {userInitials}
-              </AvatarFallback>
+              <AvatarFallback className="bg-blue-200 text-blue-800">{userInitials}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
@@ -68,12 +66,6 @@ export const UserProfileMenu = () => {
               <User className="mr-2 h-4 w-4" />
               <NavLink to="/profile" className="w-full">
                 Profile
-              </NavLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <NavLink to="/settings" className="w-full">
-                Settings
               </NavLink>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

@@ -209,7 +209,7 @@ export const UserForm: React.FC<UserFormProps> = ({
           ) : user ? (
             'Update User'
           ) : (
-            'Create User'
+            'Invite User'
           )}
         </FormButton>
       </div>
