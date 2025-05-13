@@ -15,7 +15,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Search } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,8 +41,24 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  
   const [globalFilter, setGlobalFilter] = useState<string>("");
+
+  // Choose the first available text column for basic filtering if no search column specified
+  let effectiveSearchColumn = searchColumn;
+  if (!searchColumn && !searchFunction) {
+    // Find the first string column to use for searching
+    const firstTextColumn = columns.find(col => {
+      // Check if it has an accessorKey (string) or accessorFn (function)
+      const hasAccessor = 'accessorKey' in col || 'accessorFn' in col;
+      // Avoid action columns and selection columns
+      const isNotSpecialColumn = !col.id?.includes('actions') && col.id !== 'select';
+      return hasAccessor && isNotSpecialColumn;
+    });
+    
+    if (firstTextColumn && firstTextColumn.id) {
+      effectiveSearchColumn = firstTextColumn.id;
+    }
+  }
 
   const pageSizeOptions = [10, 20, 30, 50, 100];
 
@@ -57,11 +73,16 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row,  filterValue) => {
+    globalFilterFn: (row, columnId, filterValue) => {
       if (searchFunction) {
         return searchFunction(row.original, filterValue);
       }
-      return true;
+      
+      // Default filtering behavior if no searchFunction is provided
+      if (!filterValue) return true;
+      
+      const value = String(row.getValue(columnId) || "").toLowerCase();
+      return value.includes(String(filterValue).toLowerCase());
     },
     state: {
       sorting,
@@ -79,18 +100,22 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder={searchPlaceholder}
-          value={(searchFunction ? table.getState().globalFilter : (table.getColumn(searchColumn || '')?.getFilterValue() as string)) ?? ""}
-          onChange={(event) => {
-            if (searchFunction) {
-              table.setGlobalFilter(event.target.value);
-            } else if (searchColumn) {
-              table.getColumn(searchColumn)?.setFilterValue(event.target.value);
-            }
-          }}
-          className="max-w-xs"
-        />
+        <div className="relative w-64 max-w-sm">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder={searchPlaceholder}
+            value={searchFunction ? globalFilter : (effectiveSearchColumn ? (table.getColumn(effectiveSearchColumn)?.getFilterValue() as string) || "" : "")}
+            onChange={(event) => {
+              const value = event.target.value;
+              if (searchFunction) {
+                setGlobalFilter(value);
+              } else if (effectiveSearchColumn) {
+                table.getColumn(effectiveSearchColumn)?.setFilterValue(value);
+              }
+            }}
+            className="w-full pl-8"
+          />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
