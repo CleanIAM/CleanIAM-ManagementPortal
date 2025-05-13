@@ -20,7 +20,7 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       // Limit retries for mutations
-      retry: 3
+      retry: 0
     }
   }
 });
