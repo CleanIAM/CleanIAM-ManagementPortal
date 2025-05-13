@@ -89,7 +89,9 @@ export const Features = () => {
   return (
     <section className="bg-gray-50 py-16">
       <Container>
-        <h2 className="mb-12 text-center text-3xl font-bold text-gray-900">Key Features</h2>
+        <h2 className="mb-12 text-center text-3xl font-bold text-gray-900" id="KeyFeatures">
+          Key Features
+        </h2>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {features.map((feature, index) => (
             <FeatureCard

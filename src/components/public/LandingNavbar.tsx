@@ -29,15 +29,16 @@ export const LandingNavbar = ({ showSignIn = true }: NavbarProps) => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link to="/about" className="text-gray-600 hover:text-gray-900">
+            <Link to="#LandingHero" className="text-gray-600 hover:text-gray-900">
               About
             </Link>
-            <Link to="/features" className="text-gray-600 hover:text-gray-900">
+            <Link to="#KeyFeatures" className="text-gray-600 hover:text-gray-900">
               Features
             </Link>
             <Link
               to="https://cleaniam.github.io/CleanIAM"
               className="text-gray-600 hover:text-gray-900"
+              target="_blank"
             >
               Docs
             </Link>

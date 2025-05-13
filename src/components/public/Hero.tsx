@@ -15,7 +15,9 @@ export const Hero = () => {
         <div className="lg:flex lg:items-center lg:gap-x-10">
           <div className="lg:w-1/2">
             <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-              <span className="block text-blue-600">Modern IAM</span>
+              <span className="block text-blue-600" id="LandingHero">
+                Modern IAM
+              </span>
               <span className="block">for your applications</span>
             </h1>
             <p className="mt-6 text-xl text-gray-500">
@@ -26,7 +28,11 @@ export const Hero = () => {
               <Button onClick={handleSignIn} size="lg" className="bg-blue-600 hover:bg-blue-700">
                 Get Started
               </Button>
-              <Link to="/about">
+              <Link
+                to="https://cleaniam.github.io/CleanIAM"
+                className="text-gray-600 hover:text-gray-900"
+                target="_blank"
+              >
                 <Button variant="outline" size="lg">
                   Learn more
                 </Button>

@@ -3,7 +3,6 @@ import { Scope } from '@/lib/api/generated/cleanIAM.schemas';
 import { ScopeActions } from './ScopeActions';
 import { ScopeInfoDialog } from './ScopeInfoDialog';
 import { Badge } from '@/components/ui/badge';
-import { mockApplications } from '@/lib/mock/applications';
 import { DataTable } from '@/components/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/data-table-column-header';
@@ -41,12 +40,6 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
     return scope.displayName || scope.name;
   };
 
-  // Get application name from resource ID
-  const getApplicationName = (resourceId: string) => {
-    const app = mockApplications.find(a => a.id === resourceId);
-    return app ? app.name : resourceId;
-  };
-
   // Format resources for display with overflow handling
   const formatResources = (resources: string[]) => {
     if (resources.length === 0) {
@@ -54,11 +47,10 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
     }
 
     // Get application names
-    const appNames = resources.map(getApplicationName);
 
     // Show first 2 applications and indicate if there are more
-    const visibleApps = appNames.slice(0, 2);
-    const hasMore = appNames.length > 2;
+    const visibleApps = resources.slice(0, 2);
+    const hasMore = resources.length > 2;
 
     return (
       <div className="flex items-center">
@@ -81,9 +73,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
   const columns: ColumnDef<ExtendedScope>[] = [
     {
       accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
       cell: ({ row }) => {
         const scope = row.original;
         return (
@@ -107,15 +97,13 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
         const nameA = getDisplayName(rowA.original);
         const nameB = getDisplayName(rowB.original);
         return nameA.localeCompare(nameB);
-      },
+      }
     },
     {
       accessorKey: 'resources',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Resources" />
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Resources" />,
       cell: ({ row }) => formatResources(row.original.resources),
-      enableSorting: false,
+      enableSorting: false
     },
     {
       id: 'actions',
@@ -129,8 +117,8 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
             />
           </div>
         );
-      },
-    },
+      }
+    }
   ];
 
   if (scopes.length === 0) {
@@ -143,7 +131,7 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
 
   return (
     <div>
-      <DataTable 
+      <DataTable
         columns={columns}
         data={scopes}
         searchPlaceholder="Search by scope name or resources..."
@@ -151,19 +139,16 @@ export const ScopeTable: React.FC<ScopeTableProps> = ({ scopes }) => {
           const term = searchTerm.toLowerCase();
           const name = (scope.name || '').toLowerCase();
           const displayName = (scope.displayName || '').toLowerCase();
-          
+
           // Search in resources
-          const resourcesMatch = scope.resources.some(resource => {
-            const appName = getApplicationName(resource).toLowerCase();
-            return appName.includes(term);
-          });
-          
+          const resourcesMatch = scope.resources.some(resource => resource.includes(term));
+
           return name.includes(term) || displayName.includes(term) || resourcesMatch;
         }}
         onRowClick={handleRowClick}
         isRowClickDisabled={isAnyEditDialogOpen}
       />
-      
+
       {/* Scope Info Dialog */}
       <ScopeInfoDialog
         scope={selectedScope}

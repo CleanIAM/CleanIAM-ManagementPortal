@@ -12,13 +12,17 @@ interface ProfileInformationProps {
   isEditing: boolean;
   onSubmit: (data: ProfileFormValues) => void;
   isSubmitting: boolean;
+  onResendInvitation?: () => void;
+  isResendingInvitation?: boolean;
 }
 
 export const ProfileInformation: React.FC<ProfileInformationProps> = ({
   user,
   isEditing,
   onSubmit,
-  isSubmitting
+  isSubmitting,
+  onResendInvitation,
+  isResendingInvitation = false
 }) => {
   const {
     register,
@@ -116,6 +120,30 @@ export const ProfileInformation: React.FC<ProfileInformationProps> = ({
               }
               value={user.emailVerified ? 'Verified' : 'Not Verified'}
             />
+          </div>
+          
+          <div>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Invitation Status</label>
+            <div className="flex items-center space-x-2">
+              <Badge
+                className={
+                  user.isInvitePending
+                    ? 'bg-orange-100 text-orange-800'
+                    : 'bg-green-100 text-green-800'
+                }
+                value={user.isInvitePending ? 'Pending' : 'Accepted'}
+              />
+              {user.isInvitePending && onResendInvitation && (
+                <button
+                  type="button"
+                  onClick={onResendInvitation}
+                  disabled={isResendingInvitation}
+                  className="rounded border border-purple-600 bg-white px-3 py-1 text-xs font-medium text-purple-600 hover:bg-purple-50 disabled:opacity-50"
+                >
+                  {isResendingInvitation ? 'Sending...' : 'Resend Invitation'}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 

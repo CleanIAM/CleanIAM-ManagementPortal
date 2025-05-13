@@ -5,6 +5,7 @@ import {
   usePutApiUserMfaEnabled,
   useDeleteApiUserMfaConfiguration
 } from '../lib/api/generated/user-api-endpoint/user-api-endpoint';
+import { usePostApiUsersIdInvitationEmail } from '../lib/api/generated/users-api/users-api';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ProfileInformation } from '@/components/profile/ProfileInformation';
 import { ProfileSecuritySettings } from '@/components/profile/ProfileSecuritySettings';
@@ -69,6 +70,23 @@ export const ProfilePage = () => {
     }
   });
 
+  // Setup mutations for invitation email resend
+  const resendInvitationMutation = usePostApiUsersIdInvitationEmail({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+        toast.success('Invitation email has been resent');
+      },
+      onError: error => {
+        toast.error(
+          <p>
+            Failed to resend invitation email: <br /> {error.message || 'Unknown error'}
+          </p>
+        );
+      }
+    }
+  });
+
   // Handle form submission from React Hook Form
   const handleSubmit = (data: ProfileFormValues) => {
     updateUserMutation.mutate({
@@ -107,6 +125,13 @@ export const ProfilePage = () => {
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
+  
+  // Handle resend invitation
+  const handleResendInvitation = () => {
+    if (user?.data.id) {
+      resendInvitationMutation.mutate({ id: user.data.id });
+    }
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -135,6 +160,8 @@ export const ProfilePage = () => {
             isEditing={isEditing}
             onSubmit={handleSubmit}
             isSubmitting={updateUserMutation.isPending}
+            onResendInvitation={user!.data.isInvitePending ? handleResendInvitation : undefined}
+            isResendingInvitation={resendInvitationMutation.isPending}
           />
 
           <ProfileSecuritySettings

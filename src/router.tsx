@@ -17,6 +17,7 @@ import {
   MASTER_ADMIN_ONLY
 } from './components/layout/RoleGuardLayout';
 import { AccessDeniedPreviewPage } from './pages/access-denied-preview';
+import { Signin } from './pages/auth/signin';
 
 export const router = createBrowserRouter([
   // Public routes
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
 
   // Auth routes
   { path: '/auth/signin-callback', element: <SigninCallback /> },
+  { path: '/signin', element: <Signin /> },
 
   // Protected dashboard routes
   {
