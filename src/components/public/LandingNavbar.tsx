@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Container } from '@/components/ui/container';
 import { useSignin } from '@/lib/auth/useSignin';
+import { Logo } from './Logo';
 
 interface NavbarProps {
   showSignIn?: boolean;
@@ -23,8 +24,9 @@ export const LandingNavbar = ({ showSignIn = true }: NavbarProps) => {
       <Container>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-blue-800">
-              CleanIAM
+            <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-blue-800">
+              <Logo height={48} />
+              <span>CleanIAM</span>
             </Link>
           </div>
 

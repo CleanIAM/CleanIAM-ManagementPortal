@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Link } from 'react-router-dom';
 import { useSignin } from '@/lib/auth/useSignin';
+import { Logo } from './Logo';
 
 export const Hero = () => {
   const { signin } = useSignin();
@@ -43,21 +44,8 @@ export const Hero = () => {
             <div className="rounded-xl border border-blue-100 bg-blue-50 p-8 shadow-lg">
               <div className="flex h-64 items-center justify-center">
                 <div className="text-center">
-                  <div className="mb-4 inline-flex rounded-full bg-blue-100 p-6">
-                    <svg
-                      className="h-10 w-10 text-blue-600"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
+                  <div className="mb-4 inline-flex rounded-full bg-blue-100 p-2 py-3.5">
+                    <Logo height={100} />
                   </div>
                   <h3 className="text-xl font-medium text-gray-900">Secure by Design</h3>
                   <p className="mt-2 text-gray-600">
