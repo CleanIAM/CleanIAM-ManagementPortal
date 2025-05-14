@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Settings, LogOut, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
