@@ -153,7 +153,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 <p align="center">
-  <img src="../masters-thesis-oidc-server/docs/Figures/cleaniam-logo.png" alt="CleanIAM Logo" width="150">
+  <img src="docs/cleaniam-logo.png" alt="CleanIAM Logo" width="150">
 </p>
 <p align="center">
   Developed as part of a Master's Thesis © 2025
