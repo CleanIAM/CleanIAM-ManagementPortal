@@ -125,7 +125,7 @@ export const ProfilePage = () => {
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
   };
-  
+
   // Handle resend invitation
   const handleResendInvitation = () => {
     if (user?.data.id) {

@@ -1,85 +1,160 @@
-# React + TypeScript + Vite
+# CleanIAM Management Portal UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![CleanIAM Management Portal](../masters-thesis-oidc-server/docs/Figures/readme-header.png)
 
-Currently, two official plugins are available:
+A modern administration interface for the CleanIAM OpenID Connect server. Built with React, TypeScript, and Tailwind CSS.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-blue.svg)](https://tailwindcss.com/)
 
-## Environment Variables
+## 🌟 Features
 
-This project uses environment variables to configure the API base URL. The following variables are available:
+- **Comprehensive Admin Interface**: Complete management portal for CleanIAM services
+- **Tenant Management**: Create and manage multi-tenant configurations
+- **Application Management**: Register and configure OAuth/OIDC client applications
+- **User Administration**: User creation, role assignment, and profile management
+- **Scope Management**: Define and manage OAuth scopes and permissions
+- **Security Settings**: Configure MFA, session policies, and security features
 
-- `VITE_API_BASE_URL`: The base URL for API requests.
+## 🏗️ Architecture
 
-You can configure these variables in the following files:
+Built with a modern React stack:
 
-- `.env`: Default environment variables (development)
-- `.env.production`: Production environment variables
+- **React**: Utilizing the latest React features and hooks
+- **TypeScript**: Type-safe development experience
+- **Vite**: Fast, modern build tooling
+- **React Router**: For application routing
+- **Zod**: Schema validation for all forms
+- **React Hook Form**: Form handling with validation
+- **React Query**: Data fetching and caching
+- **Tailwind CSS**: Utility-first styling
+- **OIDC Client**: Secure authentication with the OIDC server
 
-### API Generation with Orval
+## 🚀 Getting Started
 
-The project uses Orval to generate API clients from OpenAPI specifications. The base URL for the API calls is dynamically fetched from the environment variables.
+### Prerequisites
 
-To generate the API client:
+- Node.js 20.x or later
+- npm or Bun package manager
+- CleanIAM OIDC server running (for API connectivity)
+
+### Installation
 
 ```bash
-npm run api-generate
+# Clone the repository
+git clone https://github.com/cleaniam/cleaniam-management-portal.git
+cd cleaniam-management-portal
+
+# Install dependencies
+npm install
+# or
+bun install
 ```
 
-This will generate type-safe API client code in `src/api/generated/` that will automatically use the correct base URL from your environment.
+### Configuration
 
-## Development
+Create a `.env` file in the root directory with the following variables:
 
-To start the development server with the configured environment:
+```
+VITE_API_BASE_URL=https://your-cleaniam-server-url/api
+```
+
+For production, update the `.env.production` file.
+
+### Development
 
 ```bash
+# Start development server
 npm run dev
+# or
+bun run dev
 ```
 
-## Expanding the ESLint configuration
+### Building for Production
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Create production build
+npm run build
+# or
+bun run build
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Preview production build locally
+npm run preview
+# or
+bun run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📝 API Generation
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project uses Orval to automatically generate type-safe API clients from the OpenAPI specifications provided by the CleanIAM server.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+- Update the schema in `src/lib/api/open-api/swagger.json` with the latest OpenAPI spec from the CleanIAM server.
+
+- Run the following command to generate the API client code:
+
+```bash
+# Generate API client code
+npm run api-generate
+# or
+bun run api-generate
 ```
+
+This creates strongly-typed API clients in `src/lib/api/generated/` for interacting with the CleanIAM backend.
+
+## 🔒 Authentication
+
+The portal uses OIDC authentication with the CleanIAM server itself, demonstrating a real-world implementation of the protocol:
+
+- **OpenID Connect**: Full implementation of the authentication code flow with PKCE
+- **Role-based Access**: Different sections of the portal are protected by role guards
+- **Access Tokens**: JWT handling for secure API authorization
+- **Refresh Tokens**: Automatic token refresh for sessions
+
+## 📱 Interface Elements
+
+### Main Sections
+
+- **Dashboard**: Overview of system status and key metrics
+- **Applications**: Manage OAuth/OIDC client applications
+- **Users**: User management with role assignment
+- **Tenants**: Multi-tenant configuration
+- **Scopes**: OAuth scope definitions and permissions
+- **Profile**: User profile and security settings
+
+### Key Components
+
+- **Data Tables**: Interactive tables with sorting, filtering, and pagination
+- **Forms**: User-friendly forms with real-time validation
+- **Dialogs**: Context-sensitive dialogs for operations
+- **Toast Notifications**: User feedback for actions
+- **Role Guards**: Component-level access control
+
+## 🔍 Folder Structure
+
+Key directories in the project:
+
+- `src/components/` - UI components organized by domain
+- `src/pages/` - Top-level page components
+- `src/lib/api/` - API integration and generated clients
+- `src/lib/hooks/` - Custom React hooks
+- `src/lib/schemas/` - Zod validation schemas
+- `src/utils/` - Utility functions and constants
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+<p align="center">
+  <img src="../masters-thesis-oidc-server/docs/Figures/cleaniam-logo.png" alt="CleanIAM Logo" width="150">
+</p>
+<p align="center">
+  Developed as part of a Master's Thesis © 2025
+</p>
