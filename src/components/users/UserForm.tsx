@@ -102,7 +102,8 @@ export const UserForm: React.FC<UserFormProps> = ({
       // Update existing user
       updateUserMutation.mutate({
         id: user.id,
-        data
+        data,
+        params: tenant ? { tenant } : undefined
       });
     } else {
       // Create new user

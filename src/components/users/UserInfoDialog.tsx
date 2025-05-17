@@ -18,9 +18,10 @@ interface UserInfoDialogProps {
   user: ApiUserModel | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  tenant?: string;
 }
 
-export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, onOpenChange }) => {
+export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, onOpenChange, tenant }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Handle edit success
@@ -61,6 +62,7 @@ export const UserInfoDialog: React.FC<UserInfoDialogProps> = ({ user, isOpen, on
               onSuccess={handleEditSuccess}
               onCancel={() => setIsEditing(false)}
               disableEmail={true}
+              tenant={tenant}
             />
           ) : (
             <div className="space-y-6">

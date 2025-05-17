@@ -125,6 +125,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
         user={selectedUser}
         isOpen={isInfoDialogOpen}
         onOpenChange={setInfoIsDialogOpen}
+        tenant={tenant}
       />
     </div>
   );
