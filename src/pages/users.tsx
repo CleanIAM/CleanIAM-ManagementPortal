@@ -118,7 +118,7 @@ export const UsersPage = () => {
             <FormButton onClick={() => setIsInviteDialogOpen(true)}>Invite User</FormButton>
           </div>
 
-          <UserTable users={users} tenant={selectedTenant || undefined} />
+          <UserTable users={users} tenant={selectedTenant || undefined} onUserUpdated={refetch} />
         </div>
       )}
 

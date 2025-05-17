@@ -13,9 +13,10 @@ interface UserEditDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   tenant?: string;
+  onUserUpdated?: () => void;
 }
 
-export const UserEditDialog = ({ user, isOpen, onOpenChange, tenant }: UserEditDialogProps) => {
+export const UserEditDialog = ({ user, isOpen, onOpenChange, tenant, onUserUpdated }: UserEditDialogProps) => {
   // Handle dialog open change to prevent event propagation
   const handleOpenChange = (open: boolean) => {
     // Prevent the event from bubbling up when dialog is closed
@@ -38,7 +39,10 @@ export const UserEditDialog = ({ user, isOpen, onOpenChange, tenant }: UserEditD
         <div className="pb-4">
           <UserForm
             user={user}
-            onSuccess={() => onOpenChange(false)}
+            onSuccess={() => {
+              onOpenChange(false);
+              if (onUserUpdated) onUserUpdated();
+            }}
             onCancel={() => onOpenChange(false)}
             disableEmail={true}
             tenant={tenant}

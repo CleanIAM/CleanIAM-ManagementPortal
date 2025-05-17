@@ -30,13 +30,15 @@ interface UserActionsProps {
   onEditDialogStateChange?: (isOpen: boolean) => void;
   onAssignDialogStateChange?: (isOpen: boolean) => void;
   tenant?: string;
+  onUserUpdated?: () => void;
 }
 
 export const UserActions: React.FC<UserActionsProps> = ({
   user,
   onEditDialogStateChange,
   onAssignDialogStateChange,
-  tenant
+  tenant,
+  onUserUpdated
 }) => {
   // State for dialogs
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -72,6 +74,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onSuccess: () => {
         toast.success('User disabled successfully');
         refetch();
+        if (onUserUpdated) onUserUpdated();
       },
       onError: error => {
         toast.error(`Failed to disable user: ${error.message}`);
@@ -85,6 +88,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onSuccess: () => {
         toast.success('User enabled successfully');
         refetch();
+        if (onUserUpdated) onUserUpdated();
       },
       onError: error => {
         toast.error(`Failed to enable user: ${error.message}`);
@@ -98,6 +102,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onSuccess: () => {
         toast.success('User deleted successfully');
         refetch();
+        if (onUserUpdated) onUserUpdated();
       },
       onError: error => {
         toast.error(`Failed to delete user: ${error.message}`);
@@ -111,6 +116,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onSuccess: () => {
         toast.success('Invitation resent successfully');
         refetch();
+        if (onUserUpdated) onUserUpdated();
       },
       onError: error => {
         toast.error(`Failed to resend invitation: ${error.message}`);
@@ -124,6 +130,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onSuccess: () => {
         toast.success(`MFA disabled for ${user.firstName} ${user.lastName}`);
         refetch();
+        if (onUserUpdated) onUserUpdated();
       },
       onError: error => {
         toast.error(`Failed to disable MFA: ${error.message}`);
@@ -273,7 +280,8 @@ export const UserActions: React.FC<UserActionsProps> = ({
         user={user} 
         isOpen={isEditDialogOpen} 
         onOpenChange={handleEditDialogOpen} 
-        tenant={tenant} 
+        onUserUpdated={onUserUpdated}
+        tenant={tenant}
       />
 
       {/* Reset MFA Confirmation Dialog */}

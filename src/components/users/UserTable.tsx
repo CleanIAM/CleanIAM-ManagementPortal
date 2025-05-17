@@ -11,9 +11,10 @@ import { DataTableColumnHeader } from '@/components/ui/data-table-column-header'
 interface UserTableProps {
   users: ApiUserModel[];
   tenant?: string;
+  onUserUpdated?: () => void;
 }
 
-export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
+export const UserTable: React.FC<UserTableProps> = ({ users, tenant, onUserUpdated }) => {
   // Track any dialog that is open
   const [isAnyEditDialogOpen, setIsAnyEditDialogOpen] = useState(false);
   const [isAnyAssignDialogOpen, setIsAnyAssignDialogOpen] = useState(false);
@@ -89,6 +90,7 @@ export const UserTable: React.FC<UserTableProps> = ({ users, tenant }) => {
               onEditDialogStateChange={handleEditDialogStateChange}
               onAssignDialogStateChange={handleAssignDialogStateChange}
               tenant={tenant}
+              onUserUpdated={onUserUpdated}
             />
           </div>
         );
