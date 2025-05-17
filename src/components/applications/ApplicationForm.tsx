@@ -201,8 +201,8 @@ export const ApplicationForm = ({
 
       if (scopesResponse.data) {
         return scopesResponse.data.map(scope => ({
-          value: scope.displayName || scope.name,
-          label: scope.name,
+          value: scope.name,
+          label: scope.displayName || scope.name,
           tooltip: `[${scope.name}] ${scope.description || 'No description available'}`
         }));
       }
