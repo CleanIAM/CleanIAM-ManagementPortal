@@ -1,7 +1,7 @@
 import { router } from '@/router';
 import { AuthProviderProps } from 'react-oidc-context';
 export const oidcConfig: AuthProviderProps = {
-  authority: 'https://localhost:5000',
+  authority: 'https://localhost:7001',
   client_id: 'management-portal',
   redirect_uri: 'https://localhost:3001/auth/signin-callback',
   silent_redirect_uri: 'https://localhost:3001/auth/signin-callback',
