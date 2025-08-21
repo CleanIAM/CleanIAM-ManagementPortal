@@ -16,7 +16,7 @@ export const UserProfileMenu = () => {
 
   // Get user information from auth context
   const userProfile = auth.user?.profile;
-  const userName = userProfile?.name || 'User';
+  const userName = userProfile?.name || 'Client';
   const userEmail = userProfile?.email || 'user@example.com';
 
   // Get initials for avatar

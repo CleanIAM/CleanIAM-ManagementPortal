@@ -16,7 +16,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, isEditing, o
   // Get role display name
   const getRoleDisplay = () => {
     return user.roles.join(', ');
-    return 'User';
+    return 'Client';
   };
 
   return (

@@ -10,9 +10,9 @@ export const UserRoleBadges: React.FC<UserRoleBadgesProps> = ({ roles }) => {
   // Role name mapping helper
   const getRoleName = (role: UserRole) => {
     const roleMap: Record<UserRole, string> = {
-      [UserRole.Admin]: UserRole.Admin,
-      [UserRole.User]: UserRole.User,
-      [UserRole.MasterAdmin]: UserRole.MasterAdmin
+      [UserRole.Broker]: UserRole.Broker,
+      [UserRole.Client]: UserRole.Client,
+      [UserRole.Administrator]: UserRole.Administrator
     };
     return roleMap[role] || 'Unknown';
   };

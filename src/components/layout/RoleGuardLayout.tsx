@@ -49,5 +49,5 @@ export const RoleGuardLayout: React.FC<RoleGuardLayoutProps> = ({
 };
 
 // Export commonly used role group constants
-export const ADMIN_ROLES = [UserRole.Admin, UserRole.MasterAdmin];
-export const MASTER_ADMIN_ONLY = [UserRole.MasterAdmin];
+export const ADMIN_ROLES = [UserRole.Broker, UserRole.Administrator];
+export const MASTER_ADMIN_ONLY = [UserRole.Administrator];

@@ -45,10 +45,10 @@ export const UserActions: React.FC<UserActionsProps> = ({
   const [isResetMfaDialogOpen, setIsResetMfaDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAssignTenantDialogOpen, setIsAssignTenantDialogOpen] = useState(false);
-  
+
   // Get user roles to determine if user is a master admin
   const userRoles = useRoles();
-  const isMasterAdmin = userRoles.includes(UserRole.MasterAdmin);
+  const isMasterAdmin = userRoles.includes(UserRole.Administrator);
 
   // Update parent component when edit dialog state changes
   const handleEditDialogOpen = (isOpen: boolean) => {
@@ -57,7 +57,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onEditDialogStateChange(isOpen);
     }
   };
-  
+
   // Update parent component when assign tenant dialog state changes
   const handleAssignDialogOpen = (isOpen: boolean) => {
     setIsAssignTenantDialogOpen(isOpen);
@@ -65,7 +65,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
       onAssignDialogStateChange(isOpen);
     }
   };
-  
+
   const { refetch } = useGetApiUsers(tenant ? { tenant } : undefined);
 
   // Disable user mutation
@@ -197,13 +197,13 @@ export const UserActions: React.FC<UserActionsProps> = ({
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">User actions</span>
             <Settings className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+        <DropdownMenuContent align="end" onClick={e => e.stopPropagation()}>
           {user.isInvitePending && (
             <>
               <DropdownMenuItem
@@ -242,7 +242,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               handleEditDialogOpen(true);
@@ -251,14 +251,14 @@ export const UserActions: React.FC<UserActionsProps> = ({
             <Edit className="mr-2 h-4 w-4" strokeWidth={2} />
             <span>Edit User</span>
           </DropdownMenuItem>
-          
+
           {isMasterAdmin && (
             <DropdownMenuItem onClick={handleAssignTenant}>
               <Building className="mr-2 h-4 w-4" strokeWidth={2} />
               <span>Assign to Tenant</span>
             </DropdownMenuItem>
           )}
-          
+
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={handleDeleteUser}
@@ -276,10 +276,10 @@ export const UserActions: React.FC<UserActionsProps> = ({
       </DropdownMenu>
 
       {/* Edit User Dialog */}
-      <UserEditDialog 
-        user={user} 
-        isOpen={isEditDialogOpen} 
-        onOpenChange={handleEditDialogOpen} 
+      <UserEditDialog
+        user={user}
+        isOpen={isEditDialogOpen}
+        onOpenChange={handleEditDialogOpen}
         onUserUpdated={onUserUpdated}
         tenant={tenant}
       />
@@ -301,7 +301,7 @@ export const UserActions: React.FC<UserActionsProps> = ({
         isDeleting={deleteUserMutation.isPending}
         userName={`${user.firstName} ${user.lastName}`}
       />
-      
+
       {/* Assign Tenant Dialog */}
       {isMasterAdmin && (
         <AssignTenantDialog

@@ -30,7 +30,7 @@ export const UsersPage = () => {
   const userRoles = useRoles();
   console.log('User Roles:', userRoles);
 
-  const isMasterAdmin = userRoles.includes(UserRole.MasterAdmin);
+  const isMasterAdmin = userRoles.includes(UserRole.Administrator);
 
   // Fetch tenants data if user is master admin
   const { data: tenantsResponse, isLoading: isLoadingTenants } = useGetApiTenants(undefined, {

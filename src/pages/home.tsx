@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const roles = useRoles();
-  const isAdmin = roles.includes(UserRole.Admin) || roles.includes(UserRole.MasterAdmin);
+  const isAdmin = roles.includes(UserRole.Broker) || roles.includes(UserRole.Administrator);
   if (!isAdmin) {
     return <Navigate to="/profile" />;
   }

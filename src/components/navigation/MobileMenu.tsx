@@ -35,8 +35,8 @@ const MobileNavLink = ({ to, label, onClick }: MobileNavLinkProps) => {
       to={to}
       className={({ isActive }) =>
         `${
-          isActive 
-            ? 'border-blue-500 bg-blue-50 text-blue-700' 
+          isActive
+            ? 'border-blue-500 bg-blue-50 text-blue-700'
             : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
         } block border-l-4 py-2 pl-3 pr-4 text-base font-medium`
       }
@@ -52,7 +52,7 @@ export const MobileMenu = ({ isOpen, setIsOpen }: MobileMenuProps) => {
 
   // Get user information from auth context
   const userProfile = auth.user?.profile;
-  const userName = userProfile?.name || 'User';
+  const userName = userProfile?.name || 'Client';
   const userEmail = userProfile?.email || 'user@example.com';
 
   // Get initials for avatar
@@ -89,12 +89,12 @@ export const MobileMenu = ({ isOpen, setIsOpen }: MobileMenuProps) => {
   return (
     <div className="sm:hidden">
       <div className="space-y-1 pb-3 pt-2">
-        {links.map((link) => (
-          <MobileNavLink 
-            key={link.to} 
-            to={link.to} 
-            label={link.label} 
-            onClick={() => setIsOpen(false)} 
+        {links.map(link => (
+          <MobileNavLink
+            key={link.to}
+            to={link.to}
+            label={link.label}
+            onClick={() => setIsOpen(false)}
           />
         ))}
       </div>
@@ -104,9 +104,7 @@ export const MobileMenu = ({ isOpen, setIsOpen }: MobileMenuProps) => {
         <div className="flex items-center px-4">
           <div className="flex-shrink-0">
             <Avatar className="h-10 w-10">
-              <AvatarFallback className="bg-blue-200 text-blue-800">
-                {userInitials}
-              </AvatarFallback>
+              <AvatarFallback className="bg-blue-200 text-blue-800">{userInitials}</AvatarFallback>
             </Avatar>
           </div>
           <div className="ml-3">

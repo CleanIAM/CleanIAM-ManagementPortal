@@ -2,7 +2,8 @@ import { router } from '@/router';
 import { AuthProviderProps } from 'react-oidc-context';
 
 const basePath = import.meta.env.VITE_BASE_PATH || '/';
-const baseUrl = `https://localhost:3001${basePath === '/' ? '' : basePath}`;
+const baseHost = import.meta.env.VITE_BASE_HOST || 'https://localhost:3001';
+const baseUrl = `${baseHost}${basePath === '/' ? '' : basePath}`;
 
 export const oidcConfig: AuthProviderProps = {
   authority: 'https://localhost:7001',
