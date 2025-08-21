@@ -5,16 +5,30 @@ export const useSignin = () => {
   const REDIRECT_URL = 'redirect_url';
 
   const signin = () => {
-    setRedirectUrl(window.location.href);
+    // Store the pathname relative to the base path, not the full URL
+    const basePath = import.meta.env.VITE_BASE_PATH || '/';
+    let pathname = window.location.pathname;
+    
+    // Remove the base path from the pathname if it exists
+    if (basePath !== '/' && pathname.startsWith(basePath)) {
+      pathname = pathname.slice(basePath.length) || '/';
+    }
+    
+    // If at root path, redirect to /home after signin
+    if (pathname === '/' || pathname === '') {
+      pathname = '/home';
+    }
+    
+    setRedirectUrl(pathname);
     void signinRedirect();
   };
 
-  const setRedirectUrl = (url: string) => {
-    // just store is in session storage for now to avoid passing it around the app
+  const setRedirectUrl = (pathname: string) => {
+    // Store just the pathname relative to the base path
     sessionStorage.setItem(
       REDIRECT_URL,
       JSON.stringify({
-        url,
+        pathname,
         timestamp: Date.now()
       })
     );
@@ -24,10 +38,10 @@ export const useSignin = () => {
     try {
       const data = JSON.parse(sessionStorage.getItem(REDIRECT_URL)!);
       // check if it's not expired (5 min from now is ok) and remove it from session storage
-      const url = Date.now() - data.timestamp > 5 * 60 * 1000 ? null : data.url;
+      const pathname = Date.now() - data.timestamp > 5 * 60 * 1000 ? null : data.pathname;
       sessionStorage.removeItem(REDIRECT_URL);
 
-      return url;
+      return pathname;
     } catch {
       return null;
     }

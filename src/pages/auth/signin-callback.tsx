@@ -33,9 +33,11 @@ export const SigninCallback = () => {
   }
 
   if (auth.isAuthenticated) {
-    const url = getRedirectUrl();
-    if (url) {
-      return <Navigate to={url} state={{ from: window.location.pathname }} replace />;
+    const pathname = getRedirectUrl();
+    console.log('>>>>>>>>> Redirecting to:', pathname);
+
+    if (pathname) {
+      return <Navigate to={pathname} state={{ from: window.location.pathname }} replace />;
     }
     // if no redirect url is set, just go to the home page
     return <Navigate to="/home" state={{ from: window.location.pathname }} replace />;

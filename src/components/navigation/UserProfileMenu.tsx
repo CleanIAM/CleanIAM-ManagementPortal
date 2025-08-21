@@ -33,7 +33,10 @@ export const UserProfileMenu = () => {
 
   const handleLogout = async () => {
     try {
-      await auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin });
+      const base_host = import.meta.env.VITE_BASE_HOST || 'https://localhost:3001';
+      const base_path = import.meta.env.VITE_BASE_PATH || '/';
+      const postLogoutRedirectUri = `${base_host}${base_path}`;
+      await auth.signoutRedirect({ post_logout_redirect_uri: postLogoutRedirectUri });
     } catch (error) {
       console.error('Logout error:', error);
     }

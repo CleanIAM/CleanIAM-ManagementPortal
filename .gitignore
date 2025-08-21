@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 package-lock.json
 .env
+deploy_to_be.sh
+.env.production
